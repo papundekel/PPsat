@@ -1,4 +1,4 @@
-#include <PPsat/translate.hpp>
+#include <PPsat/tseitin_translate.hpp>
 
 #include <fstream>
 #include <iostream>
@@ -29,7 +29,10 @@ int main(int argc, char** argv)
     }
     std::ostream& output = output_file ? *output_file : std::cout;
 
-    PPsat::translate(input, output);
+    auto error = PPsat::tseitin_translate(input, output);
+
+    if (error == PPsat::error_code::syntax)
+        return 2;
 
     return 0;
 }

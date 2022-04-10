@@ -1,4 +1,0 @@
-<formula> ::= `(' `and' <formula>  <formula> `)'
-            | `(' `or'  <formula>  <formula> `)'
-            | `(' `not' <variable> `)' 
-            | <variable>
