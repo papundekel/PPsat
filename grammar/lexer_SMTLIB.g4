@@ -8,7 +8,7 @@ Here <variable> is a sequence of alphanumeric characters starting with a letter.
 Newline or a sequence of whitespace characters should be allowed wherever space is allowed.
 */
 
-lexer grammar NNF_lexer;
+lexer grammar lexer_SMTLIB;
 
 PARENTHESISL: '(';
 PARENTHESISR: ')';

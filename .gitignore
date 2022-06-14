@@ -3,3 +3,4 @@
 .vscode/
 out-cmake/
 outputs/
+inputs/PPsat-queens

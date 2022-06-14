@@ -1,13 +1,13 @@
 /**
 <formula> ::= `(' `and' <formula>  <formula> `)'
             | `(' `or'  <formula>  <formula> `)'
-            | `(' `not' <variable> `)' 
+            | `(' `not' <formula> `)' 
             | <variable>
 */
 
-parser grammar NNF_parser;
+parser grammar parser_SMTLIB;
 
-options { tokenVocab=NNF_lexer; }
+options { tokenVocab=lexer_SMTLIB; }
 
 input
     : formula EOF
@@ -16,6 +16,6 @@ input
 formula
     : PARENTHESISL AND formula formula PARENTHESISR # Conjunction
     | PARENTHESISL OR  formula formula PARENTHESISR # Disjunction
-    | PARENTHESISL NOT VAR             PARENTHESISR # Negation
+    | PARENTHESISL NOT formula         PARENTHESISR # Negation
     | VAR                                           # Variable
     ;

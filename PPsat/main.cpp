@@ -1,8 +1,11 @@
 #include <PPsat/tseitin_translate.hpp>
 
 #include <fstream>
+#include <functional>
 #include <iostream>
 #include <optional>
+#include <utility>
+#include <variant>
 
 int main(int argc, char** argv)
 {
@@ -11,7 +14,8 @@ int main(int argc, char** argv)
 
     if (argument_count > 2)
     {
-        std::cerr << "Invalid argument count " << argument_count << "\n";
+        std::cerr << "Invalid argument count " << argument_count
+                  << ", quitting.\n";
         return 1;
     }
 
@@ -29,10 +33,13 @@ int main(int argc, char** argv)
     }
     std::ostream& output = output_file ? *output_file : std::cout;
 
-    auto error = PPsat::tseitin_translate(input, output);
+    auto error = PPsat::tseitin_translate(input, output, false);
 
     if (error == PPsat::error_code::syntax)
+    {
+        std::cerr << "Parse error encountered, quitting.\n";
         return 2;
+    }
 
     return 0;
 }

@@ -9,5 +9,5 @@ namespace PPsat
         syntax,
     };
 
-    error_code tseitin_translate(std::istream& input, std::ostream& output);
+    error_code tseitin_translate(std::istream& input, std::ostream& output, bool nnf);
 }

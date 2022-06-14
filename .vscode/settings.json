@@ -66,7 +66,12 @@
         "codecvt": "cpp",
         "forward_list": "cpp",
         "set": "cpp",
-        "unordered_set": "cpp"
+        "unordered_set": "cpp",
+        "any": "cpp",
+        "shared_mutex": "cpp",
+        "charconv": "cpp",
+        "cfenv": "cpp",
+        "*.inc": "cpp"
     },
     "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools"
 }
