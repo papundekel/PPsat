@@ -1,34 +1,32 @@
-#include <PPsat/CNF_simple.hpp>
-#include <PPsat/literal_pair.hpp>
-#include <PPsat/small_static_storage.hpp>
-
 #include <PPsat-parser_SMTLIB/parser_SMTLIB.h>
 #include <PPsat-parser_SMTLIB/parser_SMTLIBVisitor.h>
 
-#include <map>
-
 namespace PPsat
 {
+template <template <typename> typename Literal>
+struct template_t
+{};
+
+template <template <typename> typename Literal,
+          typename Renaming,
+          typename FormulaBuilder>
 class reader_SMTLIB_tseitin final : public parser_SMTLIBVisitor
 {
-    using name_t = std::size_t;
+    using name_t = Renaming::mapped_type;
+    using literal_t = Literal<name_t>;
 
-    using literal = literal_pair<name_t>;
-
-    template <typename T>
-    using clause_storage = small_static_storage<T, 3>;
-
-    std::map<std::string, name_t> renaming;
-    CNF_simple<std::vector, clause_storage, literal> output_formula;
-    literal subformula_literal;
+    Renaming& renaming;
+    FormulaBuilder& formula_builder;
+    literal_t subformula_literal;
     name_t name_next;
-    bool nnf;
-    
+
 public:
-    reader_SMTLIB_tseitin() noexcept
-        : renaming()
+    reader_SMTLIB_tseitin(template_t<Literal>,
+                          Renaming& renaming,
+                          FormulaBuilder& formula_builder) noexcept
+        : renaming(renaming)
+        , formula_builder(formula_builder)
         , subformula_literal()
-        , output_formula()
         , name_next(0)
     {}
 
@@ -38,12 +36,12 @@ private:
         return name_next++;
     }
 
-    literal handle_variable_introduced() noexcept
+    literal_t handle_variable_introduced() noexcept
     {
         return {next_name(), true};
     }
 
-    literal handle_variable_input(std::string&& name)
+    literal_t handle_variable_input(std::string&& name)
     {
         name_t variable_p;
 
@@ -71,7 +69,7 @@ private:
 
         subformula_literal = handle_variable_introduced();
 
-        output_formula.push_conjunction(subformula_literal, left, right, nnf);
+        formula_builder.push_conjunction(subformula_literal, left, right);
 
         return {};
     }
@@ -86,7 +84,7 @@ private:
 
         subformula_literal = handle_variable_introduced();
 
-        output_formula.push_disjunction(subformula_literal, left, right, nnf);
+        formula_builder.push_disjunction(subformula_literal, left, right);
 
         return {};
     }
@@ -99,7 +97,7 @@ private:
 
         subformula_literal = handle_variable_introduced();
 
-        output_formula.push_negation(subformula_literal, inner, nnf);
+        formula_builder.push_negation(subformula_literal, inner);
 
         return {};
     }
@@ -119,21 +117,17 @@ private:
     {
         visit(context->formula());
 
-        output_formula.push_literal(subformula_literal);
+        formula_builder.push_literal(subformula_literal);
 
         return {};
     }
 
 public:
-    auto read(parser_SMTLIB::InputContext* context, bool nnf) &&
+    auto read(parser_SMTLIB::InputContext* context) &&
     {
-        this->nnf = nnf;
-
         visitInput(context);
 
-        return std::make_tuple(std::move(output_formula),
-                               std::move(renaming),
-                               name_next);
+        return name_next;
     }
 };
 }

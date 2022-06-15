@@ -9,6 +9,8 @@ template <std::unsigned_integral U>
 class literal_signed
 {
 public:
+    using name_t = U;
+
     std::make_signed_t<U> variable;
 
 public:

@@ -9,6 +9,8 @@ template <std::unsigned_integral U>
 class literal_pair
 {
 public:
+    using name_t = U;
+
     U variable;
 
 private:

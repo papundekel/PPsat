@@ -1,5 +1,9 @@
+#include <PPsat/CNF.hpp>
 #include <PPsat/error_listener_simple_detect.hpp>
+#include <PPsat/literal_pair.hpp>
 #include <PPsat/reader_SMTLIB_tseitin.hpp>
+#include <PPsat/small_static_storage.hpp>
+#include <PPsat/tseitin_builder.hpp>
 #include <PPsat/tseitin_translate.hpp>
 
 #include <PPsat-lexer_SMTLIB/lexer_SMTLIB.h>
@@ -27,10 +31,14 @@ constexpr auto greater_power_10(auto x) noexcept
 
     return power;
 }
+
+template <typename T>
+using clause_storage = PPsat::small_static_storage<T, 3>;
 }
 
 PPsat::error_code PPsat::tseitin_translate(std::istream& input,
-                                           std::ostream& output, bool nnf)
+                                           std::ostream& output,
+                                           bool nnf)
 {
     error_listener_simple_detect error_listener;
 
@@ -51,22 +59,30 @@ PPsat::error_code PPsat::tseitin_translate(std::istream& input,
         return error_code::syntax;
     }
 
-    auto [formula, renaming, variable_count] =
-        reader_SMTLIB_tseitin().read(input_parsed, nnf);
+    std::map<std::string, std::size_t> renaming;
+    CNF<std::vector, clause_storage, literal_pair<std::size_t>> formula;
+    tseitin_builder builder(formula.clause_inserter(), nnf);
+
+    auto variable_count =
+        reader_SMTLIB_tseitin(template_t<literal_pair>{}, renaming, builder)
+            .read(input_parsed);
 
     std::size_t begin_input = 1;
     auto begin_introduced = greater_power_10(renaming.size()) + 1;
 
-    output << "c The introduced variables begin at " << begin_introduced << ".\n";
+    output << "c The introduced variables begin at " << begin_introduced
+           << ".\n";
 
-    std::map<decltype(renaming)::mapped_type, decltype(renaming)::mapped_type> renaming_new;
+    std::map<decltype(renaming)::mapped_type, decltype(renaming)::mapped_type>
+        renaming_new;
 
     for (const auto& [_, name_input] : renaming)
     {
         renaming_new.try_emplace(name_input, begin_input++);
     }
 
-    for (std::size_t name_introduced = 0; name_introduced != variable_count; ++name_introduced)
+    for (std::size_t name_introduced = 0; name_introduced != variable_count;
+         ++name_introduced)
     {
         if (!renaming_new.contains(name_introduced))
         {

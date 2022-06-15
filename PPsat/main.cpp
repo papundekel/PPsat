@@ -1,45 +1,115 @@
+#include <PPsat/cli_parser.hpp>
+#include <PPsat/discard_iterator.hpp>
 #include <PPsat/tseitin_translate.hpp>
 
 #include <fstream>
 #include <functional>
 #include <iostream>
 #include <optional>
+#include <ranges>
 #include <utility>
 #include <variant>
 
+namespace PPsat::cli_options
+{
+using namespace std::literals;
+
+template <size_t count>
+struct constant_string
+{
+    char chars[count];
+
+    constexpr constant_string(const char (&string)[count + 1]) noexcept
+    {
+        std::ranges::copy(string | std::ranges::views::take(count), chars);
+    }
+
+    constexpr operator std::string_view() const
+    {
+        return std::string_view(chars, count);
+    }
+};
+template <size_t count>
+constant_string(const char (&)[count]) -> constant_string<count - 1>;
+
+template <constant_string Name>
+class bool_option
+{
+    bool present;
+
+public:
+    bool_option() = default;
+
+    static constexpr std::string_view name() noexcept
+    {
+        return Name;
+    }
+
+    bool& presence() noexcept
+    {
+        return present;
+    }
+
+    static constexpr auto variables() noexcept
+    {
+        return std::ranges::views::empty<std::string_view>;
+    }
+
+    operator bool() const noexcept
+    {
+        return present;
+    }
+};
+}
+
 int main(int argc, char** argv)
 {
-    auto argument_count = argc - 1;
-    auto arguments = argv + 1;
+    PPsat::cli_options::bool_option<"convert"> option_convert;
+    PPsat::cli_options::bool_option<"dpll"> option_dpll;
+    PPsat::cli_options::bool_option<"cdcl"> option_cdcl;
+    PPsat::cli_options::bool_option<"nnf"> option_nnf;
+    std::vector<std::string_view> arguments;
 
-    if (argument_count > 2)
+    PPsat::cli_parser(option_convert, option_dpll, option_cdcl, option_nnf)
+        .parse(argc,
+               argv,
+               std::back_inserter(arguments),
+               PPsat::discard_iterator);
+
+    if (option_convert)
     {
-        std::cerr << "Invalid argument count " << argument_count
-                  << ", quitting.\n";
-        return 1;
+        if (arguments.size() > 2)
+        {
+            std::cerr << "Invalid argument count: " << arguments.size()
+                      << ", quitting.\n";
+            return 1;
+        }
+
+        std::optional<std::ifstream> input_file;
+        if (arguments.size() >= 1)
+        {
+            input_file.emplace(arguments[0].data());
+        }
+        std::istream& input = input_file ? *input_file : std::cin;
+
+        std::optional<std::ofstream> output_file;
+        if (arguments.size() >= 2)
+        {
+            output_file.emplace(arguments[1].data());
+        }
+        std::ostream& output = output_file ? *output_file : std::cout;
+
+        auto status = PPsat::tseitin_translate(input, output, option_nnf);
+
+        if (status == PPsat::error_code::syntax)
+        {
+            std::cerr << "Parse error encountered, quitting.\n";
+            return 2;
+        }
+
+        return 0;
     }
 
-    std::optional<std::ifstream> input_file;
-    if (argument_count >= 1)
-    {
-        input_file.emplace(arguments[0]);
-    }
-    std::istream& input = input_file ? *input_file : std::cin;
-
-    std::optional<std::ofstream> output_file;
-    if (argument_count >= 2)
-    {
-        output_file.emplace(arguments[1]);
-    }
-    std::ostream& output = output_file ? *output_file : std::cout;
-
-    auto error = PPsat::tseitin_translate(input, output, false);
-
-    if (error == PPsat::error_code::syntax)
-    {
-        std::cerr << "Parse error encountered, quitting.\n";
-        return 2;
-    }
-
-    return 0;
+    std::cerr << "No option specified.\n";
+    return 1;
 }

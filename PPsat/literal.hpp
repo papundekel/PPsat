@@ -8,5 +8,6 @@ namespace PPsat
     {
         l.variable;
         { l.is_positive() } -> std::convertible_to<bool>;
+        typename L::name_t;
     };
 }
