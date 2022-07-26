@@ -44,8 +44,15 @@ antlr4_generate(
 
 add_executable("PPsat"
     "main.cpp"
-    "tseitin_translate.cpp"
+    "cli/option/format.cpp"
+    "cli/option/parser.cpp"
     "error_listener_simple_detect.cpp"
+    "error_handler.cpp"
+    "options.cpp"
+    "subprogram/cdcl.cpp"
+    "subprogram/convert.cpp"
+    "subprogram/dpll.cpp"
+    "subprogram/help.cpp"
     "${ANTLR4_SRC_FILES_PPsat-lexer_SMTLIB}"
     "${ANTLR4_SRC_FILES_PPsat-parser_SMTLIB}"
     "${ANTLR4_SRC_FILES_PPsat-lexer_DIMACS}"
@@ -61,4 +68,4 @@ target_include_directories("PPsat" PUBLIC
     "${ANTLR4_INCLUDE_DIR}"
     "${ANTLR4_INCLUDE_DIR_PPsat-lexer_SMTLIB}/../"
     )
-set_property(TARGET "PPsat" PROPERTY CXX_STANDARD 20)
+set_property(TARGET "PPsat" PROPERTY CXX_STANDARD 23)

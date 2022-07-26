@@ -1,10 +1,13 @@
 #include <PPsat/CNF_simple.hpp>
+#include <PPsat/literal_pair.hpp>
 
-#include <PPsat-parser_DIMACS/parser_DIMACSVisitor.h>
 #include <PPsat-parser_DIMACS/parser_DIMACS.h>
+#include <PPsat-parser_DIMACS/parser_DIMACSVisitor.h>
 
+#include <charconv>
 #include <list>
 #include <map>
+#include <optional>
 
 namespace
 {
@@ -23,150 +26,97 @@ auto greater_power10(auto x)
 
 namespace PPsat
 {
+template <typename FormulaBuilder>
 class reader_DIMACS final : public parser_DIMACSVisitor
 {
-    using variable_name_t = unsigned int;
-
-    class variable_t
-    {
-    public:
-        mutable variable_name_t name;
-    };
-
-    using literal = literal_pair<variable_t*>;
-
-    std::list<variable_t> variables_input;
-    std::list<variable_t> variables_introduced;
-    std::map<std::string, variable_t*> input_variable_name_mapping;
-    literal subformula_literal;
-    CNF_simple<std::vector, literal> output_formula;
+    std::size_t variable_count;
+    FormulaBuilder& formula_builder;
+    std::vector<literal_pair<std::size_t>> clause;
+    bool parse_error;
 
 public:
-    reader_SMTLIB_tseitin() noexcept
-        : variables_input()
-        , variables_introduced()
-        , input_variable_name_mapping()
-        , subformula_literal()
-        , output_formula()
+    reader_DIMACS(FormulaBuilder& formula_builder) noexcept
+        : variable_count(0)
+        , formula_builder(formula_builder)
+        , clause()
+        , parse_error(false)
     {}
 
 private:
-    variable_t* make_next_variable(auto& variables) noexcept
+    std::optional<std::size_t> parse_number(
+        antlr4::tree::TerminalNode* number_node)
     {
-        variables.push_back({(variable_name_t)variables.size() + 1});
-        return &variables.back();
+        std::size_t number;
+
+        const auto number_string = context->NUMBER(0)->getSymbol()->getText();
+
+        const auto result =
+            std::from_chars(number_string.data(),
+                            number_string.data() + number_string.size(),
+                            number);
+
+        if (result.ec != std::errc())
+        {
+            parse_error = true;
+            return std::nullopt;
+        }
+
+        return number;
     }
 
-    variable_t* handle_input_variable(std::string&& name)
+    std::any visitInput(parser_DIMACS::InputContext* context)
     {
-        variable_t* variable_p;
+        const auto variable_count_opt = parse_number(context->NUMBER(0));
 
-        if (auto i = input_variable_name_mapping.find(name);
-            i != input_variable_name_mapping.end())
+        if (!variable_count_opt)
         {
-            variable_p = i->second;
-        }
-        else
-        {
-            variable_p = make_next_variable(variables_input);
-
-            input_variable_name_mapping.try_emplace(std::move(name),
-                                                    variable_p);
+            return {};
         }
 
-        return variable_p;
+        for (auto* const clause_context : context->clause())
+        {
+            visit(clause_context);
+        }
+
+        return {};
+    }
+
+    std::any visitClause(parser_DIMACS::ClauseContext* context)
+    {
+        for (auto* const literal_context : context->literal())
+        {
+            visit(literal_context);
+        }
+
+        formula_builder.push_clause(std::move(clause));
+        clause.clear();
+
+        return {};
+    }
+
+    std::any visitLiteral(parser_DIMACS::Signed_numberContext* context)
+    {
+        const auto variable_name_opt = parse_number(context->NUMBER());
+
+        if (!variable_name_opt)
+        {
+            return {};
+        }
+
+        clause.push_back({*variable_name_opt, context->MINUS() == nullptr});
+
+        return {};
     }
 
 public:
-    auto result() noexcept
+    std::optional<std::size_t> result(parser_DIMACS::InputContext* context) &&
     {
-        return std::move(output_formula);
-    }
+        visit(context);
 
-    void write(std::ostream& output) const
-    {
-        auto introduced_new_offset = greater_power10(variables_input.size());
+        if (parse_error)
+            return std::nullopt;
 
-        for (auto i = introduced_new_offset + 1;
-             auto& variable : variables_introduced)
-        {
-            variable.name = (variable_name_t)i;
-            ++i;
-        }
-
-        for (const auto& [name_input, variable] : input_variable_name_mapping)
-        {
-            output << "c " << variable->name << "=" << name_input << "\n";
-        }
-
-        output << "c The introduced variables are named with an offset of "
-               << introduced_new_offset << "\n"
-               << "p cnf "
-               << variables_input.size() + variables_introduced.size() << " "
-               << output_formula.clauses_count() << "\n";
-
-        output_formula.write_DIMACS(output);
-    }
-
-    antlrcpp::Any visitInput(parser_SMTLIB::InputContext* context) override final
-    {
-        visit(context->formula());
-
-        output_formula.push_literal(subformula_literal);
-
-        return {};
-    }
-
-    antlrcpp::Any visitConjunction(
-        parser_SMTLIB::ConjunctionContext* context) override final
-    {
-        visit(context->formula(0));
-        auto left = subformula_literal;
-        visit(context->formula(1));
-        auto right = subformula_literal;
-
-        subformula_literal = {make_next_variable(variables_introduced), true};
-
-        output_formula.push_conjunction(subformula_literal, left, right);
-
-        return {};
-    }
-
-    antlrcpp::Any visitDisjunction(
-        parser_SMTLIB::DisjunctionContext* context) override final
-    {
-        visit(context->formula(0));
-        auto left = subformula_literal;
-        visit(context->formula(1));
-        auto right = subformula_literal;
-
-        subformula_literal = {make_next_variable(variables_introduced), true};
-
-        output_formula.push_disjunction(subformula_literal, left, right);
-
-        return {};
-    }
-
-    antlrcpp::Any visitNegation(
-        parser_SMTLIB::NegationContext* context) override final
-    {
-        auto variable_name = context->VAR()->getSymbol()->getText();
-
-        subformula_literal = {handle_input_variable(std::move(variable_name)),
-                              false};
-
-        return {};
-    }
-
-    antlrcpp::Any visitVariable(
-        parser_SMTLIB::VariableContext* context) override final
-    {
-        auto variable_name = context->VAR()->getSymbol()->getText();
-
-        subformula_literal = {handle_input_variable(std::move(variable_name)),
-                              true};
-
-        return {};
+        return variable_count;
     }
 };
 }

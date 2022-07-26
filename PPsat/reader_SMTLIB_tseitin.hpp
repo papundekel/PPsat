@@ -41,7 +41,7 @@ private:
         return {next_name(), true};
     }
 
-    literal_t handle_variable_input(std::string&& name)
+    literal_t handle_variable_input(std::string name)
     {
         name_t variable_p;
 
@@ -59,13 +59,14 @@ private:
         return {variable_p, true};
     }
 
-    antlrcpp::Any visitConjunction(
+    std::any visitConjunction(
         parser_SMTLIB::ConjunctionContext* context) override final
     {
         visit(context->formula(0));
-        auto left = subformula_literal;
+        const auto left = subformula_literal;
+
         visit(context->formula(1));
-        auto right = subformula_literal;
+        const auto right = subformula_literal;
 
         subformula_literal = handle_variable_introduced();
 
@@ -74,13 +75,14 @@ private:
         return {};
     }
 
-    antlrcpp::Any visitDisjunction(
+    std::any visitDisjunction(
         parser_SMTLIB::DisjunctionContext* context) override final
     {
         visit(context->formula(0));
-        auto left = subformula_literal;
+        const auto left = subformula_literal;
+
         visit(context->formula(1));
-        auto right = subformula_literal;
+        const auto right = subformula_literal;
 
         subformula_literal = handle_variable_introduced();
 
@@ -89,11 +91,11 @@ private:
         return {};
     }
 
-    antlrcpp::Any visitNegation(
+    std::any visitNegation(
         parser_SMTLIB::NegationContext* context) override final
     {
         visit(context->formula());
-        auto inner = subformula_literal;
+        const auto inner = subformula_literal;
 
         subformula_literal = handle_variable_introduced();
 
@@ -102,18 +104,16 @@ private:
         return {};
     }
 
-    antlrcpp::Any visitVariable(
+    std::any visitVariable(
         parser_SMTLIB::VariableContext* context) override final
     {
-        auto variable_name = context->VAR()->getSymbol()->getText();
-
-        subformula_literal = handle_variable_input(std::move(variable_name));
+        subformula_literal =
+            handle_variable_input(context->VAR()->getSymbol()->getText());
 
         return {};
     }
 
-    antlrcpp::Any visitInput(
-        parser_SMTLIB::InputContext* context) override final
+    std::any visitInput(parser_SMTLIB::InputContext* context) override final
     {
         visit(context->formula());
 

@@ -17,7 +17,10 @@ private:
     bool positive;
 
 public:
-    literal_pair() = default;    
+    literal_pair()
+        : variable()
+        , positive()
+    {}
 
     literal_pair(U variable, bool positive) noexcept
         : variable(variable)

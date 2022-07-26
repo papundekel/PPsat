@@ -1,10 +1,12 @@
 #include <PPsat/CNF.hpp>
+#include <PPsat/builder_tseitin.hpp>
+#include <PPsat/cli/argument/file.hpp>
+#include <PPsat/discard_iterator.hpp>
 #include <PPsat/error_listener_simple_detect.hpp>
 #include <PPsat/literal_pair.hpp>
 #include <PPsat/reader_SMTLIB_tseitin.hpp>
 #include <PPsat/small_static_storage.hpp>
-#include <PPsat/tseitin_builder.hpp>
-#include <PPsat/tseitin_translate.hpp>
+#include <PPsat/subprogram/convert.hpp>
 
 #include <PPsat-lexer_SMTLIB/lexer_SMTLIB.h>
 #include <PPsat-parser_SMTLIB/parser_SMTLIB.h>
@@ -36,9 +38,33 @@ template <typename T>
 using clause_storage = PPsat::small_static_storage<T, 3>;
 }
 
-PPsat::error_code PPsat::tseitin_translate(std::istream& input,
-                                           std::ostream& output,
-                                           bool nnf)
+PPsat::subcommand_result PPsat::subprogram::convert_unparsed(
+    cli::arguments& arguments,
+    options& options)
+{
+    if (!options.convert)
+    {
+        return {};
+    }
+
+    PPsat::cli::argument::file_in argument_in;
+    PPsat::cli::argument::file_out argument_out;
+
+    bool success = arguments.parse(
+        std::array<std::reference_wrapper<PPsat::cli::argument_>, 2>{
+            argument_in,
+            argument_out});
+
+    return convert(argument_in.parsed_stream(),
+                   argument_out.parsed_stream(),
+                   std::cerr,
+                   options.nnf);
+}
+
+int PPsat::subprogram::convert(std::istream& input,
+                               std::ostream& output,
+                               std::ostream& err,
+                               bool nnf)
 {
     error_listener_simple_detect error_listener;
 
@@ -52,22 +78,23 @@ PPsat::error_code PPsat::tseitin_translate(std::istream& input,
     parser_SMTLIB parser(&tokens);
     parser.addErrorListener(&error_listener);
 
-    auto* input_parsed = parser.input();
+    auto* const input_parsed = parser.input();
 
     if (error_listener.error_encountered())
     {
-        return error_code::syntax;
+        err << "Parse error encountered, quitting.\n";
+        return 1;
     }
 
     std::map<std::string, std::size_t> renaming;
     CNF<std::vector, clause_storage, literal_pair<std::size_t>> formula;
-    tseitin_builder builder(formula.clause_inserter(), nnf);
+    builder_tseitin builder(formula.clause_inserter(), nnf);
 
-    auto variable_count =
+    const auto variable_count =
         reader_SMTLIB_tseitin(template_t<literal_pair>{}, renaming, builder)
             .read(input_parsed);
 
-    std::size_t begin_input = 1;
+    auto begin_input = 1z;
     auto begin_introduced = greater_power_10(renaming.size()) + 1;
 
     output << "c The introduced variables begin at " << begin_introduced
@@ -81,7 +108,7 @@ PPsat::error_code PPsat::tseitin_translate(std::istream& input,
         renaming_new.try_emplace(name_input, begin_input++);
     }
 
-    for (std::size_t name_introduced = 0; name_introduced != variable_count;
+    for (auto name_introduced = 0z; name_introduced != variable_count;
          ++name_introduced)
     {
         if (!renaming_new.contains(name_introduced))
@@ -105,5 +132,5 @@ PPsat::error_code PPsat::tseitin_translate(std::istream& input,
                                                  x.is_positive());
                          });
 
-    return error_code::none;
+    return 0;
 }

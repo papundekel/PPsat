@@ -7,13 +7,13 @@
 namespace PPsat
 {
 template <typename ClauseInserter>
-class tseitin_builder
+class builder_tseitin
 {
     ClauseInserter clause_inserter;
     bool nnf;
 
 public:
-    tseitin_builder(ClauseInserter clause_inserter, bool nnf)
+    builder_tseitin(ClauseInserter clause_inserter, bool nnf)
         : clause_inserter(std::move(clause_inserter))
         , nnf(nnf)
     {}

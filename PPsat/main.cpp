@@ -1,115 +1,62 @@
-#include <PPsat/cli_parser.hpp>
-#include <PPsat/discard_iterator.hpp>
-#include <PPsat/tseitin_translate.hpp>
+#include <PPsat/cli/arguments_container.hpp>
+#include <PPsat/cli/option/parser.hpp>
+#include <PPsat/error_handler.hpp>
+#include <PPsat/options.hpp>
+#include <PPsat/subprogram/cdcl.hpp>
+#include <PPsat/subprogram/convert.hpp>
+#include <PPsat/subprogram/dpll.hpp>
+#include <PPsat/subprogram/help.hpp>
 
-#include <fstream>
-#include <functional>
+#include <array>
 #include <iostream>
-#include <optional>
-#include <ranges>
-#include <utility>
-#include <variant>
-
-namespace PPsat::cli_options
-{
-using namespace std::literals;
-
-template <size_t count>
-struct constant_string
-{
-    char chars[count];
-
-    constexpr constant_string(const char (&string)[count + 1]) noexcept
-    {
-        std::ranges::copy(string | std::ranges::views::take(count), chars);
-    }
-
-    constexpr operator std::string_view() const
-    {
-        return std::string_view(chars, count);
-    }
-};
-template <size_t count>
-constant_string(const char (&)[count]) -> constant_string<count - 1>;
-
-template <constant_string Name>
-class bool_option
-{
-    bool present;
-
-public:
-    bool_option() = default;
-
-    static constexpr std::string_view name() noexcept
-    {
-        return Name;
-    }
-
-    bool& presence() noexcept
-    {
-        return present;
-    }
-
-    static constexpr auto variables() noexcept
-    {
-        return std::ranges::views::empty<std::string_view>;
-    }
-
-    operator bool() const noexcept
-    {
-        return present;
-    }
-};
-}
+#include <iterator>
+#include <string_view>
+#include <vector>
 
 int main(int argc, char** argv)
 {
-    PPsat::cli_options::bool_option<"convert"> option_convert;
-    PPsat::cli_options::bool_option<"dpll"> option_dpll;
-    PPsat::cli_options::bool_option<"cdcl"> option_cdcl;
-    PPsat::cli_options::bool_option<"nnf"> option_nnf;
-    std::vector<std::string_view> arguments;
+    PPsat::options options;
+    PPsat::cli::arguments_container<std::vector> arguments;
+    PPsat::error_handler error_handler(std::cerr);
 
-    PPsat::cli_parser(option_convert, option_dpll, option_cdcl, option_nnf)
-        .parse(argc,
-               argv,
-               std::back_inserter(arguments),
-               PPsat::discard_iterator);
+    const auto parse_success = PPsat::cli::option::parser(options.as_range())
+                                   .parse(argc, argv, arguments, error_handler);
 
-    if (option_convert)
+    if (!parse_success)
     {
-        if (arguments.size() > 2)
-        {
-            std::cerr << "Invalid argument count: " << arguments.size()
-                      << ", quitting.\n";
-            return 1;
-        }
+        error_handler.handle();
 
-        std::optional<std::ifstream> input_file;
-        if (arguments.size() >= 1)
-        {
-            input_file.emplace(arguments[0].data());
-        }
-        std::istream& input = input_file ? *input_file : std::cin;
-
-        std::optional<std::ofstream> output_file;
-        if (arguments.size() >= 2)
-        {
-            output_file.emplace(arguments[1].data());
-        }
-        std::ostream& output = output_file ? *output_file : std::cout;
-
-        auto status = PPsat::tseitin_translate(input, output, option_nnf);
-
-        if (status == PPsat::error_code::syntax)
-        {
-            std::cerr << "Parse error encountered, quitting.\n";
-            return 2;
-        }
-
-        return 0;
+        return 1;
     }
 
-    std::cerr << "No option specified.\n";
-    return 1;
+    constexpr auto subprograms = std::array{PPsat::subprogram::help_unparsed,
+                                            PPsat::subprogram::convert_unparsed,
+                                            PPsat::subprogram::cdcl_unparsed,
+                                            PPsat::subprogram::dpll_unparsed};
+
+    int sub_code;
+    const auto i =
+        std::find_if(std::begin(subprograms),
+                     std::end(subprograms),
+                     [&arguments, &options, &sub_code](auto subprogram)
+                     {
+                         auto result = subprogram(arguments, options);
+                         if (result)
+                         {
+                             sub_code = result.code();
+                             return true;
+                         }
+
+                         return false;
+                     });
+
+    if (i == std::end(subprograms))
+    {
+        std::cerr << "No subprogram specified.\n";
+        return 2;
+    }
+    else
+    {
+        return sub_code << 2;
+    }
 }
