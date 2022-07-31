@@ -1,23 +1,22 @@
 #pragma once
 #include <PPsat/literal.hpp>
 
-#include <type_traits>
-
 namespace PPsat
 {
-class literal_signed : public literal
+class literal_negated : public literal
 {
 public:
     using name_t = std::size_t;
-    using variable_t = std::make_signed_t<name_t>;
 
 private:
-    variable_t variable;
+    const literal& l;
 
 public:
-    literal_signed(const literal& other);
+    literal_negated(const literal& l) noexcept;
 
     bool is_positive() const noexcept override final;
     std::size_t get_variable() const noexcept override final;
 };
+
+literal_negated operator!(const literal& l) noexcept;
 }

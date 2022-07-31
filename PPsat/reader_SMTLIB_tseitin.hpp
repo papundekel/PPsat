@@ -1,51 +1,49 @@
+#include <PPsat/discard.hpp>
+#include <PPsat/renaming.hpp>
+#include <PPsat/tseitin_builder.hpp>
+
 #include <PPsat-parser_SMTLIB/parser_SMTLIB.h>
 #include <PPsat-parser_SMTLIB/parser_SMTLIBVisitor.h>
 
 namespace PPsat
 {
-template <template <typename> typename Literal>
-struct template_t
-{};
-
-template <template <typename> typename Literal,
-          typename Renaming,
-          typename FormulaBuilder>
 class reader_SMTLIB_tseitin final : public parser_SMTLIBVisitor
 {
-    using name_t = Renaming::mapped_type;
-    using literal_t = Literal<name_t>;
-
-    Renaming& renaming;
-    FormulaBuilder& formula_builder;
-    literal_t subformula_literal;
-    name_t name_next;
+    std::map<std::string, std::size_t> renaming_internal;
+    renaming& renaming_external;
+    const tseitin_builder& builder;
+    literal_pair subformula_literal;
+    std::size_t name_next;
 
 public:
-    reader_SMTLIB_tseitin(template_t<Literal>,
-                          Renaming& renaming,
-                          FormulaBuilder& formula_builder) noexcept
-        : renaming(renaming)
-        , formula_builder(formula_builder)
+    reader_SMTLIB_tseitin(renaming& renaming_external,
+                          const tseitin_builder& builder,
+                          antlr4::ParserRuleContext* tree) noexcept
+        : renaming_internal()
+        , renaming_external(renaming_external)
+        , builder(builder)
         , subformula_literal()
         , name_next(0)
-    {}
+    {
+        visit(tree);
+    }
 
 private:
-    name_t next_name() noexcept
+    std::size_t next_name() noexcept
     {
         return name_next++;
     }
 
-    literal_t handle_variable_introduced() noexcept
+    literal_pair handle_variable_introduced() noexcept
     {
         return {next_name(), true};
     }
 
-    literal_t handle_variable_input(std::string name)
+    literal_pair handle_variable_input(std::string name)
     {
-        name_t variable_p;
+        std::size_t variable_p;
 
-        if (auto i = renaming.find(name); i != renaming.end())
+        if (auto i = renaming_internal.find(name); i != renaming_internal.end())
         {
             variable_p = i->second;
         }
@@ -53,7 +51,9 @@ private:
         {
             variable_p = next_name();
 
-            renaming.try_emplace(std::move(name), variable_p);
+            std::tie(i, discard) =
+                renaming_internal.try_emplace(std::move(name), variable_p);
+            renaming_external.rename(i->first, variable_p);
         }
 
         return {variable_p, true};
@@ -70,7 +70,7 @@ private:
 
         subformula_literal = handle_variable_introduced();
 
-        formula_builder.push_conjunction(subformula_literal, left, right);
+        builder.push_conjunction(subformula_literal, left, right);
 
         return {};
     }
@@ -86,7 +86,7 @@ private:
 
         subformula_literal = handle_variable_introduced();
 
-        formula_builder.push_disjunction(subformula_literal, left, right);
+        builder.push_disjunction(subformula_literal, left, right);
 
         return {};
     }
@@ -99,7 +99,7 @@ private:
 
         subformula_literal = handle_variable_introduced();
 
-        formula_builder.push_negation(subformula_literal, inner);
+        builder.push_negation(subformula_literal, inner);
 
         return {};
     }
@@ -117,16 +117,14 @@ private:
     {
         visit(context->formula());
 
-        formula_builder.push_literal(subformula_literal);
+        builder.push_literal(subformula_literal);
 
         return {};
     }
 
 public:
-    auto read(parser_SMTLIB::InputContext* context) &&
+    auto result() &&
     {
-        visitInput(context);
-
         return name_next;
     }
 };

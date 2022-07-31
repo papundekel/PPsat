@@ -1,12 +1,15 @@
-#include <PPsat/CNF.hpp>
+#include <PPsat/antlrer.hpp>
 #include <PPsat/builder_tseitin.hpp>
 #include <PPsat/cli/argument/file.hpp>
+#include <PPsat/conditional.hpp>
 #include <PPsat/discard_iterator.hpp>
 #include <PPsat/error_listener_simple_detect.hpp>
+#include <PPsat/formula_simple.hpp>
 #include <PPsat/literal_pair.hpp>
+#include <PPsat/renaming_map.hpp>
 #include <PPsat/reader_SMTLIB_tseitin.hpp>
-#include <PPsat/small_static_storage.hpp>
 #include <PPsat/subprogram/convert.hpp>
+#include <PPsat/tseitin_builder_nnf.hpp>
 
 #include <PPsat-lexer_SMTLIB/lexer_SMTLIB.h>
 #include <PPsat-parser_SMTLIB/parser_SMTLIB.h>
@@ -34,8 +37,56 @@ constexpr auto greater_power_10(auto x) noexcept
     return power;
 }
 
-template <typename T>
-using clause_storage = PPsat::small_static_storage<T, 3>;
+void write_formula(std::ostream& output,
+                   const PPsat::formula& formula,
+                   const PPsat::renaming& renaming,
+                   std::size_t count_variable)
+{
+    const auto count_clause = formula.clause_count();
+    const auto count_variable_input = renaming.count();
+    const auto count_variable_introduced =
+        count_variable - count_variable_input;
+
+    const auto new_native_begin = 1uz;
+    const auto new_introduced_begin =
+        greater_power_10(count_variable_input) + 1;
+
+    output << "c The introduced variables begin at " << new_introduced_begin
+           << ".\n";
+
+    for (auto name_internal = 0uz, new_native = new_native_begin;
+         name_internal != count_variable;
+         ++name_internal)
+    {
+        auto name_input_opt = renaming.get(name_internal);
+
+        if (name_input_opt)
+        {
+            output << "c " << new_native << "->" << *name_input_opt << "\n";
+            ++new_native;
+        }
+    }
+
+    output << "p cnf " << count_clause << " " << count_variable << "\n";
+
+    formula.write_DIMACS(
+        output,
+        [
+            &renaming,
+            new_native = new_native_begin,
+            new_introduced = new_introduced_begin
+        ](std::ostream & output, const PPsat::literal& l) mutable -> auto& {
+            const auto name_internal = l.get_variable();
+
+            const auto is_native = renaming.get(name_internal).has_value();
+
+            output << PPsat::literal_pair{is_native ? new_native++
+                                                    : new_introduced++,
+                                          l.is_positive()};
+
+            return output;
+        });
+}
 }
 
 PPsat::subcommand_result PPsat::subprogram::convert_unparsed(
@@ -66,71 +117,10 @@ int PPsat::subprogram::convert(std::istream& input,
                                std::ostream& err,
                                bool nnf)
 {
-    error_listener_simple_detect error_listener;
+    renaming_map renaming;
+    formula_simple formula;
 
-    antlr4::ANTLRInputStream input_antlr(input);
-
-    lexer_SMTLIB lexer(&input_antlr);
-    lexer.addErrorListener(&error_listener);
-
-    antlr4::CommonTokenStream tokens(&lexer);
-
-    parser_SMTLIB parser(&tokens);
-    parser.addErrorListener(&error_listener);
-
-    auto* const input_parsed = parser.input();
-
-    if (error_listener.error_encountered())
-    {
-        err << "Parse error encountered, quitting.\n";
-        return 1;
-    }
-
-    std::map<std::string, std::size_t> renaming;
-    CNF<std::vector, clause_storage, literal_pair<std::size_t>> formula;
-    builder_tseitin builder(formula.clause_inserter(), nnf);
-
-    const auto variable_count =
-        reader_SMTLIB_tseitin(template_t<literal_pair>{}, renaming, builder)
-            .read(input_parsed);
-
-    auto begin_input = 1z;
-    auto begin_introduced = greater_power_10(renaming.size()) + 1;
-
-    output << "c The introduced variables begin at " << begin_introduced
-           << ".\n";
-
-    std::map<decltype(renaming)::mapped_type, decltype(renaming)::mapped_type>
-        renaming_new;
-
-    for (const auto& [_, name_input] : renaming)
-    {
-        renaming_new.try_emplace(name_input, begin_input++);
-    }
-
-    for (auto name_introduced = 0z; name_introduced != variable_count;
-         ++name_introduced)
-    {
-        if (!renaming_new.contains(name_introduced))
-        {
-            renaming_new.try_emplace(name_introduced, begin_introduced++);
-        }
-    }
-
-    for (const auto& [name, alias] : renaming)
-    {
-        output << "c " << renaming_new.at(alias) << "->" << name << "\n";
-    }
-
-    output << "p cnf " << variable_count << " " << formula.clauses_count()
-           << "\n";
-
-    formula.write_DIMACS(output,
-                         [&renaming_new](const auto& x)
-                         {
-                             return literal_pair(renaming_new.at(x.variable),
-                                                 x.is_positive());
-                         });
+    write_formula(output, formula, renaming, count_variable);
 
     return 0;
 }

@@ -30,14 +30,14 @@ template <typename FormulaBuilder>
 class reader_DIMACS final : public parser_DIMACSVisitor
 {
     std::size_t variable_count;
-    FormulaBuilder& formula_builder;
+    FormulaBuilder& formula;
     std::vector<literal_pair<std::size_t>> clause;
     bool parse_error;
 
 public:
-    reader_DIMACS(FormulaBuilder& formula_builder) noexcept
+    reader_DIMACS(FormulaBuilder& formula) noexcept
         : variable_count(0)
-        , formula_builder(formula_builder)
+        , formula(formula)
         , clause()
         , parse_error(false)
     {}
@@ -88,7 +88,7 @@ private:
             visit(literal_context);
         }
 
-        formula_builder.push_clause(std::move(clause));
+        formula.push_clause(std::move(clause));
         clause.clear();
 
         return {};

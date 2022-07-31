@@ -7,7 +7,24 @@
 
 parser grammar parser_SMTLIB;
 
-options { tokenVocab=lexer_SMTLIB; }
+@header
+{
+    #include <PPsat/parser_abstract.hpp>
+}
+
+@members
+{
+    antlr4::ParserRuleContext* getParsedTree() override final
+    {
+        return input();
+    }
+}
+
+options
+{
+    tokenVocab=lexer_SMTLIB;
+    superClass=parser_abstract;
+}
 
 input
     : formula EOF

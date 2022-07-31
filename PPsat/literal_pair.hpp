@@ -1,58 +1,23 @@
 #pragma once
 #include <PPsat/literal.hpp>
 
-#include <concepts>
-
 namespace PPsat
 {
-template <std::unsigned_integral U>
-class literal_pair
+class literal_pair : public literal
 {
 public:
-    using name_t = U;
-
-    U variable;
+    using name_t = std::size_t;
 
 private:
+    std::size_t variable;
     bool positive;
 
 public:
-    literal_pair()
-        : variable()
-        , positive()
-    {}
+    literal_pair() noexcept;
+    literal_pair(std::size_t variable, bool positive) noexcept;
+    literal_pair(const literal& other) noexcept;
 
-    literal_pair(U variable, bool positive) noexcept
-        : variable(variable)
-        , positive(positive)
-    {}
-
-    literal_pair(const literal auto& other) noexcept
-        : variable(other.variable)
-        , positive(other.is_positive())
-    {}
-
-    bool is_positive() const noexcept
-    {
-        return positive;
-    }
-
-    literal_pair operator!() const noexcept
-    {
-        return {variable, !positive};
-    }
+    bool is_positive() const noexcept override final;
+    std::size_t get_variable() const noexcept override final;
 };
-
-template <typename U>
-std::ostream& operator<<(std::ostream& out, const literal_pair<U>& l)
-{
-    if (!l.is_positive())
-    {
-        out << "-";
-    }
-
-    out << l.variable;
-
-    return out;
-}
 }

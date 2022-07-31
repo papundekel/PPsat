@@ -1,5 +1,6 @@
 #pragma once
 #include <PPsat/literal.hpp>
+#include <PPsat/literal_negated.hpp>
 
 #include <iostream>
 #include <vector>
@@ -19,15 +20,15 @@ public:
     {}
 
 private:
-    void push(const literal auto&... literals)
+    void push(const auto&... literals)
     {
         *clause_inserter++ = {std::forward<decltype(literals)>(literals)...};
     }
 
 public:
-    void push_conjunction(const literal auto& p,
-                          const literal auto& q,
-                          const literal auto& r)
+    void push_conjunction(const literal& p,
+                          const literal& q,
+                          const literal& r)
     {
         if (!nnf)
         {
@@ -38,9 +39,9 @@ public:
         push(!p, r);
     }
 
-    void push_disjunction(const literal auto& p,
-                          const literal auto& q,
-                          const literal auto& r)
+    void push_disjunction(const literal& p,
+                          const literal& q,
+                          const literal& r)
     {
         push(!p, q, r);
 
@@ -51,7 +52,7 @@ public:
         }
     }
 
-    void push_negation(const literal auto& p, const literal auto& q)
+    void push_negation(const literal& p, const literal& q)
     {
         if (!nnf)
         {
@@ -61,7 +62,7 @@ public:
         push(!p, !q);
     }
 
-    void push_literal(const literal auto& l)
+    void push_literal(const literal& l)
     {
         push(l);
     }

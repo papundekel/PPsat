@@ -44,11 +44,17 @@ antlr4_generate(
 
 add_executable("PPsat"
     "main.cpp"
+    "antlrer.cpp"
     "cli/option/format.cpp"
     "cli/option/parser.cpp"
     "error_listener_simple_detect.cpp"
     "error_handler.cpp"
+    "literal.cpp"
+    "literal_negated.cpp"
+    "literal_pair.cpp"
+    "literal_signed.cpp"
     "options.cpp"
+    "parse.cpp"
     "subprogram/cdcl.cpp"
     "subprogram/convert.cpp"
     "subprogram/dpll.cpp"
@@ -69,3 +75,5 @@ target_include_directories("PPsat" PUBLIC
     "${ANTLR4_INCLUDE_DIR_PPsat-lexer_SMTLIB}/../"
     )
 set_property(TARGET "PPsat" PROPERTY CXX_STANDARD 23)
+
+set_target_properties(PPsat PROPERTIES COMPILE_FLAGS "-fconcepts-diagnostics-depth=6")

@@ -1,26 +1,18 @@
 #pragma once
+#include <PPsat/discard.hpp>
 
 namespace PPsat
 {
 class discard_iterator_t
 {
-    class discarder
-    {
-    public:
-        constexpr auto& operator=(auto&&) noexcept
-        {
-            return *this;
-        }
-    };
-
 public:
     constexpr auto operator++(int) noexcept
     {
         return *this;
     }
-    constexpr discarder operator*() const noexcept
+    constexpr auto operator*() const noexcept
     {
-        return {};
+        return discard;
     }
 };
 

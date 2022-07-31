@@ -1,8 +1,15 @@
 #include <PPsat/cli/argument/file.hpp>
 #include <PPsat/discard_iterator.hpp>
+#include <PPsat/error_listener_simple_detect.hpp>
 #include <PPsat/subprogram/dpll.hpp>
 
+#include <PPsat-lexer_DIMACS/lexer_DIMACS.h>
+#include <PPsat-lexer_SMTLIB/lexer_SMTLIB.h>
+#include <PPsat-parser_DIMACS/parser_DIMACS.h>
+#include <PPsat-parser_SMTLIB/parser_SMTLIB.h>
+
 #include <iostream>
+#include <variant>
 
 PPsat::subcommand_result PPsat::subprogram::dpll_unparsed(
     cli::arguments& arguments,
@@ -34,9 +41,7 @@ int PPsat::subprogram::dpll(std::istream& input,
                             bool watched_literals,
                             bool nnf)
 {
-    output << "dpll\n";
-    output << (int)format << "\n";
-    output << watched_literals << "\n";
-    output << nnf << "\n";
+    // parser.parse(input, nnf)
+
     return 0;
 }

@@ -1,13 +1,15 @@
 #pragma once
-#include <concepts>
+
+#include <iosfwd>
 
 namespace PPsat
 {
-    template <typename L>
-    concept literal = requires (L l)
+    class literal
     {
-        l.variable;
-        { l.is_positive() } -> std::convertible_to<bool>;
-        typename L::name_t;
+    public:
+        virtual std::size_t get_variable() const noexcept = 0;
+        virtual bool is_positive() const noexcept = 0;
     };
+
+    std::ostream& operator<<(std::ostream& out, const literal& l);
 }
