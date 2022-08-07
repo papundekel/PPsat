@@ -2,8 +2,10 @@
 #include <PPsat/formula.hpp>
 #include <PPsat/literal_pair.hpp>
 
+#include <algorithm>
 #include <iostream>
 #include <iterator>
+#include <vector>
 
 namespace PPsat
 {
@@ -27,7 +29,7 @@ class formula_simple : public formula
 public:
     std::vector<std::vector<literal_pair>> clauses;
 
-    void add_clause(any_view<const literal> literals) override final
+    void add_clause(view_any<const literal> literals) override final
     {
         clauses.push_back({literals.begin(), literals.end()});
     }

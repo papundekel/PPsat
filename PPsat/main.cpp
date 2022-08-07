@@ -6,6 +6,7 @@
 #include <PPsat/subprogram/convert.hpp>
 #include <PPsat/subprogram/dpll.hpp>
 #include <PPsat/subprogram/help.hpp>
+#include <PPsat/vector.hpp>
 
 #include <array>
 #include <iostream>
@@ -16,7 +17,7 @@
 int main(int argc, char** argv)
 {
     PPsat::options options;
-    PPsat::cli::arguments_container<std::vector> arguments;
+    PPsat::cli::arguments_container<PPsat::vector> arguments;
     PPsat::error_handler error_handler(std::cerr);
 
     const auto parse_success = PPsat::cli::option::parser(options.as_range())

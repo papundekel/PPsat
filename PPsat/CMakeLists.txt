@@ -45,6 +45,7 @@ antlr4_generate(
 add_executable("PPsat"
     "main.cpp"
     "antlrer.cpp"
+    "cli/argument/file.cpp"
     "cli/option/format.cpp"
     "cli/option/parser.cpp"
     "error_listener_simple_detect.cpp"
@@ -54,11 +55,16 @@ add_executable("PPsat"
     "literal_pair.cpp"
     "literal_signed.cpp"
     "options.cpp"
-    "parse.cpp"
+    "reader.cpp"
+    "reader_DIMACS.cpp"
+    "reader_SMTLIB_tseitin.cpp"
+    "renaming.cpp"
+    "renaming_map.cpp"
     "subprogram/cdcl.cpp"
     "subprogram/convert.cpp"
     "subprogram/dpll.cpp"
     "subprogram/help.cpp"
+    "visitor_SMTLIB_tseitin.cpp"
     "${ANTLR4_SRC_FILES_PPsat-lexer_SMTLIB}"
     "${ANTLR4_SRC_FILES_PPsat-parser_SMTLIB}"
     "${ANTLR4_SRC_FILES_PPsat-lexer_DIMACS}"
@@ -73,7 +79,9 @@ target_include_directories("PPsat" PUBLIC
     "${CMAKE_CURRENT_LIST_DIR}/../"
     "${ANTLR4_INCLUDE_DIR}"
     "${ANTLR4_INCLUDE_DIR_PPsat-lexer_SMTLIB}/../"
-    )
-set_property(TARGET "PPsat" PROPERTY CXX_STANDARD 23)
+)
 
-set_target_properties(PPsat PROPERTIES COMPILE_FLAGS "-fconcepts-diagnostics-depth=6")
+set_target_properties(PPsat PROPERTIES
+    COMPILE_FLAGS "-std=c++2b"
+    #COMPILE_FLAGS "-fconcepts-diagnostics-depth=6"
+)

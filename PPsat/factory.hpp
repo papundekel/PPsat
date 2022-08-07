@@ -18,7 +18,7 @@ public:
 };
 
 template <typename T, typename Result, typename... Parameters>
-class factory_impl : public factory<Result, Parameters...>
+class factory_impl : public virtual factory<Result, Parameters...>
 {
     std::unique_ptr<Result> create(
         Parameters... parameters) const override final

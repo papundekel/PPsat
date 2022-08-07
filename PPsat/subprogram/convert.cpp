@@ -1,18 +1,18 @@
+#include "PPsat/factory_lexer.hpp"
+#include "PPsat/formula_format.hpp"
+#include "PPsat/reader_SMTLIB_tseitin.hpp"
+#include "PPsat/renaming.hpp"
+#include "tree/ParseTreeVisitor.h"
 #include <PPsat/antlrer.hpp>
-#include <PPsat/builder_tseitin.hpp>
 #include <PPsat/cli/argument/file.hpp>
-#include <PPsat/conditional.hpp>
 #include <PPsat/discard_iterator.hpp>
 #include <PPsat/error_listener_simple_detect.hpp>
 #include <PPsat/formula_simple.hpp>
 #include <PPsat/literal_pair.hpp>
-#include <PPsat/renaming_map.hpp>
+#include <PPsat/reader.hpp>
 #include <PPsat/reader_SMTLIB_tseitin.hpp>
+#include <PPsat/renaming_map.hpp>
 #include <PPsat/subprogram/convert.hpp>
-#include <PPsat/tseitin_builder_nnf.hpp>
-
-#include <PPsat-lexer_SMTLIB/lexer_SMTLIB.h>
-#include <PPsat-parser_SMTLIB/parser_SMTLIB.h>
 
 #include <antlr4-runtime.h>
 
@@ -20,12 +20,13 @@
 #include <iostream>
 #include <iterator>
 #include <list>
+#include <memory>
 #include <string>
 #include <vector>
 
 namespace
 {
-constexpr auto greater_power_10(auto x) noexcept
+constexpr auto greater_power_10(const auto x) noexcept
 {
     auto power = 10;
 
@@ -40,7 +41,7 @@ constexpr auto greater_power_10(auto x) noexcept
 void write_formula(std::ostream& output,
                    const PPsat::formula& formula,
                    const PPsat::renaming& renaming,
-                   std::size_t count_variable)
+                   const std::size_t count_variable)
 {
     const auto count_clause = formula.clause_count();
     const auto count_variable_input = renaming.count();
@@ -58,7 +59,7 @@ void write_formula(std::ostream& output,
          name_internal != count_variable;
          ++name_internal)
     {
-        auto name_input_opt = renaming.get(name_internal);
+        const auto name_input_opt = renaming.get(name_internal);
 
         if (name_input_opt)
         {
@@ -87,6 +88,26 @@ void write_formula(std::ostream& output,
             return output;
         });
 }
+
+int convert(std::istream& input,
+            std::ostream& output,
+            std::ostream& err,
+            const PPsat::reader& reader)
+{
+    PPsat::formula_simple formula;
+    const auto renaming = reader.create();
+
+    const auto result = reader.read(input, formula, *renaming);
+
+    if (!result)
+    {
+        return 1;
+    }
+
+    write_formula(output, formula, *renaming, result.get_variable_count());
+
+    return 0;
+}
 }
 
 PPsat::subcommand_result PPsat::subprogram::convert_unparsed(
@@ -101,7 +122,7 @@ PPsat::subcommand_result PPsat::subprogram::convert_unparsed(
     PPsat::cli::argument::file_in argument_in;
     PPsat::cli::argument::file_out argument_out;
 
-    bool success = arguments.parse(
+    const auto success = arguments.parse(
         std::array<std::reference_wrapper<PPsat::cli::argument_>, 2>{
             argument_in,
             argument_out});
@@ -109,18 +130,5 @@ PPsat::subcommand_result PPsat::subprogram::convert_unparsed(
     return convert(argument_in.parsed_stream(),
                    argument_out.parsed_stream(),
                    std::cerr,
-                   options.nnf);
-}
-
-int PPsat::subprogram::convert(std::istream& input,
-                               std::ostream& output,
-                               std::ostream& err,
-                               bool nnf)
-{
-    renaming_map renaming;
-    formula_simple formula;
-
-    write_formula(output, formula, renaming, count_variable);
-
-    return 0;
+                   reader_SMTLIB_tseitin(options.nnf));
 }

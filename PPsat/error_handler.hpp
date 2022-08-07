@@ -1,18 +1,20 @@
 #pragma once
 #include <PPsat/cli/error_handler_container.hpp>
+#include <PPsat/vector.hpp>
 
-#include <vector>
 #include <iostream>
+#include <vector>
 
 namespace PPsat
 {
-    class error_handler : public cli::error_handler_container<std::vector, std::vector>
-    {
-        std::ostream& out;
+class error_handler
+    : public cli::error_handler_container<PPsat::vector, PPsat::vector>
+{
+    std::ostream& out;
 
-    public:
-        error_handler(std::ostream& out) noexcept;
+public:
+    error_handler(std::ostream& out) noexcept;
 
-        void handle() const noexcept override final;
-    };
+    void handle() const noexcept override final;
+};
 }

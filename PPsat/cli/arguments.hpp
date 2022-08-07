@@ -12,6 +12,7 @@ class arguments
 
 public:
     virtual void add(std::string_view argument) noexcept = 0;
+    
     bool parse(auto&& arguments) const noexcept
     {
         bool success = true;

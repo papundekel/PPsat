@@ -1,8 +1,8 @@
 #include <PPsat/antlrer.hpp>
 
 PPsat::antlrer::antlrer(std::istream& input,
-                        const factory_lexer_t& factory_lexer,
-                        const factory_parser_t& factory_parser)
+                        const factory_lexer& factory_lexer,
+                        const factory_parser& factory_parser)
     : error_listener()
     , input_antlr(input)
     , lexer(

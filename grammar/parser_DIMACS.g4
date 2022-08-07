@@ -2,7 +2,8 @@ parser grammar parser_DIMACS;
 
 @header
 {
-    #include <PPsat/parser_abstract.hpp>
+    #include <PPsat/antlr_parser.hpp>
+    #include <PPsat/literal_pair.hpp>
 }
 
 @members
@@ -16,7 +17,7 @@ parser grammar parser_DIMACS;
 options
 {
     tokenVocab=lexer_DIMACS;
-    superClass=parser_abstract;
+    superClass=antlr_parser;
 }
 
 input

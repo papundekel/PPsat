@@ -19,39 +19,23 @@ protected:
     formula_format format;
 
 public:
-    bool parse(std::string_view argument_path) noexcept override final
-    {
-        const auto path = std::filesystem::path(argument_path);
+    bool parse(std::string_view argument_path) noexcept override final;
 
-        format = path.extension() == ".sat" ? formula_format::SMTLIB
-                                            : formula_format::DIMACS;
-
-        stream = {path};
-
-        return !!stream;
-    }
-
-    auto& parsed_format()
-    {
-        return format;
-    }
+    formula_format& parsed_format();
 };
+
+extern template class file<std::ifstream>;
+extern template class file<std::ofstream>;
 
 class file_in : public file<std::ifstream>
 {
 public:
-    std::istream& parsed_stream()
-    {
-        return is_present() ? stream : std::cin;
-    }
+    std::istream& parsed_stream();
 };
 
 class file_out : public file<std::ofstream>
 {
 public:
-    std::ostream& parsed_stream()
-    {
-        return is_present() ? stream : std::cout;
-    }
+    std::ostream& parsed_stream();
 };
 }

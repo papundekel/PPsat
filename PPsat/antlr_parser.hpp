@@ -3,7 +3,7 @@
 
 namespace PPsat
 {
-    class parser_abstract : public antlr4::Parser
+    class antlr_parser : public antlr4::Parser
     {
     public:
         using Parser::Parser;

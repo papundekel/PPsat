@@ -39,8 +39,8 @@ public:
                           });
     }
 
-    bool parse(int argc,
-               char** argv,
+    bool parse(const int argc,
+               char** const argv,
                arguments& arguments,
                error_handler& error_handler) const
     {

@@ -1,7 +1,7 @@
 #include <PPsat/cli/option/parser.hpp>
 
 decltype(PPsat::cli::option::parser::option_map)::const_iterator
-PPsat::cli::option::parser::find(std::string_view name) const
+PPsat::cli::option::parser::find(const std::string_view name) const
 {
     const auto i = std::ranges::lower_bound(option_map,
                                             name,

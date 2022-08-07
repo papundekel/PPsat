@@ -1,6 +1,7 @@
 .clang-format
 .antlr/
 .vscode/
-out-cmake/
+build/
 outputs/
 inputs/PPsat-queens
+.cache/

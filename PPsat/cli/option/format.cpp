@@ -1,14 +1,13 @@
 #include <PPsat/cli/option/format.hpp>
 
-std::size_t PPsat::cli::option::format::argument_count()
-    const noexcept
+std::size_t PPsat::cli::option::format::argument_count() const noexcept
 {
     return 1;
 }
 
 bool PPsat::cli::option::format::parse(
-    std::size_t i,
-    std::string_view argument_format) noexcept
+    const std::size_t i,
+    const std::string_view argument_format) noexcept
 {
     if (i != 0)
     {

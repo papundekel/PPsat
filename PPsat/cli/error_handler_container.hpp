@@ -11,11 +11,11 @@ namespace PPsat::cli
         C2<std::string_view> storage_option_argument;
 
     public:
-        void unrecognized_argument(std::string_view argument) noexcept override final
+        void unrecognized_argument(const std::string_view argument) noexcept override final
         {
             storage_argument.push_back(argument);
         }
-        void unrecognized_option_argument(std::string_view argument) noexcept override final
+        void unrecognized_option_argument(const std::string_view argument) noexcept override final
         {
             storage_option_argument.push_back(argument);
         }

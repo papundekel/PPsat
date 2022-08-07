@@ -11,7 +11,14 @@ struct constant_string
 
     constexpr constant_string(const char (&string)[count + 1]) noexcept
     {
+    #ifdef __clang__
+        for (auto i = 0; i != count; ++i)
+        {
+            chars[i] = string[i];
+        }
+    #else
         std::ranges::copy(string | std::ranges::views::take(count), chars);
+    #endif
     }
 
     constexpr operator std::string_view() const

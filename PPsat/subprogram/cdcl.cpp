@@ -2,6 +2,7 @@
 #include <PPsat/discard_iterator.hpp>
 #include <PPsat/subprogram/cdcl.hpp>
 
+#include <array>
 #include <iostream>
 
 PPsat::subcommand_result PPsat::subprogram::cdcl_unparsed(
@@ -15,7 +16,7 @@ PPsat::subcommand_result PPsat::subprogram::cdcl_unparsed(
 
     PPsat::cli::argument::file_in argument_in;
 
-    arguments.parse(std::ranges::views::single(std::ref(argument_in)));
+    arguments.parse(std::array{std::ref(argument_in)});
 
     return cdcl(argument_in.parsed_stream(),
                 std::cout,
@@ -30,9 +31,9 @@ PPsat::subcommand_result PPsat::subprogram::cdcl_unparsed(
 int PPsat::subprogram::cdcl(std::istream& input,
                             std::ostream& output,
                             std::ostream& err,
-                            formula_format format,
-                            bool watched_literals,
-                            bool nnf)
+                            const formula_format format,
+                            const bool watched_literals,
+                            const bool nnf)
 {
     return 0;
 }

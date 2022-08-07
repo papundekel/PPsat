@@ -9,7 +9,7 @@ parser grammar parser_SMTLIB;
 
 @header
 {
-    #include <PPsat/parser_abstract.hpp>
+    #include <PPsat/antlr_parser.hpp>
 }
 
 @members
@@ -23,7 +23,7 @@ parser grammar parser_SMTLIB;
 options
 {
     tokenVocab=lexer_SMTLIB;
-    superClass=parser_abstract;
+    superClass=antlr_parser;
 }
 
 input

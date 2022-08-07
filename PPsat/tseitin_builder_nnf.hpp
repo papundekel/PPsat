@@ -1,5 +1,7 @@
 #pragma once
+#include <PPsat/factory.hpp>
 #include <PPsat/formula.hpp>
+#include <PPsat/literal_negated.hpp>
 #include <PPsat/tseitin_builder.hpp>
 
 namespace PPsat
@@ -7,11 +9,11 @@ namespace PPsat
 template <bool NNF>
 class tseitin_builder_nnf : public tseitin_builder
 {
-    formula& builder;
+    class formula& formula;
 
 public:
-    tseitin_builder_nnf(formula& builder) noexcept
-        : builder(builder)
+    tseitin_builder_nnf(class formula& formula) noexcept
+        : formula(formula)
     {}
 
     void push_conjunction(const literal& p,
@@ -20,23 +22,23 @@ public:
     {
         if constexpr (!NNF)
         {
-            builder.add_clause(p, !q, !r);
+            formula.add_clause(p, !q, !r);
         }
 
-        builder.add_clause(!p, q);
-        builder.add_clause(!p, r);
+        formula.add_clause(!p, q);
+        formula.add_clause(!p, r);
     }
-    
+
     void push_disjunction(const literal& p,
                           const literal& q,
                           const literal& r) const override final
     {
-        builder.add_clause(!p, q, r);
+        formula.add_clause(!p, q, r);
 
         if constexpr (!NNF)
         {
-            builder.add_clause(p, !q);
-            builder.add_clause(p, !r);
+            formula.add_clause(p, !q);
+            formula.add_clause(p, !r);
         }
     }
 
@@ -44,15 +46,15 @@ public:
     {
         if constexpr (!NNF)
         {
-            builder.add_clause(p, q);
+            formula.add_clause(p, q);
         }
 
-        builder.add_clause(!p, !q);
+        formula.add_clause(!p, !q);
     }
 
     void push_literal(const literal& l) const override final
     {
-        builder.add_clause(l);
+        formula.add_clause(l);
     }
 };
 }

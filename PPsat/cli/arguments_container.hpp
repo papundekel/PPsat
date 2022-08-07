@@ -20,7 +20,7 @@ namespace PPsat::cli
         }
 
     public:
-        void add(std::string_view argument) noexcept override final
+        void add(const std::string_view argument) noexcept override final
         {
             storage.push_back(argument);
         }
