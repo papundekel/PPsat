@@ -1,15 +1,14 @@
 #pragma once
 #include <PPsat/cli/arguments.hpp>
+#include <PPsat/logger.hpp>
 #include <PPsat/options.hpp>
 #include <PPsat/subcommand_result.hpp>
 
-#include <iosfwd>
-#include <string_view>
-#include <vector>
-
 namespace PPsat::subprogram
 {
-subcommand_result help_unparsed(cli::arguments& arguments, options& options);
+void help_print(std::ostream& out);
 
-int help(std::ostream& out);
+subcommand_result help_unparsed(const logger& logger_outer,
+                                cli::arguments& arguments,
+                                options& options);
 }

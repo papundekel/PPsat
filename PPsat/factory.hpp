@@ -1,5 +1,8 @@
 #pragma once
+#include <PPsat/unique_ref.hpp>
+
 #include <memory>
+#include <utility>
 
 namespace PPsat
 {
@@ -15,6 +18,11 @@ public:
     using impl = factory_impl<T, Result, Parameters...>;
 
     virtual std::unique_ptr<Result> create(Parameters...) const = 0;
+
+    unique_ref<Result> create_ref(Parameters... parameters) const
+    {
+        return {create(std::forward<Parameters>(parameters)...)};
+    }
 };
 
 template <typename T, typename Result, typename... Parameters>

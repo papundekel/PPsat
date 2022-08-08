@@ -1,16 +1,16 @@
-#include "PPsat/factory_lexer.hpp"
-#include "PPsat/formula_format.hpp"
-#include "PPsat/reader_SMTLIB_tseitin.hpp"
-#include "PPsat/renaming.hpp"
-#include "tree/ParseTreeVisitor.h"
 #include <PPsat/antlrer.hpp>
+#include <PPsat/builder.hpp>
+#include <PPsat/builder_SMTLIB_tseitin.hpp>
 #include <PPsat/cli/argument/file.hpp>
+#include <PPsat/create_builder.hpp>
 #include <PPsat/discard_iterator.hpp>
-#include <PPsat/error_listener_simple_detect.hpp>
+#include <PPsat/error_listener.hpp>
+#include <PPsat/factory_lexer.hpp>
+#include <PPsat/formula_format.hpp>
 #include <PPsat/formula_simple.hpp>
 #include <PPsat/literal_pair.hpp>
-#include <PPsat/reader.hpp>
-#include <PPsat/reader_SMTLIB_tseitin.hpp>
+#include <PPsat/logger_subroutine.hpp>
+#include <PPsat/renaming.hpp>
 #include <PPsat/renaming_map.hpp>
 #include <PPsat/subprogram/convert.hpp>
 
@@ -20,6 +20,7 @@
 #include <iostream>
 #include <iterator>
 #include <list>
+#include <map>
 #include <memory>
 #include <string>
 #include <vector>
@@ -50,67 +51,47 @@ void write_formula(std::ostream& output,
 
     const auto new_native_begin = 1uz;
     const auto new_introduced_begin =
-        greater_power_10(count_variable_input) + 1;
+        greater_power_10(count_variable_input) + 1uz;
 
     output << "c The introduced variables begin at " << new_introduced_begin
            << ".\n";
 
-    for (auto name_internal = 0uz, new_native = new_native_begin;
+    std::map<std::size_t, std::size_t> renaming_output;
+
+    for (auto name_internal = 0uz,
+              new_native = new_native_begin,
+              new_introduced = new_introduced_begin;
          name_internal != count_variable;
          ++name_internal)
     {
-        const auto name_input_opt = renaming.get(name_internal);
+        const auto rename = renaming.get(name_internal);
+        const auto is_native = rename.has_value();
 
-        if (name_input_opt)
+        renaming_output.try_emplace(name_internal,
+                                    is_native ? new_native : new_introduced++);
+
+        if (is_native)
         {
-            output << "c " << new_native << "->" << *name_input_opt << "\n";
+            output << "c " << new_native << "->" << *rename << "\n";
             ++new_native;
         }
     }
 
-    output << "p cnf " << count_clause << " " << count_variable << "\n";
+    output << "p cnf " << count_variable << " " << count_clause << "\n";
 
     formula.write_DIMACS(
         output,
-        [
-            &renaming,
-            new_native = new_native_begin,
-            new_introduced = new_introduced_begin
-        ](std::ostream & output, const PPsat::literal& l) mutable -> auto& {
-            const auto name_internal = l.get_variable();
-
-            const auto is_native = renaming.get(name_internal).has_value();
-
-            output << PPsat::literal_pair{is_native ? new_native++
-                                                    : new_introduced++,
+        [&renaming_output](std::ostream & output,
+                           const PPsat::literal& l) -> auto& {
+            output << PPsat::literal_pair{renaming_output.at(l.get_variable()),
                                           l.is_positive()};
-
             return output;
         });
-}
-
-int convert(std::istream& input,
-            std::ostream& output,
-            std::ostream& err,
-            const PPsat::reader& reader)
-{
-    PPsat::formula_simple formula;
-    const auto renaming = reader.create();
-
-    const auto result = reader.read(input, formula, *renaming);
-
-    if (!result)
-    {
-        return 1;
-    }
-
-    write_formula(output, formula, *renaming, result.get_variable_count());
-
-    return 0;
 }
 }
 
 PPsat::subcommand_result PPsat::subprogram::convert_unparsed(
+    const logger& logger_outer,
     cli::arguments& arguments,
     options& options)
 {
@@ -119,16 +100,48 @@ PPsat::subcommand_result PPsat::subprogram::convert_unparsed(
         return {};
     }
 
-    PPsat::cli::argument::file_in argument_in;
-    PPsat::cli::argument::file_out argument_out;
+    const auto logger_inner = logger_subroutine(logger_outer, "convert");
+
+    PPsat::cli::argument::file_in argument_file_in;
+    PPsat::cli::argument::file_out argument_file_out;
 
     const auto success = arguments.parse(
+        logger_inner,
         std::array<std::reference_wrapper<PPsat::cli::argument_>, 2>{
-            argument_in,
-            argument_out});
+            argument_file_in,
+            argument_file_out});
 
-    return convert(argument_in.parsed_stream(),
-                   argument_out.parsed_stream(),
-                   std::cerr,
-                   reader_SMTLIB_tseitin(options.nnf));
+    if (!success)
+    {
+        logger_inner << "Skipping the subprogram.\n";
+
+        return 1;
+    }
+
+    const auto builder =
+        create_builder(options.format, argument_file_in, options.nnf);
+
+    PPsat::formula_simple formula;
+    const auto renaming = builder->create_ref();
+
+    auto& input_formula = argument_file_in.parsed_stream();
+
+    const auto result =
+        builder->read(logger_inner, input_formula, formula, renaming);
+
+    if (!result)
+    {
+        logger_inner << "Skipping outputting the formula.\n";
+
+        return 2;
+    }
+
+    auto& output_formula = argument_file_out.parsed_stream();
+
+    write_formula(output_formula,
+                  formula,
+                  renaming,
+                  result.get_variable_count());
+
+    return 0;
 }

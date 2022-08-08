@@ -1,10 +1,9 @@
 lexer grammar lexer_DIMACS;
 
-P: 'p';
-CNF: 'cnf';
-MINUS: '-';
-NUMBER: [1-9][0-9]*;
-ZERO: '0';
+WHITESPACE: [ \t\r\n] ->channel(HIDDEN);
+COMMENT: 'c' (~[\r\n])* -> channel(HIDDEN);
 
-COMMENT: 'c' .*? '\n' -> skip;
-WHITESPACE: [ \t\r\n]+ -> skip;
+MAGIC: 'p cnf';
+NEGATED: '-';
+ZERO: '0';
+NUMBER: [1-9] [0-9]*;

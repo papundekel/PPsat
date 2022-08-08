@@ -1,14 +1,14 @@
 #include <PPsat/visitor_SMTLIB_tseitin.hpp>
 
-#include <PPsat/literal_pair.hpp>
 #include <PPsat/discard.hpp>
+#include <PPsat/literal_pair.hpp>
 
 PPsat::visitor_SMTLIB_tseitin::visitor_SMTLIB_tseitin(
     const tseitin_builder& builder,
-    renaming& renaming_external) noexcept
+    renaming& renaming_from_native) noexcept
     : builder(builder)
-    , renaming_internal()
-    , renaming_external(renaming_external)
+    , renaming_from_input()
+    , renaming_from_native(renaming_from_native)
     , name_next(0)
 {}
 
@@ -23,25 +23,26 @@ PPsat::literal_pair PPsat::visitor_SMTLIB_tseitin::handle_introduced() noexcept
 }
 
 PPsat::literal_pair PPsat::visitor_SMTLIB_tseitin::handle_input(
-    std::string name)
+    std::string name_input)
 {
-    return {[this, &name]()
+    return {[this, &name_input]()
             {
-                if (auto i = renaming_internal.find(name);
-                    i != renaming_internal.end())
+                if (auto i = renaming_from_input.find(name_input);
+                    i != renaming_from_input.end())
                 {
                     return i->second;
                 }
                 else
                 {
-                    const auto name_new = get_next_name();
+                    const auto name_native = get_next_name();
 
-                    std::tie(i, discard) =
-                        renaming_internal.try_emplace(std::move(name),
-                                                      name_new);
-                    renaming_external.rename(i->first, name_new);
+                    const auto name_input_view =
+                        renaming_from_native.rename(name_native,
+                                                    std::move(name_input));
+                    renaming_from_input.try_emplace(name_input_view,
+                                                    name_native);
 
-                    return name_new;
+                    return name_native;
                 }
             }(),
             true};

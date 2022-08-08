@@ -1,6 +1,8 @@
 #include <PPsat/cli/arguments_container.hpp>
 #include <PPsat/cli/option/parser.hpp>
 #include <PPsat/error_handler.hpp>
+#include <PPsat/logger_ostream.hpp>
+#include <PPsat/logger_subroutine.hpp>
 #include <PPsat/options.hpp>
 #include <PPsat/subprogram/cdcl.hpp>
 #include <PPsat/subprogram/convert.hpp>
@@ -16,6 +18,9 @@
 
 int main(int argc, char** argv)
 {
+    const auto logger_cerr = PPsat::logger_ostream(std::cerr);
+    const auto logger = PPsat::logger_subroutine(logger_cerr, "PPsat");
+
     PPsat::options options;
     PPsat::cli::arguments_container<PPsat::vector> arguments;
     PPsat::error_handler error_handler(std::cerr);
@@ -39,9 +44,9 @@ int main(int argc, char** argv)
     const auto i =
         std::find_if(std::begin(subprograms),
                      std::end(subprograms),
-                     [&arguments, &options, &sub_code](auto subprogram)
+                     [&arguments, &options, &sub_code, &logger](auto subprogram)
                      {
-                         auto result = subprogram(arguments, options);
+                         auto result = subprogram(logger, arguments, options);
                          if (result)
                          {
                              sub_code = result.code();
@@ -53,7 +58,8 @@ int main(int argc, char** argv)
 
     if (i == std::end(subprograms))
     {
-        std::cerr << "No subprogram specified.\n";
+        logger << "No subprogram specified.\n";
+        PPsat::subprogram::help_print(std::cout);
         return 2;
     }
     else

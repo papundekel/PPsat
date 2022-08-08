@@ -1,16 +1,17 @@
 #include <PPsat/subprogram/dpll.hpp>
 
-#include "PPsat-parser_DIMACS/parser_DIMACS.h"
-#include "PPsat/factory.hpp"
-#include "PPsat/formula_format.hpp"
-#include "PPsat/reader_SMTLIB_tseitin.hpp"
+#include <PPsat/builder.hpp>
+#include <PPsat/builder_DIMACS.hpp>
+#include <PPsat/builder_SMTLIB_tseitin.hpp>
 #include <PPsat/cli/argument/file.hpp>
 #include <PPsat/conditional.hpp>
+#include <PPsat/create_builder.hpp>
 #include <PPsat/discard_iterator.hpp>
-#include <PPsat/error_listener_simple_detect.hpp>
+#include <PPsat/error_listener.hpp>
+#include <PPsat/factory.hpp>
+#include <PPsat/formula_format.hpp>
 #include <PPsat/formula_simple.hpp>
-#include <PPsat/reader.hpp>
-#include <PPsat/reader_DIMACS.hpp>
+#include <PPsat/logger_subroutine.hpp>
 #include <PPsat/renaming_map.hpp>
 
 #include <iostream>
@@ -18,40 +19,29 @@
 
 namespace
 {
-int dpll(std::istream& input,
+int dpll(const PPsat::logger& logger_inner,
+         std::istream& input,
          std::ostream& output,
-         std::ostream& err,
-         const PPsat::reader& reader)
+         const PPsat::builder& builder)
 {
     PPsat::formula_simple formula;
-    const auto renaming = reader.create();
+    const auto renaming = builder.create();
 
-    const auto result = reader.read(input, formula, *renaming);
+    const auto result = builder.read(logger_inner, input, formula, *renaming);
 
     if (!result)
     {
+        logger_inner << "Input parsing failed.\n";
+
         return 1;
     }
 
     return 0;
 }
-
-auto pick_format(PPsat::options& options, PPsat::cli::argument::file_in& file)
-{
-    if (options.format)
-    {
-        return options.format.parsed_format();
-    }
-    else if (file.is_present())
-    {
-        return file.parsed_format();
-    }
-
-    return PPsat::formula_format::DIMACS;
-}
 }
 
 PPsat::subcommand_result PPsat::subprogram::dpll_unparsed(
+    const logger& logger_outer,
     cli::arguments& arguments,
     options& options)
 {
@@ -60,15 +50,21 @@ PPsat::subcommand_result PPsat::subprogram::dpll_unparsed(
         return {};
     }
 
+    const auto& logger_inner = logger_subroutine(logger_outer, "dpll");
+
     PPsat::cli::argument::file_in argument_file_in;
 
-    arguments.parse(std::array{std::ref(argument_file_in)});
+    const auto success =
+        arguments.parse(logger_inner, std::array{std::ref(argument_file_in)});
 
-    return dpll(argument_file_in.parsed_stream(),
+    if (!success)
+    {
+        return 1;
+    }
+
+    return dpll(logger_inner,
+                argument_file_in.parsed_stream(),
                 std::cout,
-                std::cerr,
-                conditional<reader>(pick_format(options, argument_file_in) ==
-                                        formula_format::DIMACS,
-                                    reader_DIMACS{},
-                                    reader_SMTLIB_tseitin(options.nnf)));
+                create_builder(options.format, argument_file_in, options.nnf))
+           << 1;
 }

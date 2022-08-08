@@ -2,6 +2,7 @@
 #include <PPsat/factory_lexer.hpp>
 #include <PPsat/factory_parser.hpp>
 #include <PPsat/formula.hpp>
+#include <PPsat/logger.hpp>
 #include <PPsat/renaming.hpp>
 
 #include <iosfwd>
@@ -9,7 +10,7 @@
 
 namespace PPsat
 {
-class reader : public virtual factory<renaming>
+class builder : public virtual factory<renaming>
 {
 public:
     class result
@@ -27,14 +28,18 @@ public:
     };
 
 protected:
-    static result read_impl(std::istream& input,
+    static result read_impl(const logger& logger_outer,
+                            std::istream& input,
                             const factory_lexer& factory_lexer,
                             const factory_parser& factory_parser,
                             antlr4::tree::ParseTreeVisitor&& visitor);
 
 public:
-    virtual result read(std::istream& input,
+    virtual result read(const logger& logger_outer,
+                        std::istream& input,
                         formula& formula,
                         renaming& renaming) const = 0;
+
+    virtual ~builder() = default;
 };
 }

@@ -3,7 +3,6 @@ parser grammar parser_DIMACS;
 @header
 {
     #include <PPsat/antlr_parser.hpp>
-    #include <PPsat/literal_pair.hpp>
 }
 
 @members
@@ -21,7 +20,7 @@ options
 }
 
 input
-    : P CNF NUMBER NUMBER clause* EOF
+    : MAGIC NUMBER NUMBER clause* EOF
     ;
 
 clause
@@ -29,5 +28,5 @@ clause
     ;
 
 literal
-    : MINUS? NUMBER
+    : NEGATED? NUMBER
     ;

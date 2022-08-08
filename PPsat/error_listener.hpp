@@ -1,14 +1,20 @@
 #pragma once
+#include "PPsat/logger_subroutine.hpp"
+#include <PPsat/logger.hpp>
+
 #include <antlr4-runtime.h>
 
 namespace PPsat
 {
-class error_listener_simple_detect final : public antlr4::ANTLRErrorListener
+class error_listener final : public antlr4::ANTLRErrorListener
 {
+    const logger_subroutine logger_inner;
+    bool was_error_syntax;
     bool was_error;
 
 public:
-    error_listener_simple_detect() noexcept;
+    error_listener(const logger& logger_outer) noexcept;
+
     bool error_encountered() const noexcept;
 
 private:

@@ -19,9 +19,10 @@ protected:
     formula_format format;
 
 public:
-    bool parse(std::string_view argument_path) noexcept override final;
+    bool parse(const logger& err,
+               std::string_view argument_path) noexcept override final;
 
-    formula_format& parsed_format();
+    formula_format parsed_format() const;
 };
 
 extern template class file<std::ifstream>;

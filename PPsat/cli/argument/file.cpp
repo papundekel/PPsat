@@ -1,21 +1,32 @@
+#include "PPsat/logger_subroutine.hpp"
 #include <PPsat/cli/argument/file.hpp>
 
 template <typename Stream>
 bool PPsat::cli::argument::file<Stream>::parse(
+    const logger& logger_outer,
     std::string_view argument_path) noexcept
 {
     const auto path = std::filesystem::path(argument_path);
 
-    format = path.extension() == ".sat" ? formula_format::SMTLIB
-                                        : formula_format::DIMACS;
+    format = path.extension() == ".sat"   ? formula_format::SMTLIB
+             : path.extension() == ".cnf" ? formula_format::DIMACS
+                                          : formula_format::DIMACS;
 
     stream = Stream(path);
 
-    return !!stream;
+    const auto success = !!stream;
+
+    if (!success)
+    {
+        logger_subroutine(logger_outer, "file")
+            << "Error handling file \"" << argument_path << "\".\n";
+    }
+
+    return success;
 }
 
 template <typename Stream>
-PPsat::formula_format& PPsat::cli::argument::file<Stream>::parsed_format()
+PPsat::formula_format PPsat::cli::argument::file<Stream>::parsed_format() const
 {
     return format;
 }

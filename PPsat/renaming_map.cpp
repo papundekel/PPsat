@@ -6,36 +6,40 @@
 #include <iostream>
 
 template <typename Value>
-void PPsat::renaming_map<Value>::rename(std::string_view name_input,
-                                        std::size_t name_internal)
+std::string_view PPsat::renaming_map<Value>::rename(std::size_t name_native,
+                                                    std::string&& name_input)
 {
-    if constexpr (std::same_as<Value, std::string_view>)
+    if constexpr (std::same_as<Value, std::string>)
     {
-        map.try_emplace(name_internal, name_input);
+        auto [i, _] = map.try_emplace(name_native, std::move(name_input));
+        return i->second;
     }
+
+    return {};
 }
+
 template <typename Value>
-void PPsat::renaming_map<Value>::rename(std::size_t name_input,
-                                        std::size_t name_internal)
+void PPsat::renaming_map<Value>::rename(std::size_t name_native,
+                                        std::size_t name_input)
 {
     if constexpr (std::same_as<Value, std::size_t>)
     {
-        map.try_emplace(name_internal, name_input);
+        map.try_emplace(name_native, name_input);
     }
 }
 
 template <typename Value>
 std::optional<PPsat::name> PPsat::renaming_map<Value>::get(
-    std::size_t name_internal) const
+    std::size_t name_native) const
 {
-    const auto i = map.find(name_internal);
+    const auto i = map.find(name_native);
 
-    if (i != map.end())
+    if (i == map.end())
     {
         return {};
     }
 
-    return i->second;
+    return name(i->second);
 }
 
 template <typename Value>
@@ -44,5 +48,5 @@ std::size_t PPsat::renaming_map<Value>::count() const
     return map.size();
 }
 
-template class PPsat::renaming_map<std::string_view>;
+template class PPsat::renaming_map<std::string>;
 template class PPsat::renaming_map<std::size_t>;

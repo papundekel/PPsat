@@ -1,21 +1,12 @@
 #pragma once
 #include <PPsat/cli/arguments.hpp>
-#include <PPsat/formula_format.hpp>
+#include <PPsat/logger.hpp>
 #include <PPsat/options.hpp>
 #include <PPsat/subcommand_result.hpp>
 
-#include <iosfwd>
-#include <string_view>
-#include <vector>
-
 namespace PPsat::subprogram
 {
-subcommand_result cdcl_unparsed(cli::arguments& arguments, options& options);
-
-int cdcl(std::istream& input,
-         std::ostream& output,
-         std::ostream& err,
-         formula_format format,
-         bool watched_literals,
-         bool nnf);
+subcommand_result cdcl_unparsed(const logger& logger_outer,
+                                cli::arguments& arguments,
+                                options& options);
 }

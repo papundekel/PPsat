@@ -24,11 +24,11 @@ public:
 class renaming
 {
 public:
-    virtual void rename(std::string_view input_name,
-                        std::size_t internal_name) = 0;
-    virtual void rename(std::size_t input_name, std::size_t internal_name) = 0;
+    virtual std::string_view rename(std::size_t name_native,
+                                    std::string&& name_input) = 0;
+    virtual void rename(std::size_t name_native, std::size_t name_input) = 0;
 
-    virtual std::optional<name> get(std::size_t internal_name) const = 0;
+    virtual std::optional<name> get(std::size_t name_internal) const = 0;
 
     virtual std::size_t count() const = 0;
 

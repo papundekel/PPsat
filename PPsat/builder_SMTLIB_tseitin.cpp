@@ -1,4 +1,4 @@
-#include <PPsat/reader_SMTLIB_tseitin.hpp>
+#include <PPsat/builder_SMTLIB_tseitin.hpp>
 
 #include <PPsat/conditional.hpp>
 #include <PPsat/renaming_map.hpp>
@@ -10,12 +10,14 @@
 
 #include <string_view>
 
-PPsat::reader::result PPsat::reader_SMTLIB_tseitin::read(
+PPsat::builder::result PPsat::builder_SMTLIB_tseitin::read(
+    const logger& logger_outer,
     std::istream& input,
     formula& formula,
     renaming& renaming) const
 {
     return read_impl(
+        logger_outer,
         input,
         factory_lexer::impl<lexer_SMTLIB>{},
         factory_parser::impl<parser_SMTLIB>{},
@@ -25,10 +27,3 @@ PPsat::reader::result PPsat::reader_SMTLIB_tseitin::read(
                                          tseitin_builder_nnf<false>(formula)),
             renaming));
 }
-
-// std::unique_ptr<PPsat::renaming>
-// PPsat::reader_SMTLIB_tseitin::create_renaming()
-//     const
-// {
-//     return std::make_unique<renaming_map<std::string_view>>();
-// }

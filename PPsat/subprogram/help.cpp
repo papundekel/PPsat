@@ -2,19 +2,7 @@
 
 #include <iostream>
 
-PPsat::subcommand_result PPsat::subprogram::help_unparsed(
-    cli::arguments&,
-    options& options)
-{
-    if (!options.help)
-    {
-        return {};
-    }
-
-    return help(std::cout);
-}
-
-int PPsat::subprogram::help(std::ostream& out)
+void PPsat::subprogram::help_print(std::ostream& out)
 {
     out << "Usage:\n"
         << "\tPPsat -convert [OPTION]... [INPUT [OUTPUT]]\n"
@@ -29,6 +17,18 @@ int PPsat::subprogram::help(std::ostream& out)
         << "\t-wl\t\t\tUse watched literals.\n"
         << "\t-format [dimacs|smtlib]\tUse the specified format for the "
            "input.\n";
+}
+
+PPsat::subcommand_result PPsat::subprogram::help_unparsed(const logger&,
+                                                          cli::arguments&,
+                                                          options& options)
+{
+    if (!options.help)
+    {
+        return {};
+    }
+
+    help_print(std::cout);
 
     return 0;
 }
