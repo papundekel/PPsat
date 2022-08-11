@@ -5,7 +5,7 @@
 
 namespace PPsat
 {
-class literal_signed : public literal
+class literal_signed final : public literal
 {
 public:
     using name_t = std::size_t;

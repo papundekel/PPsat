@@ -4,7 +4,7 @@
 
 namespace PPsat
 {
-class builder_DIMACS
+class builder_DIMACS final
     : public builder
     , public factory<renaming>::impl<renaming_map<std::size_t>>
 {

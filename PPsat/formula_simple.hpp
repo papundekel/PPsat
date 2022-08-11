@@ -9,43 +9,26 @@
 
 namespace PPsat
 {
-class clause_simple : public clause
+class clause_simple final : public clause
 {
-    const std::vector<literal_pair>& literals;
+    std::vector<literal_pair> literals;
 
 public:
-    clause_simple(const std::vector<literal_pair>& literals)
-        : literals(literals)
-    {}
+    clause_simple(view_any<const literal> literals);
 
-    void for_each(std::function<void(const literal&)> f) const override final
-    {
-        std::ranges::for_each(literals, f);
-    }
+    void for_each(std::function<void(const literal&)> f) const override final;
+    std::size_t length() const noexcept override final;
 };
 
 class formula_simple : public formula
 {
 public:
-    std::vector<std::vector<literal_pair>> clauses;
+    std::vector<clause_simple> clauses;
 
-    void add_clause(view_any<const literal> literals) override final
-    {
-        clauses.push_back({literals.begin(), literals.end()});
-    }
+    void add_clause(view_any<const literal> literals) override final;
 
-    void for_each(std::function<void(const clause&)> f) const override final
-    {
-        std::ranges::for_each(clauses,
-                              [&f](auto& c)
-                              {
-                                  f(clause_simple(c));
-                              });
-    }
+    void for_each(std::function<void(const clause&)> f) const override final;
 
-    std::size_t clause_count() const noexcept override final
-    {
-        return clauses.size();
-    }
+    std::size_t clause_count() const noexcept override final;
 };
 }

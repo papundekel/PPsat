@@ -7,7 +7,7 @@
 namespace PPsat
 {
 template <bool NNF>
-class tseitin_builder_nnf : public tseitin_builder
+class tseitin_builder_nnf final : public tseitin_builder
 {
     class formula& formula;
 

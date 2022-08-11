@@ -3,7 +3,7 @@
 
 namespace PPsat
 {
-class literal_negated : public literal
+class literal_negated final : public literal
 {
 public:
     using name_t = std::size_t;

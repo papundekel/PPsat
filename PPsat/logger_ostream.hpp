@@ -5,7 +5,7 @@
 
 namespace PPsat
 {
-class logger_ostream : public logger
+class logger_ostream final : public logger
 {
     std::ostream& stream;
 

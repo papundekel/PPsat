@@ -7,7 +7,7 @@
 namespace PPsat
 {
 template <typename Value>
-class renaming_map : public renaming
+class renaming_map final : public renaming
 {
     std::map<std::size_t, Value> map;
 
@@ -16,7 +16,8 @@ public:
                             std::string&& name_input) override final;
     void rename(std::size_t name_native, std::size_t name_input) override final;
 
-    std::optional<name> get(std::size_t name_internal) const override final;
+    std::optional<renamed_variable> get_variable(
+        std::size_t name_internal) const override final;
 
     std::size_t count() const override final;
 };

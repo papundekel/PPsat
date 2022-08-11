@@ -7,7 +7,7 @@
 
 namespace PPsat
 {
-class error_handler
+class error_handler final
     : public cli::error_handler_container<PPsat::vector, PPsat::vector>
 {
     std::ostream& out;

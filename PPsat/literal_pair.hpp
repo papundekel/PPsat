@@ -3,7 +3,7 @@
 
 namespace PPsat
 {
-class literal_pair : public literal
+class literal_pair final : public literal
 {
 public:
     using name_t = std::size_t;

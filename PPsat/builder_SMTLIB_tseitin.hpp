@@ -5,7 +5,7 @@
 
 namespace PPsat
 {
-class builder_SMTLIB_tseitin
+class builder_SMTLIB_tseitin final
     : public builder
     , public factory<renaming>::impl<renaming_map<std::string>>
 {

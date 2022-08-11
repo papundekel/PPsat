@@ -3,7 +3,7 @@
 
 namespace PPsat
 {
-class logger_subroutine : public logger
+class logger_subroutine final : public logger
 {
     const logger& logger_outer;
     std::string_view name;

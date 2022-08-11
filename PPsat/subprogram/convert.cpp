@@ -64,7 +64,7 @@ void write_formula(std::ostream& output,
          name_internal != count_variable;
          ++name_internal)
     {
-        const auto rename = renaming.get(name_internal);
+        const auto rename = renaming.get_variable(name_internal);
         const auto is_native = rename.has_value();
 
         renaming_output.try_emplace(name_internal,

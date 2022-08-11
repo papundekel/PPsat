@@ -11,6 +11,7 @@ class clause
 {
 public:
     virtual void for_each(std::function<void(const literal&)> f) const = 0;
+    virtual std::size_t length() const noexcept = 0;
 };
 
 using view_literal = view_any<const literal>;
@@ -32,18 +33,6 @@ public:
     void write_DIMACS(
         std::ostream& output,
         std::function<std::ostream&(std::ostream&, const literal&)> transform)
-        const
-    {
-        for_each(
-            [&output, &transform](const clause& c)
-            {
-                c.for_each(
-                    [&output, &transform](const literal& l)
-                    {
-                        transform(output, l) << " ";
-                    });
-                output << "0\n";
-            });
-    }
+        const;
 };
 }

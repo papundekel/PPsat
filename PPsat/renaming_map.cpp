@@ -29,7 +29,7 @@ void PPsat::renaming_map<Value>::rename(std::size_t name_native,
 }
 
 template <typename Value>
-std::optional<PPsat::name> PPsat::renaming_map<Value>::get(
+std::optional<PPsat::renamed_variable> PPsat::renaming_map<Value>::get_variable(
     std::size_t name_native) const
 {
     const auto i = map.find(name_native);
@@ -39,7 +39,7 @@ std::optional<PPsat::name> PPsat::renaming_map<Value>::get(
         return {};
     }
 
-    return name(i->second);
+    return renamed_variable(i->second);
 }
 
 template <typename Value>
