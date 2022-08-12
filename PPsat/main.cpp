@@ -1,5 +1,6 @@
 #include <PPsat/cli/arguments_container.hpp>
 #include <PPsat/cli/option/parser.hpp>
+#include <PPsat/containers.hpp>
 #include <PPsat/error_handler.hpp>
 #include <PPsat/logger_ostream.hpp>
 #include <PPsat/logger_subroutine.hpp>
@@ -8,7 +9,6 @@
 #include <PPsat/subprogram/convert.hpp>
 #include <PPsat/subprogram/dpll.hpp>
 #include <PPsat/subprogram/help.hpp>
-#include <PPsat/vector.hpp>
 
 #include <array>
 #include <iostream>

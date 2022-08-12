@@ -26,7 +26,7 @@ public:
     iterator_any_impl(const I& i)
         : i(i)
     {}
-    
+
     iterator_any_impl(I&& i)
         : i(std::move(i))
     {}
@@ -43,7 +43,8 @@ public:
 
     bool is_equal(const iterator_any_base<T>& other) const
     {
-        auto* const other_downcast = dynamic_cast<const iterator_any_impl*>(&other);
+        auto* const other_downcast =
+            dynamic_cast<const iterator_any_impl*>(&other);
         return other_downcast && i == other_downcast->i;
     }
 
@@ -101,7 +102,7 @@ public:
         base = other.base->copy();
         return *this;
     }
-    
+
     auto& operator=(iterator_any&& other)
     {
         base = std::move(other.base);
@@ -111,40 +112,6 @@ public:
     bool operator==(const iterator_any& other) const
     {
         return (!base && !other.base) || base->is_equal(*other.base);
-    }
-};
-
-template <typename T>
-class view_any
-{ 
-    iterator_any<T> begin_;
-    iterator_any<T> end_;
-
-public:
-    explicit view_any(auto&& view)
-        : begin_(std::begin(std::forward<decltype(view)>(view)))
-        , end_(std::end(std::forward<decltype(view)>(view)))
-    {}
-
-    view_any(const view_any& other) = default;
-    view_any(view_any&& other) = default;
-
-    auto begin()
-    {
-        return begin_;
-    }
-    auto begin() const
-    {
-        return begin_;
-    }
-
-    auto end()
-    {
-        return end_;
-    }
-    auto end() const
-    {
-        return end_;
     }
 };
 }

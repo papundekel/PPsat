@@ -1,7 +1,6 @@
 #pragma once
 #include <PPsat/factory.hpp>
 #include <PPsat/formula.hpp>
-#include <PPsat/literal_negated.hpp>
 #include <PPsat/tseitin_builder.hpp>
 
 namespace PPsat
@@ -12,49 +11,15 @@ class tseitin_builder_nnf final : public tseitin_builder
     class formula& formula;
 
 public:
-    tseitin_builder_nnf(class formula& formula) noexcept
-        : formula(formula)
-    {}
+    tseitin_builder_nnf(class formula& formula) noexcept;
 
-    void push_conjunction(const literal& p,
-                          const literal& q,
-                          const literal& r) const override final
-    {
-        if constexpr (!NNF)
-        {
-            formula.add_clause(p, !q, !r);
-        }
-
-        formula.add_clause(!p, q);
-        formula.add_clause(!p, r);
-    }
-
-    void push_disjunction(const literal& p,
-                          const literal& q,
-                          const literal& r) const override final
-    {
-        formula.add_clause(!p, q, r);
-
-        if constexpr (!NNF)
-        {
-            formula.add_clause(p, !q);
-            formula.add_clause(p, !r);
-        }
-    }
-
-    void push_negation(const literal& p, const literal& q) const override final
-    {
-        if constexpr (!NNF)
-        {
-            formula.add_clause(p, q);
-        }
-
-        formula.add_clause(!p, !q);
-    }
-
-    void push_literal(const literal& l) const override final
-    {
-        formula.add_clause(l);
-    }
+    literal push_conjunction(literal left, literal right) const override final;
+    literal push_disjunction(literal left, literal right) const override final;
+    literal push_negation(literal inner) const override final;
+    literal push_literal() const override final;
+    variable& create_new_variable() const override final;
 };
+
+extern template class tseitin_builder_nnf<true>;
+extern template class tseitin_builder_nnf<false>;
 }

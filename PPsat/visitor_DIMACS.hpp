@@ -1,6 +1,6 @@
 #pragma once
+#include "PPsat/variable.hpp"
 #include <PPsat/formula.hpp>
-#include <PPsat/renaming.hpp>
 
 #include <PPsat-parser_DIMACS/parser_DIMACS.h>
 #include <PPsat-parser_DIMACS/parser_DIMACSVisitor.h>
@@ -11,16 +11,17 @@
 
 namespace PPsat
 {
+class variable;
+
 class visitor_DIMACS final : public parser_DIMACSVisitor
 {
     formula& f;
-    std::map<std::size_t, std::size_t> renaming_from_input;
-    renaming& renaming_from_native;
+    std::map<std::size_t, variable&> renaming_from_input;
     std::size_t name_next;
     bool parse_error;
 
 public:
-    visitor_DIMACS(formula& formula, renaming& renaming_from_native) noexcept;
+    visitor_DIMACS(formula& formula) noexcept;
 
 private:
     std::optional<std::size_t> parse_number(

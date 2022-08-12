@@ -1,13 +1,11 @@
-#include <PPsat/literal_pair.hpp>
+#include "PPsat/formula.hpp"
 #include <PPsat/visitor_DIMACS.hpp>
 
 #include <charconv>
 
-PPsat::visitor_DIMACS::visitor_DIMACS(formula& formula,
-                                      renaming& renaming_from_native) noexcept
+PPsat::visitor_DIMACS::visitor_DIMACS(formula& formula) noexcept
     : f(formula)
     , renaming_from_input()
-    , renaming_from_native(renaming_from_native)
     , name_next(0)
     , parse_error(false)
 {}
@@ -59,7 +57,7 @@ std::any PPsat::visitor_DIMACS::visitInput(parser_DIMACS::InputContext* context)
 std::any PPsat::visitor_DIMACS::visitClause(
     parser_DIMACS::ClauseContext* context)
 {
-    std::vector<literal_pair> clause;
+    std::vector<literal> clause;
 
     for (auto* const literal_context : context->literal())
     {
@@ -70,7 +68,7 @@ std::any PPsat::visitor_DIMACS::visitClause(
             return {};
         }
 
-        clause.push_back(std::any_cast<literal_pair>(literal_any));
+        clause.push_back(std::any_cast<literal>(literal_any));
     }
 
     f.add_clause(view_literal(clause));
@@ -89,7 +87,7 @@ std::any PPsat::visitor_DIMACS::visitLiteral(
         return {};
     }
 
-    const auto name_native = [this](std::size_t name_input)
+    auto& variable = [this](std::size_t name_input) -> auto&
     {
         const auto name_input_renaming_i = renaming_from_input.find(name_input);
 
@@ -99,14 +97,15 @@ std::any PPsat::visitor_DIMACS::visitLiteral(
         }
         else
         {
-            const auto name_native = name_next++;
+            auto& variable_new = f.create_new_variable();
 
-            renaming_from_native.rename(name_native, name_input);
-            renaming_from_input.try_emplace(name_input, name_native);
+            variable_new.set_input_name(name_input);
+            renaming_from_input.try_emplace(name_input, variable_new);
 
-            return name_native;
+            return variable_new;
         }
-    }(*name_input_opt);
+    }
+    (*name_input_opt);
 
-    return literal_pair{name_native, context->NEGATED() == nullptr};
+    return literal{variable, context->NEGATED() == nullptr};
 }

@@ -1,8 +1,8 @@
 #pragma once
 #include <PPsat/cli/argument.hpp>
-#include <PPsat/cli/option.hpp>
-#include <PPsat/cli/error_handler.hpp>
 #include <PPsat/cli/arguments.hpp>
+#include <PPsat/cli/error_handler.hpp>
+#include <PPsat/cli/option.hpp>
 
 #include <algorithm>
 #include <ranges>
@@ -65,7 +65,7 @@ public:
                     o.set_presence();
 
                     const auto arg_count = o.argument_count();
-                    auto arg_counter = 0z;
+                    auto arg_counter = 0uz;
 
                     for (; arg_counter != arg_count && i != end;
                          ++arg_counter, ++i)
@@ -79,7 +79,8 @@ public:
                         {
                             success = false;
 
-                            error_handler.unrecognized_option_argument(argument);
+                            error_handler.unrecognized_option_argument(
+                                argument);
                         }
                     }
 

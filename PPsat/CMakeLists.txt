@@ -45,6 +45,9 @@ antlr4_generate(
 add_executable("PPsat"
     "main.cpp"
     "antlrer.cpp"
+    "clause.cpp"
+    "clause_sets.cpp"
+    "clause_simple.cpp"
     "cli/argument/file.cpp"
     "cli/option/format.cpp"
     "cli/option/parser.cpp"
@@ -52,11 +55,8 @@ add_executable("PPsat"
     "error_listener.cpp"
     "error_handler.cpp"
     "formula.cpp"
-    "formula_simple.cpp"
+    "heuristic_decision_first.cpp"
     "literal.cpp"
-    "literal_negated.cpp"
-    "literal_pair.cpp"
-    "literal_signed.cpp"
     "logger.cpp"
     "logger_ostream.cpp"
     "logger_subroutine.cpp"
@@ -64,12 +64,15 @@ add_executable("PPsat"
     "builder.cpp"
     "builder_DIMACS.cpp"
     "builder_SMTLIB_tseitin.cpp"
-    "renaming.cpp"
-    "renaming_map.cpp"
     "subprogram/cdcl.cpp"
     "subprogram/convert.cpp"
     "subprogram/dpll.cpp"
     "subprogram/help.cpp"
+    "tseitin_builder_nnf.cpp"
+    "variable.cpp"
+    "variable_adjacency.cpp"
+    "variable_name_variant.cpp"
+    "variable_simple.cpp"
     "visitor_DIMACS.cpp"
     "visitor_SMTLIB_tseitin.cpp"
     "${ANTLR4_SRC_FILES_PPsat-lexer_SMTLIB}"
@@ -88,7 +91,34 @@ target_include_directories("PPsat" PUBLIC
     "${ANTLR4_INCLUDE_DIR_PPsat-lexer_SMTLIB}/../"
 )
 
-set_target_properties(PPsat PROPERTIES
-    COMPILE_FLAGS "-std=c++2b"
-    #COMPILE_FLAGS "-fconcepts-diagnostics-depth=6"
-)
+set_target_properties("PPsat" PROPERTIES COMPILE_OPTIONS "-std=c++2b")
+
+set(inputs_dir "${PROJECT_SOURCE_DIR}/inputs")
+set(regex_unsat "^s *UNSATISFIABLE")
+set(regex_sat   "^s *SATISFIABLE")
+
+file(GLOB inputs "${inputs_dir}/*/*")
+
+foreach(file_path ${inputs})
+    cmake_path(GET file_path FILENAME file_name)
+
+    set(test_name "PPsat-${file_name}")
+
+    add_test(NAME "${test_name}" COMMAND "PPsat" "-dpll" "${file_path}")
+
+    cmake_path(GET file_path PARENT_PATH parent_path)
+    cmake_path(GET parent_path FILENAME parent_name)
+
+    if(parent_name STREQUAL "unsat")
+        set(regex_fail "${regex_sat}")
+        set(regex_pass "${regex_unsat}")
+    else()
+        set(regex_fail "${regex_unsat}")
+        set(regex_pass "${regex_sat}")
+    endif()
+
+    set_tests_properties("${test_name}" PROPERTIES
+        FAIL_REGULAR_EXPRESSION "${regex_fail}"
+        PASS_REGULAR_EXPRESSION "${regex_pass}"
+    )
+endforeach()

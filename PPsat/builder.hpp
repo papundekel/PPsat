@@ -3,14 +3,13 @@
 #include <PPsat/factory_parser.hpp>
 #include <PPsat/formula.hpp>
 #include <PPsat/logger.hpp>
-#include <PPsat/renaming.hpp>
 
 #include <iosfwd>
 #include <memory>
 
 namespace PPsat
 {
-class builder : public virtual factory<renaming>
+class builder
 {
 public:
     class result
@@ -37,8 +36,7 @@ protected:
 public:
     virtual result read(const logger& logger_outer,
                         std::istream& input,
-                        formula& formula,
-                        renaming& renaming) const = 0;
+                        formula& formula) const = 0;
 
     virtual ~builder() = default;
 };

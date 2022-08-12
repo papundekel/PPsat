@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.20)
 
 project("PPsat" VERSION "1.0.0")
 
+include(CTest)
+
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 include(ExternalAntlr4Cpp)
@@ -13,4 +15,4 @@ find_package(antlr4-generator REQUIRED)
 find_package(antlr4-runtime REQUIRED)
 
 add_subdirectory("PPsat")
-add_subdirectory("examples")
+add_subdirectory("PPsat-queens")

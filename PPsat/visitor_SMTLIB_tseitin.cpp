@@ -1,31 +1,18 @@
+#include "PPsat/variable.hpp"
 #include <PPsat/visitor_SMTLIB_tseitin.hpp>
 
 #include <PPsat/discard.hpp>
-#include <PPsat/literal_pair.hpp>
 
 PPsat::visitor_SMTLIB_tseitin::visitor_SMTLIB_tseitin(
-    const tseitin_builder& builder,
-    renaming& renaming_from_native) noexcept
+    const tseitin_builder& builder) noexcept
     : builder(builder)
     , renaming_from_input()
-    , renaming_from_native(renaming_from_native)
-    , name_next(0)
 {}
 
-std::size_t PPsat::visitor_SMTLIB_tseitin::get_next_name() noexcept
-{
-    return name_next++;
-}
-
-PPsat::literal_pair PPsat::visitor_SMTLIB_tseitin::handle_introduced() noexcept
-{
-    return {get_next_name(), true};
-}
-
-PPsat::literal_pair PPsat::visitor_SMTLIB_tseitin::handle_input(
+PPsat::literal PPsat::visitor_SMTLIB_tseitin::handle_input(
     std::string name_input)
 {
-    return {[this, &name_input]()
+    return {[this, &name_input]() -> variable&
             {
                 if (auto i = renaming_from_input.find(name_input);
                     i != renaming_from_input.end())
@@ -34,24 +21,24 @@ PPsat::literal_pair PPsat::visitor_SMTLIB_tseitin::handle_input(
                 }
                 else
                 {
-                    const auto name_native = get_next_name();
+                    auto& variable_new = builder.create_new_variable();
 
                     const auto name_input_view =
-                        renaming_from_native.rename(name_native,
-                                                    std::move(name_input));
-                    renaming_from_input.try_emplace(name_input_view,
-                                                    name_native);
+                        variable_new.set_input_name(std::move(name_input));
 
-                    return name_native;
+                    renaming_from_input.try_emplace(name_input_view,
+                                                    variable_new);
+
+                    return variable_new;
                 }
             }(),
             true};
 }
 
-PPsat::literal_pair PPsat::visitor_SMTLIB_tseitin::visit_typed(
+PPsat::literal PPsat::visitor_SMTLIB_tseitin::visit_typed(
     antlr4::tree::ParseTree* tree)
 {
-    return std::any_cast<literal_pair>(visit(tree));
+    return std::any_cast<literal>(visit(tree));
 }
 
 std::any PPsat::visitor_SMTLIB_tseitin::visitConjunction(
@@ -60,11 +47,7 @@ std::any PPsat::visitor_SMTLIB_tseitin::visitConjunction(
     const auto left = visit_typed(context->formula(0));
     const auto right = visit_typed(context->formula(1));
 
-    const auto subformula_literal = handle_introduced();
-
-    builder.push_conjunction(subformula_literal, left, right);
-
-    return subformula_literal;
+    return builder.push_conjunction(left, right);
 }
 
 std::any PPsat::visitor_SMTLIB_tseitin::visitDisjunction(
@@ -73,23 +56,13 @@ std::any PPsat::visitor_SMTLIB_tseitin::visitDisjunction(
     const auto left = visit_typed(context->formula(0));
     const auto right = visit_typed(context->formula(1));
 
-    const auto subformula_literal = handle_introduced();
-
-    builder.push_disjunction(subformula_literal, left, right);
-
-    return subformula_literal;
+    return builder.push_disjunction(left, right);
 }
 
 std::any PPsat::visitor_SMTLIB_tseitin::visitNegation(
     parser_SMTLIB::NegationContext* context)
 {
-    const auto inner = visit_typed(context->formula());
-
-    const auto subformula_literal = handle_introduced();
-
-    builder.push_negation(subformula_literal, inner);
-
-    return subformula_literal;
+    return builder.push_negation(visit_typed(context->formula()));
 }
 
 std::any PPsat::visitor_SMTLIB_tseitin::visitVariable(
@@ -101,7 +74,8 @@ std::any PPsat::visitor_SMTLIB_tseitin::visitVariable(
 std::any PPsat::visitor_SMTLIB_tseitin::visitInput(
     parser_SMTLIB::InputContext* context)
 {
-    builder.push_literal(visit_typed(context->formula()));
+    visit(context->formula());
+    builder.push_literal();
 
-    return name_next;
+    return {};
 }

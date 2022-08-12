@@ -1,28 +1,28 @@
-#include "PPsat/formula.hpp"
-#include "PPsat/literal.hpp"
-#include "PPsat/literal_pair.hpp"
-#include "PPsat/logger.hpp"
-#include "PPsat/renaming.hpp"
+#include "PPsat/clause_sets.hpp"
+#include "PPsat/variable_adjacency.hpp"
 #include <PPsat/subprogram/dpll.hpp>
 
 #include <PPsat/builder.hpp>
 #include <PPsat/builder_DIMACS.hpp>
 #include <PPsat/builder_SMTLIB_tseitin.hpp>
+#include <PPsat/clause.hpp>
 #include <PPsat/cli/argument/file.hpp>
 #include <PPsat/conditional.hpp>
+#include <PPsat/containers.hpp>
 #include <PPsat/create_builder.hpp>
 #include <PPsat/discard_iterator.hpp>
 #include <PPsat/error_listener.hpp>
 #include <PPsat/factory.hpp>
+#include <PPsat/formula.hpp>
 #include <PPsat/formula_format.hpp>
-#include <PPsat/formula_simple.hpp>
-#include <PPsat/literal_negated.hpp>
+#include <PPsat/heuristic_decision.hpp>
+#include <PPsat/heuristic_decision_first.hpp>
+#include <PPsat/literal.hpp>
+#include <PPsat/logger.hpp>
 #include <PPsat/logger_subroutine.hpp>
-#include <PPsat/renaming_map.hpp>
+#include <PPsat/variable.hpp>
 
 #include <algorithm>
-#include <bits/ranges_algo.h>
-#include <bits/ranges_util.h>
 #include <functional>
 #include <iostream>
 #include <optional>
@@ -32,293 +32,11 @@
 
 namespace
 {
-using formula = PPsat::formula;
-using literal = PPsat::literal;
-using literal_pair = PPsat::literal_pair;
-using clause = PPsat::clause;
-
-class heuristic_decision
-{
-public:
-    virtual void init(std::size_t count_variable) = 0;
-    virtual void assigned(std::size_t variable) = 0;
-    virtual void unassigned(std::size_t variable) = 0;
-    virtual std::size_t decision() const = 0;
-};
-
-class heuristic_decision_set final : public heuristic_decision
-{
-    std::set<std::size_t> set;
-
-    void init(std::size_t count_variable) override final
-    {
-        set.clear();
-        for (auto i = 0uz; i != count_variable; ++i)
-        {
-            set.emplace(i);
-        }
-    }
-
-    void assigned(std::size_t variable) override final
-    {
-        set.erase(variable);
-    }
-    void unassigned(std::size_t variable) override final
-    {
-        set.emplace(variable);
-    }
-
-    std::size_t decision() const override final
-    {
-        return *set.begin();
-    }
-};
-
-class literal_adjacency
-{
-    virtual void init_prepare(std::size_t count_variable) = 0;
-    virtual void contained_in_clause(const literal& literal,
-                                     const clause& clause) = 0;
-
-public:
-    void init(std::size_t count_variable, const formula& formula)
-    {
-        init_prepare(count_variable);
-
-        formula.for_each(
-            [this](const clause& clause)
-            {
-                clause.for_each(
-                    [this, &clause](const literal& literal)
-                    {
-                        contained_in_clause(literal, clause);
-                    });
-            });
-    }
-
-    virtual void for_each_clause_containing(
-        std::size_t variable,
-        std::function<void(const clause&, const literal&)> f) const = 0;
-};
-
-class literal_adjacency_list final : public literal_adjacency
-{
-    std::vector<std::vector<
-        std::pair<std::reference_wrapper<const clause>, literal_pair>>>
-        list;
-
-    void init_prepare(std::size_t count_variable) override final
-    {
-        list.resize(count_variable);
-    }
-
-    void contained_in_clause(const literal& literal,
-                             const clause& clause) override final
-    {
-        list[literal.get_variable()].emplace_back(clause, literal);
-    }
-
-public:
-    void for_each_clause_containing(
-        std::size_t variable,
-        std::function<void(const clause&, const literal&)> f)
-        const override final
-    {
-        for (auto& [clause, literal] : list[variable])
-        {
-            f(clause, literal);
-        }
-    }
-};
-
-enum class clause_category
-{
-    other,
-    unit,
-    sat,
-    unsat
-};
-
-struct decisive_t
-{};
-constexpr inline decisive_t decisive;
-
-bool operator==(clause_category category, decisive_t) noexcept
-{
-    return category == clause_category::sat ||
-           category == clause_category::unsat;
-}
-
-class assignment
-{
-    virtual std::pair<clause_category, literal_pair>
-    get_category_and_first_literal_impl() const noexcept = 0;
-
-public:
-    virtual bool is_sat() const noexcept = 0;
-
-    std::pair<clause_category, literal_pair> get_category_and_first_literal()
-        const noexcept
-    {
-        return is_sat() ? std::make_pair(clause_category::sat, literal_pair{})
-                        : get_category_and_first_literal_impl();
-    }
-
-    virtual void assign(const literal& literal_assigned,
-                        const literal& literal_in_clause) = 0;
-    virtual void unassign(const literal& literal_unassigned,
-                          const literal& literal_in_clause) = 0;
-};
-
-class assignment_sets final : public assignment
-{
-    using set = std::set<literal_pair>;
-
-    set set_unassigned;
-    set set_assigned_false;
-    set set_assigned_true;
-
-public:
-    assignment_sets(const clause& clause)
-        : set_unassigned()
-        , set_assigned_false()
-        , set_assigned_true()
-    {
-        clause.for_each(
-            [this](const literal& literal)
-            {
-                set_unassigned.emplace(literal);
-            });
-    }
-
-    bool is_sat() const noexcept override final
-    {
-        return !set_assigned_true.empty();
-    }
-
-    std::pair<clause_category, literal_pair>
-    get_category_and_first_literal_impl() const noexcept override final
-    {
-        const auto unassigned_count = set_unassigned.size();
-        if (unassigned_count == 0)
-        {
-            return {clause_category::unsat, {}};
-        }
-        else
-        {
-            return {unassigned_count == 1 ? clause_category::unit
-                                          : clause_category::other,
-                    *set_unassigned.begin()};
-        }
-    }
-
-    void assign(const literal& literal_assigned,
-                const literal& literal_in_clause) override final
-    {
-        set_unassigned.erase(literal_in_clause);
-        if (literal_assigned.is_positive() == literal_in_clause.is_positive())
-        {
-            set_assigned_true.emplace(literal_in_clause);
-        }
-        else
-        {
-            set_assigned_false.emplace(literal_in_clause);
-        }
-    }
-
-    void unassign(const literal& literal_unassigned,
-                  const literal& literal_in_clause) override final
-    {
-        if (literal_unassigned.is_positive() == literal_in_clause.is_positive())
-        {
-            set_assigned_true.erase(literal_in_clause);
-        }
-        else
-        {
-            set_assigned_false.erase(literal_in_clause);
-        }
-        set_unassigned.emplace(literal_in_clause);
-    }
-};
-
-class assignment_map
-{
-    virtual std::optional<std::reference_wrapper<assignment>> contains_clause(
-        std::function<bool(const assignment&)> p) const = 0;
-
-public:
-    virtual void init(const PPsat::formula& formula) = 0;
-
-    bool contains_unsat_clause() const
-    {
-        return contains_clause(
-                   [](const assignment& assignment)
-                   {
-                       return assignment.get_category_and_first_literal()
-                                  .first == clause_category::unsat;
-                   })
-            .has_value();
-    }
-
-    std::optional<literal_pair> find_unit_clause() const
-    {
-        const auto assignment_opt = contains_clause(
-            [](const assignment& assignment)
-            {
-                return assignment.get_category_and_first_literal().first ==
-                       clause_category::unit;
-            });
-
-        if (!assignment_opt)
-        {
-            return {};
-        }
-
-        return assignment_opt->get().get_category_and_first_literal().second;
-    }
-
-    virtual assignment& get_assignment(const clause& clause) = 0;
-};
-
-class assignment_map_map final : public assignment_map
-{
-    std::map<const PPsat::clause*, assignment_sets> map;
-
-    void init(const PPsat::formula& formula) override final
-    {
-        formula.for_each(
-            [this](const clause& clause)
-            {
-                map.try_emplace(&clause, clause);
-            });
-    }
-
-    std::optional<std::reference_wrapper<assignment>> contains_clause(
-        std::function<bool(const assignment&)> p) const override final
-    {
-        auto i =
-            std::ranges::find_if(map, p, &decltype(map)::value_type::second);
-
-        if (i == map.end())
-        {
-            return {};
-        }
-
-        return (assignment&)i->second;
-    }
-
-    assignment& get_assignment(const clause& clause) override final
-    {
-        return map.at(&clause);
-    }
-};
-
 class dpll_structure
 {
-    literal_adjacency& adjacency;
-    assignment_map& assignments;
-    heuristic_decision& heuristic;
-    std::vector<literal_pair> stack_assignment;
+    PPsat::formula& formula;
+    PPsat::heuristic_decision& heuristic;
+    std::vector<PPsat::literal> stack_assignment;
     std::vector<std::size_t> stack_decision;
     std::size_t count_clause;
     std::size_t count_clause_sat;
@@ -326,13 +44,10 @@ class dpll_structure
 
 public:
     dpll_structure(std::size_t variable_count,
-                   const formula& formula,
-                   assignment_map& assignments,
-                   literal_adjacency& adjacency,
-                   class heuristic_decision& heuristic,
+                   PPsat::formula& formula,
+                   PPsat::heuristic_decision& heuristic,
                    const PPsat::logger& logger)
-        : assignments(assignments)
-        , adjacency(adjacency)
+        : formula(formula)
         , heuristic(heuristic)
         , stack_assignment()
         , stack_decision()
@@ -340,58 +55,51 @@ public:
         , count_clause_sat(0)
         , logger(logger)
     {
-        assignments.init(formula);
-
-        if (assignments.contains_unsat_clause())
+        if (formula.contains_unsat_clause())
         {
             return;
         }
 
-        adjacency.init(variable_count, formula);
-        heuristic.init(variable_count);
+        heuristic.init(formula);
     }
 
-    std::pair<clause_category, literal_pair> assign(
-        const literal& literal_assigned)
+    std::pair<PPsat::clause::category, PPsat::literal> assign(
+        PPsat::literal literal_assigned)
     {
         bool made_unsat = false;
         bool made_unit = false;
         bool made_unknown = false;
-        literal_pair literal_first;
+        PPsat::literal literal_first;
 
-        adjacency.for_each_clause_containing(
-            literal_assigned.get_variable(),
+        literal_assigned.get_variable().for_each_clause_containing(
             [this,
              &literal_assigned,
              &made_unsat,
              &made_unit,
              &made_unknown,
-             &literal_first](const clause& clause,
-                             const literal& literal_in_clause)
+             &literal_first](PPsat::clause& clause, bool positive)
             {
-                auto& assignment = assignments.get_assignment(clause);
+                const bool was_sat = clause.is_sat();
 
-                const bool was_sat = assignment.is_sat();
-
-                assignment.assign(literal_assigned, literal_in_clause);
+                clause.assign(literal_assigned, positive);
 
                 const auto [category, literal] =
-                    assignment.get_category_and_first_literal();
+                    clause.get_category_and_first_literal();
 
-                if (!was_sat && category == clause_category::sat)
+                if (!was_sat && category == PPsat::clause::category::sat)
                 {
                     ++count_clause_sat;
                 }
 
-                if (category == clause_category::unsat)
+                if (category == PPsat::clause::category::unsat)
                 {
                     made_unsat = true;
                 }
-                else if (category != clause_category::sat)
+                else if (category != PPsat::clause::category::sat)
                 {
                     made_unknown = true;
 
-                    if (category == clause_category::unit)
+                    if (category == PPsat::clause::category::unit)
                     {
                         literal_first = literal;
                         made_unit = true;
@@ -402,34 +110,30 @@ public:
         heuristic.assigned(literal_assigned.get_variable());
         stack_assignment.push_back(literal_assigned);
 
-        return {made_unsat     ? clause_category::unsat
-                : made_unit    ? clause_category::unit
-                : made_unknown ? clause_category::other
-                               : clause_category::sat,
+        return {made_unsat     ? PPsat::clause::category::unsat
+                : made_unit    ? PPsat::clause::category::unit
+                : made_unknown ? PPsat::clause::category::other
+                               : PPsat::clause::category::sat,
                 literal_first};
     }
 
-    literal_pair unassign()
+    PPsat::literal unassign()
     {
-        const literal& literal_unassigned = stack_assignment.back();
+        const auto literal_unassigned = stack_assignment.back();
         stack_assignment.pop_back();
 
-        logger << "unassigned " << literal_unassigned << "\n";
+        // logger << "unassigned " << literal_unassigned << "\n";
 
         heuristic.unassigned(literal_unassigned.get_variable());
 
-        adjacency.for_each_clause_containing(
-            literal_unassigned.get_variable(),
-            [this, &literal_unassigned](const clause& clause,
-                                        const literal& literal_in_clause)
+        literal_unassigned.get_variable().for_each_clause_containing(
+            [this, &literal_unassigned](PPsat::clause& clause, bool positive)
             {
-                auto& assignment = assignments.get_assignment(clause);
+                const bool was_sat = clause.is_sat();
 
-                const bool was_sat = assignment.is_sat();
+                clause.unassign(literal_unassigned, positive);
 
-                assignment.unassign(literal_unassigned, literal_in_clause);
-
-                if (was_sat && !assignment.is_sat())
+                if (was_sat && !clause.is_sat())
                 {
                     --count_clause_sat;
                 }
@@ -438,21 +142,21 @@ public:
         return literal_unassigned;
     }
 
-    clause_category unit_propagate(const literal& literal_starting)
+    PPsat::clause::category unit_propagate(PPsat::literal literal_starting)
     {
-        literal_pair literal_current = literal_starting;
+        auto literal_current = literal_starting;
 
         while (true)
         {
             auto [category, literal_future] = assign(literal_current);
 
-            logger << "unit " << literal_current << "\n";
+            // logger << "unit " << literal_current << "\n";
 
-            if (category == decisive)
+            if (category == PPsat::decisive)
             {
                 return category;
             }
-            else if (category != clause_category::unit)
+            else if (category != PPsat::clause::category::unit)
             {
                 break;
             }
@@ -460,44 +164,44 @@ public:
             literal_current = literal_future;
         }
 
-        return clause_category::other;
+        return PPsat::clause::category::other;
     }
 
-    clause_category decide(const literal& literal)
+    PPsat::clause::category decide(PPsat::literal literal)
     {
         stack_decision.push_back(stack_assignment.size());
 
         return assign(literal).first;
     }
 
-    std::optional<std::size_t> backtrack()
+    PPsat::variable* backtrack()
     {
-        std::size_t decided_variable = 0;
+        PPsat::variable* decided_variable = nullptr;
         bool was_decision_true = false;
 
         do
         {
             if (stack_decision.empty())
             {
-                return {};
+                return nullptr;
             }
 
             const auto count_before_decision = stack_decision.back();
             stack_decision.pop_back();
 
-            literal_pair decided_literal;
+            PPsat::literal decided_literal;
 
             while (stack_assignment.size() != count_before_decision)
             {
                 decided_literal = unassign();
             }
 
-            decided_variable = decided_literal.get_variable();
+            decided_variable = &decided_literal.get_variable();
             was_decision_true = decided_literal.is_positive();
 
         } while (was_decision_true);
 
-        logger << "backtracked\n";
+        // logger << "backtracked\n";
 
         return decided_variable;
     }
@@ -505,15 +209,15 @@ public:
     bool solve()
     {
         bool backtracked = false;
-        std::size_t decision_variable;
+        PPsat::variable* decision_variable = nullptr;
 
         while (true)
         {
-            clause_category category = clause_category::other;
+            PPsat::clause::category category = PPsat::clause::category::other;
 
             if (!backtracked)
             {
-                const auto literal_unit_opt = assignments.find_unit_clause();
+                const auto literal_unit_opt = formula.find_unit();
 
                 if (literal_unit_opt)
                 {
@@ -521,39 +225,40 @@ public:
                 }
             }
 
-            if (category != decisive)
+            if (category != PPsat::decisive)
             {
                 if (!backtracked)
                 {
-                    decision_variable = heuristic.decision();
+                    decision_variable = &heuristic.get_decision();
                 }
 
-                category = decide(literal_pair{decision_variable, backtracked});
+                category = decide({*decision_variable, backtracked});
 
-                logger << "decided "
-                       << literal_pair{decision_variable, backtracked} << "\n";
+                // logger << "decided "
+                //        << literal_pair{decision_variable, backtracked} <<
+                //        "\n";
             }
 
             if (count_clause == count_clause_sat)
             {
                 return true;
             }
-            else if (category == clause_category::unsat)
+            else if (category == PPsat::clause::category::unsat)
             {
                 for (auto& x : stack_assignment)
                 {
-                    logger << "A " << x << "\n";
+                    // logger << "A " << x << "\n";
                 }
 
-                auto decision_variable_new_opt = backtrack();
+                const auto decision_variable_new_ptr = backtrack();
                 backtracked = true;
 
-                if (!decision_variable_new_opt)
+                if (!decision_variable_new_ptr)
                 {
                     return false;
                 }
 
-                decision_variable = *decision_variable_new_opt;
+                decision_variable = decision_variable_new_ptr;
             }
             else
             {
@@ -562,9 +267,9 @@ public:
         }
     }
 
-    void for_each_assignment(std::function<void(const literal&)> f) const
+    void for_each_assignment(auto&& f) const
     {
-        std::ranges::for_each(stack_assignment, f);
+        std::ranges::for_each(stack_assignment, std::forward<decltype(f)>(f));
     }
 };
 }
@@ -598,11 +303,12 @@ PPsat::subcommand_result PPsat::subprogram::dpll_unparsed(
 
     auto& formula_input = argument_file_in.parsed_stream();
 
-    PPsat::formula_simple formula;
-    const auto renaming = builder->create_ref();
+    PPsat::formula::factory_clause::impl<PPsat::list, clause_sets> clauses;
+    PPsat::formula::factory_variable::impl<PPsat::list, variable_adjacency>
+        variables;
+    PPsat::formula formula(clauses, variables);
 
-    const auto result =
-        builder->read(logger_inner, formula_input, formula, renaming);
+    const auto result = builder->read(logger_inner, formula_input, formula);
 
     if (!result)
     {
@@ -613,40 +319,38 @@ PPsat::subcommand_result PPsat::subprogram::dpll_unparsed(
 
     const auto variable_count = result.get_variable_count();
 
-    assignment_map_map assignments;
-    literal_adjacency_list adjacency;
-    heuristic_decision_set heuristic;
-    dpll_structure structure(variable_count,
-                             formula,
-                             assignments,
-                             adjacency,
-                             heuristic,
-                             logger_inner);
+    PPsat::heuristic_decision_first heuristic;
+    dpll_structure structure(variable_count, formula, heuristic, logger_inner);
 
     const auto satisfiable = structure.solve();
 
-    formula.write_DIMACS(std::cerr,
-                         (std::ostream & (&)(std::ostream&, const literal&))
-                             PPsat::operator<<);
+    // formula.write_DIMACS(std::cerr,
+    //                      (std::ostream & (&)(std::ostream&, literal))
+    //                          PPsat::operator<<);
 
     if (satisfiable)
     {
         std::cout << "s SATISFIABLE\n";
         std::cout << "v ";
 
-        std::vector<renamed_literal> model;
+        std::vector<const literal*> model;
 
         structure.for_each_assignment(
-            [&renaming, &model](const literal& literal)
+            [&model](const literal& literal)
             {
-                auto lit_opt = renaming->get_literal(literal);
-                if (lit_opt)
+                if (literal.get_variable().has_input_name())
                 {
-                    model.push_back(*lit_opt);
+                    model.push_back(&literal);
                 }
             });
 
-        std::sort(model.begin(), model.end());
+        std::sort(model.begin(),
+                  model.end(),
+                  [](const literal* a, const literal* b)
+                  {
+                      return a->get_variable().hash() <
+                             b->get_variable().hash();
+                  });
 
         for (const auto& lit : model)
         {
