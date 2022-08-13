@@ -23,6 +23,7 @@
 #include <PPsat/variable.hpp>
 
 #include <algorithm>
+#include <chrono>
 #include <functional>
 #include <iostream>
 #include <optional>
@@ -38,7 +39,6 @@ class dpll_structure
     PPsat::heuristic_decision& heuristic;
     std::vector<PPsat::literal> stack_assignment;
     std::vector<std::size_t> stack_decision;
-    std::size_t count_clause;
     std::size_t count_clause_sat;
     const PPsat::logger& logger;
 
@@ -51,7 +51,6 @@ public:
         , heuristic(heuristic)
         , stack_assignment()
         , stack_decision()
-        , count_clause(formula.clause_count())
         , count_clause_sat(0)
         , logger(logger)
     {
@@ -167,11 +166,12 @@ public:
         return PPsat::clause::category::other;
     }
 
-    PPsat::clause::category decide(PPsat::literal literal)
+    std::pair<PPsat::clause::category, PPsat::literal> decide(
+        PPsat::literal literal)
     {
         stack_decision.push_back(stack_assignment.size());
 
-        return assign(literal).first;
+        return assign(literal);
     }
 
     PPsat::variable* backtrack()
@@ -210,6 +210,7 @@ public:
     {
         bool backtracked = false;
         PPsat::variable* decision_variable = nullptr;
+        std::optional<PPsat::literal> literal_unit_opt;
 
         while (true)
         {
@@ -217,7 +218,10 @@ public:
 
             if (!backtracked)
             {
-                const auto literal_unit_opt = formula.find_unit();
+                if (!literal_unit_opt)
+                {
+                    literal_unit_opt = formula.find_unit();
+                }
 
                 if (literal_unit_opt)
                 {
@@ -232,23 +236,34 @@ public:
                     decision_variable = &heuristic.get_decision();
                 }
 
-                category = decide({*decision_variable, backtracked});
+                PPsat::literal literal;
+                std::tie(category, literal) =
+                    decide({*decision_variable, backtracked});
+
+                if (category == PPsat::clause::category::unit)
+                {
+                    literal_unit_opt.emplace(literal);
+                }
+                else
+                {
+                    literal_unit_opt.reset();
+                }
 
                 // logger << "decided "
                 //        << literal_pair{decision_variable, backtracked} <<
                 //        "\n";
             }
 
-            if (count_clause == count_clause_sat)
+            if (formula.clause_count() == count_clause_sat)
             {
                 return true;
             }
             else if (category == PPsat::clause::category::unsat)
             {
-                for (auto& x : stack_assignment)
-                {
-                    // logger << "A " << x << "\n";
-                }
+                // for (auto& x : stack_assignment)
+                // {
+                //     logger << "A " << x << "\n";
+                // }
 
                 const auto decision_variable_new_ptr = backtrack();
                 backtracked = true;
@@ -263,6 +278,7 @@ public:
             else
             {
                 backtracked = false;
+                literal_unit_opt.reset();
             }
         }
     }
@@ -354,7 +370,7 @@ PPsat::subcommand_result PPsat::subprogram::dpll_unparsed(
 
         for (const auto& lit : model)
         {
-            std::cout << lit << " ";
+            std::cout << *lit << " ";
         }
 
         std::cout << "0\n";

@@ -82,7 +82,6 @@ add_executable("PPsat"
 )
 
 add_dependencies("PPsat" antlr4_shared)
-
 target_link_libraries("PPsat" PRIVATE antlr4_shared)
 
 target_include_directories("PPsat" PUBLIC
@@ -92,6 +91,8 @@ target_include_directories("PPsat" PUBLIC
 )
 
 set_target_properties("PPsat" PROPERTIES COMPILE_OPTIONS "-std=c++2b")
+
+# Test
 
 set(inputs_dir "${PROJECT_SOURCE_DIR}/inputs")
 set(regex_unsat "^s *UNSATISFIABLE")
@@ -122,3 +123,7 @@ foreach(file_path ${inputs})
         PASS_REGULAR_EXPRESSION "${regex_pass}"
     )
 endforeach()
+
+# Install
+
+install(TARGETS "PPsat" RUNTIME)

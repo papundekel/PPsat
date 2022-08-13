@@ -4,25 +4,45 @@ generator="$1"
 solver="$2"
 size="$3"
 
-file_formula=`mktemp`
-file_model=`mktemp`
+create_temp_file()
+{
+        local file=`mktemp`
+        trap "rm $file" EXIT
+        echo "$file"
+}
 
-"$generator" "$size" > "$file_formula"
+if [ $# -ge 4 ]
+then
+        file_formula="$4"
+else
+        file_formula=`create_temp_file`
+fi
+
+if [ $# -ge 5 ]
+then
+        file_model="$5"
+else
+        file_model=`create_temp_file`
+fi
+
+file_models=`create_temp_file`
+
+"$generator" "$size" > "$file_formula" || { echo "<PPsat-queens>: The generator failed, quitting." >&2; exit 1; }
 
 while true
 do
-        $solver "$file_formula" | grep "^\(s\|v\)" > "$file_model"
+        $solver < "$file_formula" | grep "^\(s\|v\)" > "$file_model" || { echo "<PPsat-queens>: The solver failed, quitting." >&2; exit 2; }
 
-        if grep "UNSATISFIABLE" < "$file_model"
+        if grep "UNSATISFIABLE" < "$file_model" > /dev/null
         then
                 break
         fi
 
-        sed -ni 's/^v //p' "$file_model"
+        tmp=`mktemp` && sed -n 's/^v //p' < "$file_model" | tr '\n' ' ' > "$tmp" && echo >> "$tmp" && mv "$tmp" "$file_model"
         
         sed 's/\([1-9][0-9]*\)/-\1/g' < "$file_model" | sed 's/--//g' >> "$file_formula"
 
-        sed 's/ \([1-9][0-9]*\)/  \1/g' < "$file_model" | sed 's/^\([1-9]\)/ \1/'
+        sed 's/ \([1-9][0-9]*\)/  \1/g' < "$file_model" | sed 's/^\([1-9]\)/ \1/' >> "$file_models"
         
         clause_count=`grep 'p cnf' < "$file_formula" | grep -o '[0-9]\+$'`
         clause_count=$(($clause_count + 1))
@@ -30,4 +50,4 @@ do
         sed -i "s/\(.*p *cnf *[0-9]\+ *\)[0-9]\+\(.*\)/\1$clause_count\2/" "$file_formula"
 done
 
-rm "$file_formula" "$file_model"
+sort < "$file_models"
