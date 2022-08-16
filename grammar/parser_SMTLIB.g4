@@ -9,7 +9,8 @@ parser grammar parser_SMTLIB;
 
 @header
 {
-    #include <PPsat/antlr_parser.hpp>
+    #include <PPsat-base/antlr_parser.hpp>
+    namespace PPsat { using antlr_parser = PPsat_base::antlr_parser; }
 }
 
 @members

@@ -1,14 +1,15 @@
-#include <PPsat/cli/arguments_container.hpp>
-#include <PPsat/cli/option/parser.hpp>
-#include <PPsat/containers.hpp>
-#include <PPsat/error_handler.hpp>
-#include <PPsat/logger_ostream.hpp>
-#include <PPsat/logger_subroutine.hpp>
-#include <PPsat/options.hpp>
+#include <PPsat/cli/options.hpp>
 #include <PPsat/subprogram/cdcl.hpp>
 #include <PPsat/subprogram/convert.hpp>
 #include <PPsat/subprogram/dpll.hpp>
 #include <PPsat/subprogram/help.hpp>
+
+#include <PPsat-base/cli/arguments_container.hpp>
+#include <PPsat-base/cli/error_handler_simple.hpp>
+#include <PPsat-base/cli/parser.hpp>
+#include <PPsat-base/containers.hpp>
+#include <PPsat-base/logger_ostream.hpp>
+#include <PPsat-base/logger_subroutine.hpp>
 
 #include <array>
 #include <iostream>
@@ -18,14 +19,14 @@
 
 int main(int argc, char** argv)
 {
-    const auto logger_cerr = PPsat::logger_ostream(std::cerr);
-    const auto logger = PPsat::logger_subroutine(logger_cerr, "PPsat");
+    const auto logger_cerr = PPsat_base::logger_ostream(std::cerr);
+    const auto logger = PPsat_base::logger_subroutine(logger_cerr, "PPsat");
 
-    PPsat::options options;
-    PPsat::cli::arguments_container<PPsat::vector> arguments;
-    PPsat::error_handler error_handler(std::cerr);
+    PPsat::cli::options options;
+    PPsat_base::cli::arguments_container<PPsat_base::vector> arguments;
+    PPsat_base::cli::error_handler_simple error_handler(std::cerr);
 
-    const auto parse_success = PPsat::cli::option::parser(options.as_range())
+    const auto parse_success = PPsat_base::cli::parser(options.as_range())
                                    .parse(argc, argv, arguments, error_handler);
 
     if (!parse_success)

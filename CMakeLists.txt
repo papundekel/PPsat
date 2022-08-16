@@ -14,5 +14,7 @@ find_package(ANTLR REQUIRED)
 find_package(antlr4-generator REQUIRED)
 find_package(antlr4-runtime REQUIRED)
 
+add_subdirectory("PPsat-base")
 add_subdirectory("PPsat")
 add_subdirectory("PPsat-queens")
+add_subdirectory("PPsat-crypt")

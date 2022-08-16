@@ -1,15 +1,20 @@
 #pragma once
-#include <PPsat/variable_name_variant.hpp>
+#include <PPsat-base/variable.hpp>
+
+#include <string>
+#include <variant>
 
 namespace PPsat
 {
-class variable_simple final : public variable_name_variant
+class variable_simple : public virtual PPsat_base::variable
 {
-public:
-    void for_each_clause_containing(
-        std::function<void(clause&, bool)> f) const override final;
+    void set_assignment(assignment assignment) override final;
+    assignment get_assignment() const override final;
 
-    void register_containing_clause(clause& clause,
+    void for_each_clause_containing(
+        std::function<void(PPsat_base::clause&, bool)> f) const override final;
+
+    void register_containing_clause(PPsat_base::clause& clause,
                                     bool positive) override final;
 };
 }

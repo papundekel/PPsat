@@ -1,32 +1,35 @@
-#include "PPsat/variable.hpp"
-#include <PPsat/literal.hpp>
-#include <PPsat/tseitin_builder.hpp>
-
 #include <PPsat-parser_SMTLIB/parser_SMTLIB.h>
 #include <PPsat-parser_SMTLIB/parser_SMTLIBVisitor.h>
+
+#include <PPsat-base/literal.hpp>
+#include <PPsat-base/tseitin_builder.hpp>
+#include <PPsat-base/variable.hpp>
 
 #include <functional>
 #include <memory>
 
-namespace PPsat
+namespace PPsat_base
 {
 class variable;
+}
 
+namespace PPsat
+{
 class visitor_SMTLIB_tseitin final : public parser_SMTLIBVisitor
 {
-    const tseitin_builder& builder;
-    std::map<std::string_view, variable&> renaming_from_input;
+    const PPsat_base::tseitin_builder& builder;
+    std::map<std::string_view, PPsat_base::variable&> renaming_from_input;
     std::size_t name_next;
 
 public:
-    visitor_SMTLIB_tseitin(const tseitin_builder& builder) noexcept;
+    visitor_SMTLIB_tseitin(const PPsat_base::tseitin_builder& builder) noexcept;
 
 private:
     std::size_t get_next_name() noexcept;
 
-    literal handle_input(std::string name);
+    PPsat_base::literal handle_input(std::string name);
 
-    literal visit_typed(antlr4::tree::ParseTree* tree);
+    PPsat_base::literal visit_typed(antlr4::tree::ParseTree* tree);
 
     std::any visitConjunction(
         parser_SMTLIB::ConjunctionContext* context) override final;

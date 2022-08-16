@@ -1,12 +1,13 @@
 #pragma once
-#include <PPsat/cli/arguments.hpp>
-#include <PPsat/logger.hpp>
-#include <PPsat/options.hpp>
+#include <PPsat/cli/options.hpp>
 #include <PPsat/subcommand_result.hpp>
+
+#include <PPsat-base/cli/arguments.hpp>
+#include <PPsat-base/logger.hpp>
 
 namespace PPsat::subprogram
 {
-subcommand_result dpll_unparsed(const logger& logger_outer,
-                                cli::arguments& arguments,
-                                options& options);
+subcommand_result dpll_unparsed(const PPsat_base::logger& logger_outer,
+                                PPsat_base::cli::arguments& arguments,
+                                cli::options& options);
 }

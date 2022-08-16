@@ -1,10 +1,10 @@
 #pragma once
-#include <PPsat/builder.hpp>
-#include <PPsat/factory.hpp>
+#include <PPsat-base/builder.hpp>
+#include <PPsat-base/factory.hpp>
 
 namespace PPsat
 {
-class builder_SMTLIB_tseitin final : public builder
+class builder_SMTLIB_tseitin final : public PPsat_base::builder
 {
     bool nnf;
 
@@ -13,8 +13,9 @@ public:
         : nnf(nnf)
     {}
 
-    result read(const logger& logger_outer,
-                std::istream& input,
-                formula& formula) const override final;
+private:
+    bool read(const PPsat_base::logger& logger_outer,
+              std::istream& input,
+              PPsat_base::formula& formula) const override final;
 };
 }

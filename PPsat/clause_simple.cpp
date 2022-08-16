@@ -1,10 +1,12 @@
 #include <PPsat/clause_simple.hpp>
 
-PPsat::clause_simple::clause_simple(view_any<const literal> literals)
+PPsat::clause_simple::clause_simple(
+    PPsat_base::view_any<const PPsat_base::literal> literals)
     : literals(literals.begin(), literals.end())
 {}
 
-void PPsat::clause_simple::for_each(std::function<void(literal)> f) const
+void PPsat::clause_simple::for_each(
+    std::function<void(PPsat_base::literal)> f) const
 {
     std::ranges::for_each(literals, f);
 }
@@ -19,14 +21,14 @@ bool PPsat::clause_simple::is_sat() const noexcept
     return false;
 }
 
-std::pair<PPsat::clause::category, PPsat::literal>
+std::pair<PPsat_base::clause::category, PPsat_base::literal>
 PPsat::clause_simple::get_category_and_first_literal_impl() const noexcept
 {
-    return {clause::category::other, *literals.begin()};
+    return {category::other, *literals.begin()};
 }
 
-void PPsat::clause_simple::assign(literal, bool)
+void PPsat::clause_simple::assign(PPsat_base::literal, bool)
 {}
 
-void PPsat::clause_simple::unassign(literal, bool)
+void PPsat::clause_simple::unassign(PPsat_base::literal, bool)
 {}

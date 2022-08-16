@@ -1,13 +1,12 @@
 #pragma once
-#include <PPsat/builder.hpp>
+#include <PPsat-base/builder.hpp>
 
 namespace PPsat
 {
-class builder_DIMACS final : public builder
+class builder_DIMACS final : public PPsat_base::builder
 {
-public:
-    result read(const logger& logger_outer,
-                std::istream& input,
-                formula& formula) const override final;
+    bool read(const PPsat_base::logger& logger_outer,
+              std::istream& input,
+              PPsat_base::formula& formula) const override final;
 };
 }

@@ -1,7 +1,8 @@
 #pragma once
-#include <PPsat/cli/argument.hpp>
-#include <PPsat/cli/parameter/simple.hpp>
+#include "PPsat-base/cli/parameter/simple.hpp"
 #include <PPsat/formula_format.hpp>
+
+#include <PPsat-base/cli/argument/file.hpp>
 
 #include <filesystem>
 #include <fstream>
@@ -11,32 +12,23 @@
 
 namespace PPsat::cli::argument
 {
-template <typename Stream>
-class file : public parameter::simple<argument_>
+template <typename FStream>
+class file
+    : public PPsat_base::cli::argument::file<FStream>
+    , public PPsat_base::cli::parameter::simple
 {
-protected:
-    Stream stream;
     formula_format format;
 
 public:
-    bool parse(const logger& err,
-               std::string_view argument_path) noexcept override final;
+    void parse_path(
+        std::filesystem::path argument_path) noexcept override final;
 
     formula_format parsed_format() const;
 };
 
-extern template class file<std::ifstream>;
-extern template class file<std::ofstream>;
+extern template class PPsat::cli::argument::file<std::ifstream>;
+extern template class PPsat::cli::argument::file<std::ofstream>;
 
-class file_in : public file<std::ifstream>
-{
-public:
-    std::istream& parsed_stream();
-};
-
-class file_out : public file<std::ofstream>
-{
-public:
-    std::ostream& parsed_stream();
-};
+using file_in = file<std::ifstream>;
+using file_out = file<std::ofstream>;
 }

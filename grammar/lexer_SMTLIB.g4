@@ -15,5 +15,5 @@ PARENTHESISR: ')';
 AND: 'and';
 OR: 'or';
 NOT: 'not';
-VAR: [a-zA-Z] [a-zA-Z0-9]*;
+VAR: [a-zA-Z] [a-zA-Z0-9_]*;
 WHITESPACE: [ \t\r\n]+ -> channel(HIDDEN);

@@ -1,6 +1,5 @@
 #pragma once
-#include "PPsat/variable_name_variant.hpp"
-#include <PPsat/variable.hpp>
+#include <PPsat-base/variable.hpp>
 
 #include <functional>
 #include <utility>
@@ -8,15 +7,23 @@
 
 namespace PPsat
 {
-class variable_adjacency final : public variable_name_variant
+class variable_adjacency : public virtual PPsat_base::variable
 {
-    std::vector<std::pair<std::reference_wrapper<clause>, bool>> adjacency;
+    assignment assignment_current;
+    std::vector<std::pair<std::reference_wrapper<PPsat_base::clause>, bool>>
+        adjacency;
 
 public:
-    void for_each_clause_containing(
-        std::function<void(clause&, bool)> f) const override final;
+    variable_adjacency() noexcept;
 
-    void register_containing_clause(clause& clause,
+private:
+    void set_assignment(assignment assignment) override final;
+    assignment get_assignment() const override final;
+
+    void for_each_clause_containing(
+        std::function<void(PPsat_base::clause&, bool)> f) const override final;
+
+    void register_containing_clause(PPsat_base::clause& clause,
                                     bool positive) override final;
 };
 }

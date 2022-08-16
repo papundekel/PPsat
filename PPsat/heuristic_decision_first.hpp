@@ -3,19 +3,23 @@
 
 #include <set>
 
-namespace PPsat
+namespace PPsat_base
 {
 class variable;
+class formula;
+}
 
+namespace PPsat
+{
 class heuristic_decision_first final : public heuristic_decision
 {
-    std::set<variable*> set;
+    std::set<PPsat_base::variable*> set;
 
-    void init(formula& formula) override final;
+    void init(PPsat_base::formula& formula) override final;
 
-    void assigned(variable& variable) override final;
-    void unassigned(variable& variable) override final;
+    void assigned(PPsat_base::variable& variable) override final;
+    void unassigned(PPsat_base::variable& variable) override final;
 
-    variable& get_decision() const override final;
+    PPsat_base::variable& get_decision() const override final;
 };
 }

@@ -1,18 +1,18 @@
-#include "PPsat/variable.hpp"
 #include <PPsat/visitor_SMTLIB_tseitin.hpp>
 
-#include <PPsat/discard.hpp>
+#include <PPsat-base/discard.hpp>
+#include <PPsat-base/variable.hpp>
 
 PPsat::visitor_SMTLIB_tseitin::visitor_SMTLIB_tseitin(
-    const tseitin_builder& builder) noexcept
+    const PPsat_base::tseitin_builder& builder) noexcept
     : builder(builder)
     , renaming_from_input()
 {}
 
-PPsat::literal PPsat::visitor_SMTLIB_tseitin::handle_input(
+PPsat_base::literal PPsat::visitor_SMTLIB_tseitin::handle_input(
     std::string name_input)
 {
-    return {[this, &name_input]() -> variable&
+    return {[this, &name_input]() -> PPsat_base::variable&
             {
                 if (auto i = renaming_from_input.find(name_input);
                     i != renaming_from_input.end())
@@ -24,7 +24,7 @@ PPsat::literal PPsat::visitor_SMTLIB_tseitin::handle_input(
                     auto& variable_new = builder.create_new_variable();
 
                     const auto name_input_view =
-                        variable_new.set_input_name(std::move(name_input));
+                        variable_new.representation_set(std::move(name_input));
 
                     renaming_from_input.try_emplace(name_input_view,
                                                     variable_new);
@@ -35,10 +35,10 @@ PPsat::literal PPsat::visitor_SMTLIB_tseitin::handle_input(
             true};
 }
 
-PPsat::literal PPsat::visitor_SMTLIB_tseitin::visit_typed(
+PPsat_base::literal PPsat::visitor_SMTLIB_tseitin::visit_typed(
     antlr4::tree::ParseTree* tree)
 {
-    return std::any_cast<literal>(visit(tree));
+    return std::any_cast<PPsat_base::literal>(visit(tree));
 }
 
 std::any PPsat::visitor_SMTLIB_tseitin::visitConjunction(
@@ -74,8 +74,7 @@ std::any PPsat::visitor_SMTLIB_tseitin::visitVariable(
 std::any PPsat::visitor_SMTLIB_tseitin::visitInput(
     parser_SMTLIB::InputContext* context)
 {
-    visit(context->formula());
-    builder.push_literal();
+    builder.push_literal(visit_typed(context->formula()));
 
     return {};
 }

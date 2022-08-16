@@ -19,9 +19,10 @@ void PPsat::subprogram::help_print(std::ostream& out)
            "input.\n";
 }
 
-PPsat::subcommand_result PPsat::subprogram::help_unparsed(const logger&,
-                                                          cli::arguments&,
-                                                          options& options)
+PPsat::subcommand_result PPsat::subprogram::help_unparsed(
+    const PPsat_base::logger&,
+    PPsat_base::cli::arguments&,
+    cli::options& options)
 {
     if (!options.help)
     {

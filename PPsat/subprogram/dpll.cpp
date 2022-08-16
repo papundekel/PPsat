@@ -1,58 +1,119 @@
-#include "PPsat/clause_sets.hpp"
-#include "PPsat/variable_adjacency.hpp"
-#include <PPsat/subprogram/dpll.hpp>
-
-#include <PPsat/builder.hpp>
 #include <PPsat/builder_DIMACS.hpp>
 #include <PPsat/builder_SMTLIB_tseitin.hpp>
-#include <PPsat/clause.hpp>
+#include <PPsat/clause_counting.hpp>
+#include <PPsat/clause_sets.hpp>
+#include <PPsat/clause_type.hpp>
 #include <PPsat/cli/argument/file.hpp>
-#include <PPsat/conditional.hpp>
-#include <PPsat/containers.hpp>
 #include <PPsat/create_builder.hpp>
-#include <PPsat/discard_iterator.hpp>
-#include <PPsat/error_listener.hpp>
-#include <PPsat/factory.hpp>
-#include <PPsat/formula.hpp>
 #include <PPsat/formula_format.hpp>
 #include <PPsat/heuristic_decision.hpp>
 #include <PPsat/heuristic_decision_first.hpp>
-#include <PPsat/literal.hpp>
-#include <PPsat/logger.hpp>
-#include <PPsat/logger_subroutine.hpp>
-#include <PPsat/variable.hpp>
+#include <PPsat/subprogram/dpll.hpp>
+#include <PPsat/variable_DIMACS.hpp>
+#include <PPsat/variable_SMTLIB.hpp>
+#include <PPsat/variable_adjacency.hpp>
+
+#include <PPsat-base/builder.hpp>
+#include <PPsat-base/clause.hpp>
+#include <PPsat-base/conditional.hpp>
+#include <PPsat-base/containers.hpp>
+#include <PPsat-base/discard_iterator.hpp>
+#include <PPsat-base/error_listener.hpp>
+#include <PPsat-base/factory.hpp>
+#include <PPsat-base/formula.hpp>
+#include <PPsat-base/literal.hpp>
+#include <PPsat-base/logger.hpp>
+#include <PPsat-base/logger_subroutine.hpp>
+#include <PPsat-base/tuple_named.hpp>
+#include <PPsat-base/variable.hpp>
 
 #include <algorithm>
 #include <chrono>
 #include <functional>
 #include <iostream>
+#include <list>
+#include <memory>
 #include <optional>
+#include <ranges>
 #include <stack>
 #include <type_traits>
 #include <vector>
 
 namespace
 {
+template <PPsat::clause_type type>
+using clause_impl = PPsat_base::formula::factory_clause::impl<
+    PPsat_base::list,
+    std::conditional_t<type == PPsat::clause_type::counting,
+                       PPsat::clause_counting,
+                       PPsat::clause_sets>>;
+
+std::unique_ptr<PPsat_base::formula::factory_clause> create_clauses(
+    PPsat::clause_type type)
+{
+    switch (type)
+    {
+        case PPsat::clause_type::counting:
+            return std::make_unique<
+                clause_impl<PPsat::clause_type::counting>>();
+        case PPsat::clause_type::sets:
+            return std::make_unique<clause_impl<PPsat::clause_type::sets>>();
+        default:
+            return nullptr;
+    }
+}
+
+template <PPsat::formula_format format>
+struct variable_
+    : public PPsat::variable_adjacency
+    , public std::conditional_t<format == PPsat::formula_format::DIMACS,
+                                PPsat::variable_DIMACS,
+                                PPsat::variable_SMTLIB>
+{};
+
+std::unique_ptr<PPsat_base::formula::factory_variable> create_variables(
+    PPsat::formula_format format)
+{
+    switch (format)
+    {
+        case PPsat::formula_format::DIMACS:
+            return std::make_unique<PPsat_base::formula::factory_variable::impl<
+                PPsat_base::list,
+                variable_<PPsat::formula_format::DIMACS>>>();
+        case PPsat::formula_format::SMTLIB:
+            return std::make_unique<PPsat_base::formula::factory_variable::impl<
+                PPsat_base::list,
+                variable_<PPsat::formula_format::SMTLIB>>>();
+        default:
+            return nullptr;
+    }
+}
+}
+
+namespace PPsat
+{
 class dpll_structure
 {
-    PPsat::formula& formula;
-    PPsat::heuristic_decision& heuristic;
-    std::vector<PPsat::literal> stack_assignment;
+    using clause = PPsat_base::clause;
+    using literal = PPsat_base::literal;
+
+    PPsat_base::formula& formula;
+    heuristic_decision& heuristic;
+    std::vector<PPsat_base::literal> stack_assignment;
     std::vector<std::size_t> stack_decision;
     std::size_t count_clause_sat;
-    const PPsat::logger& logger;
+    std::size_t count_decision;
+    std::size_t count_unit_propagation;
 
 public:
-    dpll_structure(std::size_t variable_count,
-                   PPsat::formula& formula,
-                   PPsat::heuristic_decision& heuristic,
-                   const PPsat::logger& logger)
+    dpll_structure(PPsat_base::formula& formula, heuristic_decision& heuristic)
         : formula(formula)
         , heuristic(heuristic)
         , stack_assignment()
         , stack_decision()
         , count_clause_sat(0)
-        , logger(logger)
+        , count_decision(0)
+        , count_unit_propagation(0)
     {
         if (formula.contains_unsat_clause())
         {
@@ -62,43 +123,46 @@ public:
         heuristic.init(formula);
     }
 
-    std::pair<PPsat::clause::category, PPsat::literal> assign(
-        PPsat::literal literal_assigned)
+    std::pair<clause::category, PPsat_base::literal> assign(
+        PPsat_base::literal literal_assigned)
     {
         bool made_unsat = false;
         bool made_unit = false;
         bool made_unknown = false;
-        PPsat::literal literal_first;
+        PPsat_base::literal literal_first;
 
-        literal_assigned.get_variable().for_each_clause_containing(
+        bool was_sat;
+
+        literal_assigned.get_variable().assign(
+            literal_assigned.is_positive(),
+            [&was_sat](clause& clause)
+            {
+                was_sat = clause.is_sat();
+            },
             [this,
-             &literal_assigned,
+             &was_sat,
              &made_unsat,
              &made_unit,
              &made_unknown,
-             &literal_first](PPsat::clause& clause, bool positive)
+             &literal_first](clause& clause)
             {
-                const bool was_sat = clause.is_sat();
-
-                clause.assign(literal_assigned, positive);
-
                 const auto [category, literal] =
                     clause.get_category_and_first_literal();
 
-                if (!was_sat && category == PPsat::clause::category::sat)
+                if (!was_sat && category == clause::category::sat)
                 {
                     ++count_clause_sat;
                 }
 
-                if (category == PPsat::clause::category::unsat)
+                if (category == clause::category::unsat)
                 {
                     made_unsat = true;
                 }
-                else if (category != PPsat::clause::category::sat)
+                else if (category != clause::category::sat)
                 {
                     made_unknown = true;
 
-                    if (category == PPsat::clause::category::unit)
+                    if (category == clause::category::unit)
                     {
                         literal_first = literal;
                         made_unit = true;
@@ -109,29 +173,30 @@ public:
         heuristic.assigned(literal_assigned.get_variable());
         stack_assignment.push_back(literal_assigned);
 
-        return {made_unsat     ? PPsat::clause::category::unsat
-                : made_unit    ? PPsat::clause::category::unit
-                : made_unknown ? PPsat::clause::category::other
-                               : PPsat::clause::category::sat,
+        return {made_unsat     ? clause::category::unsat
+                : made_unit    ? clause::category::unit
+                : made_unknown ? clause::category::other
+                               : clause::category::sat,
                 literal_first};
     }
 
-    PPsat::literal unassign()
+    PPsat_base::literal unassign()
     {
         const auto literal_unassigned = stack_assignment.back();
         stack_assignment.pop_back();
 
-        // logger << "unassigned " << literal_unassigned << "\n";
-
         heuristic.unassigned(literal_unassigned.get_variable());
 
-        literal_unassigned.get_variable().for_each_clause_containing(
-            [this, &literal_unassigned](PPsat::clause& clause, bool positive)
+        bool was_sat;
+
+        literal_unassigned.get_variable().unassign(
+            literal_unassigned.is_positive(),
+            [&was_sat](clause& clause)
             {
-                const bool was_sat = clause.is_sat();
-
-                clause.unassign(literal_unassigned, positive);
-
+                was_sat = clause.is_sat();
+            },
+            [this, &was_sat](clause& clause)
+            {
                 if (was_sat && !clause.is_sat())
                 {
                     --count_clause_sat;
@@ -141,7 +206,7 @@ public:
         return literal_unassigned;
     }
 
-    PPsat::clause::category unit_propagate(PPsat::literal literal_starting)
+    clause::category unit_propagate(PPsat_base::literal literal_starting)
     {
         auto literal_current = literal_starting;
 
@@ -149,13 +214,13 @@ public:
         {
             auto [category, literal_future] = assign(literal_current);
 
-            // logger << "unit " << literal_current << "\n";
+            ++count_unit_propagation;
 
-            if (category == PPsat::decisive)
+            if (category == PPsat_base::decisive)
             {
                 return category;
             }
-            else if (category != PPsat::clause::category::unit)
+            else if (category != clause::category::unit)
             {
                 break;
             }
@@ -163,20 +228,22 @@ public:
             literal_current = literal_future;
         }
 
-        return PPsat::clause::category::other;
+        return clause::category::other;
     }
 
-    std::pair<PPsat::clause::category, PPsat::literal> decide(
-        PPsat::literal literal)
+    std::pair<clause::category, PPsat_base::literal> decide(
+        PPsat_base::literal literal)
     {
         stack_decision.push_back(stack_assignment.size());
+
+        ++count_decision;
 
         return assign(literal);
     }
 
-    PPsat::variable* backtrack()
+    PPsat_base::variable* backtrack()
     {
-        PPsat::variable* decided_variable = nullptr;
+        PPsat_base::variable* decided_variable = nullptr;
         bool was_decision_true = false;
 
         do
@@ -189,7 +256,7 @@ public:
             const auto count_before_decision = stack_decision.back();
             stack_decision.pop_back();
 
-            PPsat::literal decided_literal;
+            PPsat_base::literal decided_literal;
 
             while (stack_assignment.size() != count_before_decision)
             {
@@ -201,20 +268,18 @@ public:
 
         } while (was_decision_true);
 
-        // logger << "backtracked\n";
-
         return decided_variable;
     }
 
     bool solve()
     {
         bool backtracked = false;
-        PPsat::variable* decision_variable = nullptr;
-        std::optional<PPsat::literal> literal_unit_opt;
+        PPsat_base::variable* decision_variable = nullptr;
+        std::optional<PPsat_base::literal> literal_unit_opt;
 
         while (true)
         {
-            PPsat::clause::category category = PPsat::clause::category::other;
+            auto category = clause::category::other;
 
             if (!backtracked)
             {
@@ -229,18 +294,18 @@ public:
                 }
             }
 
-            if (category != PPsat::decisive)
+            if (category != PPsat_base::decisive)
             {
                 if (!backtracked)
                 {
                     decision_variable = &heuristic.get_decision();
                 }
 
-                PPsat::literal literal;
+                PPsat_base::literal literal;
                 std::tie(category, literal) =
                     decide({*decision_variable, backtracked});
 
-                if (category == PPsat::clause::category::unit)
+                if (category == clause::category::unit)
                 {
                     literal_unit_opt.emplace(literal);
                 }
@@ -248,23 +313,14 @@ public:
                 {
                     literal_unit_opt.reset();
                 }
-
-                // logger << "decided "
-                //        << literal_pair{decision_variable, backtracked} <<
-                //        "\n";
             }
 
-            if (formula.clause_count() == count_clause_sat)
+            if (formula.count_clause() == count_clause_sat)
             {
                 return true;
             }
-            else if (category == PPsat::clause::category::unsat)
+            else if (category == clause::category::unsat)
             {
-                // for (auto& x : stack_assignment)
-                // {
-                //     logger << "A " << x << "\n";
-                // }
-
                 const auto decision_variable_new_ptr = backtrack();
                 backtracked = true;
 
@@ -283,24 +339,32 @@ public:
         }
     }
 
-    void for_each_assignment(auto&& f) const
+    void for_each_assignment(auto f) const
     {
-        std::ranges::for_each(stack_assignment, std::forward<decltype(f)>(f));
+        std::ranges::for_each(stack_assignment, std::move(f));
+    }
+
+    PPsat_base::tuple<int, int>::named<"count_decision",
+                                       "count_unit_propagation">
+    get_statistics() const noexcept
+    {
+        return {count_decision, count_unit_propagation};
     }
 };
 }
 
 PPsat::subcommand_result PPsat::subprogram::dpll_unparsed(
-    const logger& logger_outer,
-    cli::arguments& arguments,
-    options& options)
+    const PPsat_base::logger& logger_outer,
+    PPsat_base::cli::arguments& arguments,
+    cli::options& options)
 {
     if (!options.dpll)
     {
         return {};
     }
 
-    const auto& logger_inner = logger_subroutine(logger_outer, "dpll");
+    const auto& logger_inner =
+        PPsat_base::logger_subroutine(logger_outer, "dpll");
 
     PPsat::cli::argument::file_in argument_file_in;
 
@@ -314,17 +378,22 @@ PPsat::subcommand_result PPsat::subprogram::dpll_unparsed(
         return 1;
     }
 
-    const auto builder =
-        create_builder(options.format, argument_file_in, options.nnf);
+    const auto format =
+        pick_format(options.format, argument_file_in, formula_format::DIMACS);
+
+    const auto builder = create_builder(format, options.nnf);
 
     auto& formula_input = argument_file_in.parsed_stream();
 
-    PPsat::formula::factory_clause::impl<PPsat::list, clause_sets> clauses;
-    PPsat::formula::factory_variable::impl<PPsat::list, variable_adjacency>
-        variables;
-    PPsat::formula formula(clauses, variables);
+    auto clauses = create_clauses(options.clause ? options.clause.parsed()
+                                                 : clause_type::counting);
 
+    auto variables = create_variables(format);
+    PPsat_base::formula formula(*clauses, *variables);
+
+    auto time_parsing_start = std::chrono::steady_clock::now();
     const auto result = builder->read(logger_inner, formula_input, formula);
+    auto time_parsing_end = std::chrono::steady_clock::now();
 
     if (!result)
     {
@@ -333,28 +402,26 @@ PPsat::subcommand_result PPsat::subprogram::dpll_unparsed(
         return 2;
     }
 
-    const auto variable_count = result.get_variable_count();
-
     PPsat::heuristic_decision_first heuristic;
-    dpll_structure structure(variable_count, formula, heuristic, logger_inner);
+    dpll_structure structure(formula, heuristic);
 
+    auto time_solving_start = std::chrono::steady_clock::now();
     const auto satisfiable = structure.solve();
+    auto time_solving_end = std::chrono::steady_clock::now();
 
-    // formula.write_DIMACS(std::cerr,
-    //                      (std::ostream & (&)(std::ostream&, literal))
-    //                          PPsat::operator<<);
+    const auto statistics = structure.get_statistics();
 
     if (satisfiable)
     {
         std::cout << "s SATISFIABLE\n";
         std::cout << "v ";
 
-        std::vector<const literal*> model;
+        std::vector<const PPsat_base::literal*> model;
 
         structure.for_each_assignment(
-            [&model](const literal& literal)
+            [&model](const PPsat_base::literal& literal)
             {
-                if (literal.get_variable().has_input_name())
+                if (literal.get_variable().representation_has())
                 {
                     model.push_back(&literal);
                 }
@@ -362,15 +429,15 @@ PPsat::subcommand_result PPsat::subprogram::dpll_unparsed(
 
         std::sort(model.begin(),
                   model.end(),
-                  [](const literal* a, const literal* b)
+                  [](const PPsat_base::literal* a, const PPsat_base::literal* b)
                   {
-                      return a->get_variable().hash() <
-                             b->get_variable().hash();
+                      return a->get_variable().representation_hash() <
+                             b->get_variable().representation_hash();
                   });
 
-        for (const auto& lit : model)
+        for (const auto* lit_ptr : model)
         {
-            std::cout << *lit << " ";
+            std::cout << *lit_ptr << " ";
         }
 
         std::cout << "0\n";
@@ -379,6 +446,18 @@ PPsat::subcommand_result PPsat::subprogram::dpll_unparsed(
     {
         std::cout << "s UNSATISFIABLE\n";
     }
+
+    std::chrono::duration<double> time_parsing =
+        (time_parsing_end - time_parsing_start);
+    std::chrono::duration<double> time_solving =
+        (time_solving_end - time_solving_start);
+
+    std::cout << "c Parsing time: " << time_parsing << "\n"
+              << "c Solving time: " << time_solving << "\n"
+              << "c Decision steps: " << statistics["count_decision"_cst]
+              << "\n"
+              << "c Unit propagation steps: "
+              << statistics["count_unit_propagation"_cst] << "\n";
 
     return 0;
 }

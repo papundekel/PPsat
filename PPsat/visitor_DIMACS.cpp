@@ -1,9 +1,9 @@
-#include "PPsat/formula.hpp"
+#include "PPsat-base/formula.hpp"
 #include <PPsat/visitor_DIMACS.hpp>
 
 #include <charconv>
 
-PPsat::visitor_DIMACS::visitor_DIMACS(formula& formula) noexcept
+PPsat::visitor_DIMACS::visitor_DIMACS(PPsat_base::formula& formula) noexcept
     : f(formula)
     , renaming_from_input()
     , name_next(0)
@@ -57,7 +57,7 @@ std::any PPsat::visitor_DIMACS::visitInput(parser_DIMACS::InputContext* context)
 std::any PPsat::visitor_DIMACS::visitClause(
     parser_DIMACS::ClauseContext* context)
 {
-    std::vector<literal> clause;
+    std::vector<PPsat_base::literal> clause;
 
     for (auto* const literal_context : context->literal())
     {
@@ -68,10 +68,10 @@ std::any PPsat::visitor_DIMACS::visitClause(
             return {};
         }
 
-        clause.push_back(std::any_cast<literal>(literal_any));
+        clause.push_back(std::any_cast<PPsat_base::literal>(literal_any));
     }
 
-    f.add_clause(view_literal(clause));
+    f.add_clause(PPsat_base::view_literal(clause));
 
     return {};
 }
@@ -99,7 +99,7 @@ std::any PPsat::visitor_DIMACS::visitLiteral(
         {
             auto& variable_new = f.create_new_variable();
 
-            variable_new.set_input_name(name_input);
+            variable_new.representation_set(name_input);
             renaming_from_input.try_emplace(name_input, variable_new);
 
             return variable_new;
@@ -107,5 +107,5 @@ std::any PPsat::visitor_DIMACS::visitLiteral(
     }
     (*name_input_opt);
 
-    return literal{variable, context->NEGATED() == nullptr};
+    return PPsat_base::literal{variable, context->NEGATED() == nullptr};
 }

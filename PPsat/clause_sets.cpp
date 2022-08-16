@@ -1,15 +1,16 @@
 #include <PPsat/clause_sets.hpp>
 
 #include <algorithm>
-#include <bits/ranges_algo.h>
 
-PPsat::clause_sets::clause_sets(view_any<const literal> literals)
+PPsat::clause_sets::clause_sets(
+    PPsat_base::view_any<const PPsat_base::literal> literals)
     : unassigned(literals.begin(), literals.end())
     , assigned_false()
     , assigned_true()
 {}
 
-void PPsat::clause_sets::for_each(std::function<void(literal)> f) const
+void PPsat::clause_sets::for_each(
+    std::function<void(PPsat_base::literal)> f) const
 {
     std::ranges::for_each(unassigned, f);
     std::ranges::for_each(assigned_false, f);
@@ -26,48 +27,45 @@ bool PPsat::clause_sets::is_sat() const noexcept
     return !assigned_true.empty();
 }
 
-std::pair<PPsat::clause::category, PPsat::literal>
+std::pair<PPsat_base::clause::category, PPsat_base::literal>
 PPsat::clause_sets::get_category_and_first_literal_impl() const noexcept
 {
     const auto unassigned_count = unassigned.size();
     if (unassigned_count == 0)
     {
-        return {clause::category::unsat, {}};
+        return {category::unsat, {}};
     }
     else
     {
-        return {unassigned_count == 1 ? clause::category::unit
-                                      : clause::category::other,
+        return {unassigned_count == 1 ? category::unit : category::other,
                 *unassigned.begin()};
     }
 }
 
-void PPsat::clause_sets::assign(literal literal_assigned,
+void PPsat::clause_sets::assign(PPsat_base::literal literal_assigned,
                                 bool positive_in_clause)
 {
-    unassigned.erase(literal{literal_assigned, positive_in_clause});
+    const PPsat_base::literal literal_in_clause(literal_assigned,
+                                                positive_in_clause);
 
-    if (literal_assigned.is_positive() == positive_in_clause)
-    {
-        assigned_true.emplace(literal_assigned);
-    }
-    else
-    {
-        assigned_false.emplace(literal_assigned);
-    }
+    unassigned.erase(literal_in_clause);
+
+    (literal_assigned.is_positive() == literal_in_clause.is_positive()
+         ? assigned_true
+         : assigned_false)
+        .emplace(literal_in_clause);
 }
 
-void PPsat::clause_sets::unassign(literal literal_unassigned,
+void PPsat::clause_sets::unassign(PPsat_base::literal literal_unassigned,
                                   bool positive_in_clause)
 {
-    if (literal_unassigned.is_positive() == positive_in_clause)
-    {
-        assigned_true.erase(literal_unassigned);
-    }
-    else
-    {
-        assigned_false.erase(!literal_unassigned);
-    }
+    const PPsat_base::literal literal_in_clause(literal_unassigned,
+                                                positive_in_clause);
 
-    unassigned.emplace(literal{literal_unassigned, positive_in_clause});
+    (literal_unassigned.is_positive() == literal_in_clause.is_positive()
+         ? assigned_true
+         : assigned_false)
+        .erase(literal_in_clause);
+
+    unassigned.emplace(literal_in_clause);
 }

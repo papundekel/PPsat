@@ -2,9 +2,14 @@ cmake_minimum_required(VERSION 3.20)
 
 add_executable("PPsat-queens-generate"
     "main.cpp"
+    "generate.cpp"
 )
 
 set_target_properties("PPsat-queens-generate" PROPERTIES COMPILE_OPTIONS "-std=c++2b")
+target_include_directories("PPsat-queens-generate" PUBLIC "${CMAKE_CURRENT_LIST_DIR}/../")
+target_link_libraries("PPsat-queens-generate" PUBLIC "PPsat-base")
+
+# Install
 
 install(TARGETS "PPsat-queens-generate" RUNTIME)
 install(PROGRAMS "PPsat-queens-measure.sh" "PPsat-queens.sh" TYPE BIN)

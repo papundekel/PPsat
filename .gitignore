@@ -2,7 +2,6 @@
 .antlr/
 .vscode/
 build/
-outputs/
-inputs/PPsat-queens
+PPsat/inputs
 .cache/
 install/
