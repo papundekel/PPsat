@@ -1,5 +1,6 @@
 #pragma once
 #include <PPsat-base/cli/parameter.hpp>
+#include <PPsat-base/logger.hpp>
 
 #include <cstddef>
 #include <string_view>
@@ -13,7 +14,8 @@ public:
 
     constexpr virtual std::size_t argument_count() const noexcept = 0;
 
-    constexpr virtual bool parse(std::size_t index,
+    constexpr virtual bool parse(const logger& logger,
+                                 std::size_t index,
                                  std::string_view argument) noexcept = 0;
 };
 }

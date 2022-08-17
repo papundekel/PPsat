@@ -5,7 +5,6 @@
 #include <PPsat-base/view_chain.hpp>
 
 #include <algorithm>
-#include <bits/ranges_algo.h>
 #include <ranges>
 #include <string>
 
@@ -20,10 +19,14 @@ PPsat_crypt::visitor_constraints::visitor_constraints(
 std::any PPsat_crypt::visitor_constraints::visitInput(
     parser_CRYPT::InputContext* context)
 {
+    output << "\n"
+           << "(assert\n";
+
     visit(context->formula());
 
-    output << "(check-sat)\n"
-           << "(get-model)\n";
+    output << ")\n"
+           << "\n"
+           << "(check-sat)\n";
 
     return {};
 }
@@ -38,23 +41,31 @@ std::any PPsat_crypt::visitor_constraints::visitParentheses(
 std::any PPsat_crypt::visitor_constraints::visitDisjunction(
     parser_CRYPT::DisjunctionContext* context)
 {
+    output << "(or\n";
     visit(context->formula(0));
+    output << "\n";
     visit(context->formula(1));
+    output << ")\n";
     return {};
 }
 
 std::any PPsat_crypt::visitor_constraints::visitConjunction(
     parser_CRYPT::ConjunctionContext* context)
 {
+    output << "(and\n";
     visit(context->formula(0));
+    output << "\n";
     visit(context->formula(1));
+    output << ")\n";
     return {};
 }
 
 std::any PPsat_crypt::visitor_constraints::visitNegation(
     parser_CRYPT::NegationContext* context)
 {
+    output << "(not \n";
     visit(context->formula());
+    output << ")\n";
     return {};
 }
 
@@ -80,6 +91,26 @@ std::any PPsat_crypt::visitor_constraints::visitAtom(
                               std::invoke(get_text, context_words.back()));
     }();
 
+    const auto operators = PPsat_base::ranges_to<PPsat_base::vector>(
+        context->operation() |
+        std::views::transform(
+            [this](auto* context_operator)
+            {
+                return std::any_cast<bool>(visit(context_operator)) ? '+' : '-';
+            }));
+
+    output << "; ";
+
+    auto operand_i = operands.begin();
+    for (auto operator_i = operators.begin(); operator_i != operators.end();
+         ++operator_i, ++operand_i)
+    {
+        output << *operand_i << *operator_i;
+    }
+    output << *operand_i << "=" << result << "\n";
+
+    output << "(and\n";
+
     const auto handle_head = [this](const std::string& word)
     {
         if (word.size() <= 1)
@@ -90,33 +121,25 @@ std::any PPsat_crypt::visitor_constraints::visitAtom(
         const auto character = word[0];
         if (!variable_head.contains(character))
         {
-            output << "(assert (not (= 0 v" << character << ")))\n";
+            output << "(not (= 0 v" << character << ")) ";
             variable_head.emplace(character);
         }
     };
 
+    output << "; First digit in a number cannot be 0.\n";
     for (const auto& operand : operands)
     {
         handle_head(operand);
     }
     handle_head(result);
-
     output << "\n";
 
-    const auto length_max =
+    const auto s_max =
         std::ranges::max(std::ranges::max_element(operands,
                                                   std::ranges::less(),
                                                   &std::string::length)
                              ->length(),
-                         result.length());
-
-    const auto operators = PPsat_base::ranges_to<PPsat_base::vector>(
-        context->operation() |
-        std::views::transform(
-            [this](auto* context_operator)
-            {
-                return std::any_cast<bool>(visit(context_operator)) ? '+' : '-';
-            }));
+                         result.length() + 1);
 
     const auto operand_has_bit =
         [](const std::string& operand, std::size_t significance_i)
@@ -154,7 +177,7 @@ std::any PPsat_crypt::visitor_constraints::visitAtom(
         {
             const char op = get_operator(operator_i);
 
-            const auto [has_bit, bit] =
+            const auto [has_bit, _] =
                 operand_has_bit(*operand_i, significance_i);
 
             if (has_bit)
@@ -180,45 +203,49 @@ std::any PPsat_crypt::visitor_constraints::visitAtom(
 
     auto magnitude = base;
 
-    for (auto significance_i = 0uz; significance_i != length_max;
-         ++significance_i)
+    output << "\n"
+           << "; Results per significance.\n";
+
+    for (auto s = 0; s != s_max; ++s)
     {
-        output << "(assert (= x" << atom_i << "_" << significance_i << " ";
-        print_expression(significance_i);
+        output << "(= x" << atom_i << "_" << s << " ";
+        print_expression(s);
+        output << ")\n";
+    }
+
+    output << "\n"
+           << "; Results with carry values added.\n";
+
+    for (auto s = 0; s != s_max; ++s)
+    {
+        output << "(= y" << atom_i << "_" << s << " (+ x" << atom_i << "_" << s
+               << " ";
+
+        if (s != 0)
+        {
+            output << "(div y" << atom_i << "_" << s - 1 << " " << base << ")";
+        }
+        else
+        {
+            output << "0";
+        }
+
         output << "))\n";
     }
 
-    output << "\n";
-
-    for (auto significance_i = 0; significance_i != length_max;
-         ++significance_i)
+    output << "\n"
+           << "; The result characters are mod base the results with carry.\n";
+    for (auto i = 0; i != result.length(); ++i)
     {
-        output << "(assert (= y" << atom_i << "_" << significance_i << " (+ x"
-               << atom_i << "_" << significance_i;
-
-        if (significance_i != 0)
-        {
-            output << " (div y" << atom_i << "_" << significance_i - 1 << " "
-                   << base << ")";
-        }
-
-        output << ")))\n";
+        output << "(= v" << *(result.end() - 1 - i) << " (mod y" << atom_i
+               << "_" << i << " " << base << "))\n";
     }
 
-    output << "\n";
+    output << "\n"
+           << "; The result shall be exact.\n"
+           << "(= y" << atom_i << "_" << result.length() << " 0)\n";
 
-    output << "(assert (>= y" << atom_i << "_" << length_max - 1 << " 0))\n";
-
-    output << "\n";
-
-    for (auto significance_i = 0; significance_i != result.length();
-         ++significance_i)
-    {
-        output << "(assert (= v" << result[significance_i] << " (mod y"
-               << atom_i << "_" << significance_i << " 10)))\n";
-    }
-
-    output << "\n";
+    output << ")\n";
 
     ++atom_i;
 

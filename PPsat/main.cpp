@@ -1,17 +1,16 @@
+#include "PPsat/cli/argument/file.hpp"
 #include <PPsat/cli/options.hpp>
-#include <PPsat/subprogram/cdcl.hpp>
-#include <PPsat/subprogram/convert.hpp>
-#include <PPsat/subprogram/dpll.hpp>
-#include <PPsat/subprogram/help.hpp>
+#include <PPsat/help_print.hpp>
+#include <PPsat/subprogram.hpp>
 
-#include <PPsat-base/cli/arguments_container.hpp>
-#include <PPsat-base/cli/error_handler_simple.hpp>
+#include <PPsat-base/cli/argument.hpp>
 #include <PPsat-base/cli/parser.hpp>
 #include <PPsat-base/containers.hpp>
 #include <PPsat-base/logger_ostream.hpp>
 #include <PPsat-base/logger_subroutine.hpp>
 
 #include <array>
+#include <functional>
 #include <iostream>
 #include <iterator>
 #include <string_view>
@@ -23,48 +22,39 @@ int main(int argc, char** argv)
     const auto logger = PPsat_base::logger_subroutine(logger_cerr, "PPsat");
 
     PPsat::cli::options options;
-    PPsat_base::cli::arguments_container<PPsat_base::vector> arguments;
-    PPsat_base::cli::error_handler_simple error_handler(std::cerr);
+    PPsat::cli::argument::file_in argument_file_in;
+    PPsat::cli::argument::file_out argument_file_out;
 
-    const auto parse_success = PPsat_base::cli::parser(options.as_range())
-                                   .parse(argc, argv, arguments, error_handler);
+    const auto success_cli =
+        PPsat_base::cli::parser(
+            options.as_range(),
+            std::array{std::reference_wrapper<PPsat_base::cli::argument_>(
+                           argument_file_in),
+                       std::reference_wrapper<PPsat_base::cli::argument_>(
+                           argument_file_out)})
+            .parse(argc, argv, logger);
 
-    if (!parse_success)
+    if (!success_cli)
     {
-        error_handler.handle();
-
+        logger << "CLI error, stopping.\n";
         return 1;
     }
 
-    constexpr auto subprograms = std::array{PPsat::subprogram::help_unparsed,
-                                            PPsat::subprogram::convert_unparsed,
-                                            PPsat::subprogram::cdcl_unparsed,
-                                            PPsat::subprogram::dpll_unparsed};
-
-    int sub_code;
-    const auto i =
-        std::find_if(std::begin(subprograms),
-                     std::end(subprograms),
-                     [&arguments, &options, &sub_code, &logger](auto subprogram)
-                     {
-                         auto result = subprogram(logger, arguments, options);
-                         if (result)
-                         {
-                             sub_code = result.code();
-                             return true;
-                         }
-
-                         return false;
-                     });
-
-    if (i == std::end(subprograms))
+    if (options.help)
     {
-        logger << "No subprogram specified.\n";
-        PPsat::subprogram::help_print(std::cout);
+        PPsat::help_print(std::cout);
+        return 0;
+    }
+
+    if (!options.subprogram)
+    {
+        logger << "No subprogram specified, use option -help for help.\n";
         return 2;
     }
-    else
-    {
-        return sub_code << 2;
-    }
+
+    return options.subprogram.parsed_subprogram()(logger,
+                                                  options,
+                                                  argument_file_in,
+                                                  argument_file_out)
+           << 2;
 }

@@ -11,6 +11,7 @@ add_executable("PPsat"
     "cli/argument/file.cpp"
     "cli/options.cpp"
     "create_builder.cpp"
+    "help_print.cpp"
     "heuristic_decision_first.cpp"
     "subprogram/cdcl.cpp"
     "subprogram/convert.cpp"
@@ -96,7 +97,7 @@ foreach(file_path ${inputs})
 
     set(test_name "PPsat-dpll-${file_name}")
 
-    add_test(NAME "${test_name}" COMMAND "PPsat" "-dpll" "${file_path}")
+    add_test(NAME "${test_name}" COMMAND "PPsat" "-subprogram" "dpll" "${file_path}")
 
     cmake_path(GET file_path PARENT_PATH parent_path)
     cmake_path(GET parent_path FILENAME parent_name)

@@ -1,3 +1,4 @@
+#include "PPsat/subprogram.hpp"
 #include <PPsat/cli/options.hpp>
 
 #include <PPsat/clause_type.hpp>
@@ -9,9 +10,11 @@ using namespace std::literals;
 
 PPsat::cli::options::options()
     : help("help")
-    , convert("convert")
-    , dpll("dpll")
-    , cdcl("cdcl")
+    , subprogram(
+          "subprogram",
+          std::array{std::make_pair("convert", subprogram::selection::convert),
+                     std::make_pair("dpll", subprogram::selection::dpll),
+                     std::make_pair("cdcl", subprogram::selection::cdcl)})
     , nnf("nnf")
     , watched_literals("wl")
     , format("format",
@@ -22,8 +25,8 @@ PPsat::cli::options::options()
                         std::make_pair("counting", clause_type::counting)})
 {}
 
-std::array<std::reference_wrapper<PPsat_base::cli::option_>, 8>
+std::array<std::reference_wrapper<PPsat_base::cli::option_>, 6>
 PPsat::cli::options::as_range() noexcept
 {
-    return {help, convert, dpll, cdcl, nnf, watched_literals, format, clause};
+    return {help, subprogram, nnf, watched_literals, format, clause};
 }

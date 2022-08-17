@@ -1,9 +1,10 @@
 #include <PPsat/builder_SMTLIB_tseitin.hpp>
 #include <PPsat/clause_simple.hpp>
 #include <PPsat/cli/argument/file.hpp>
+#include <PPsat/cli/options.hpp>
 #include <PPsat/create_builder.hpp>
 #include <PPsat/formula_format.hpp>
-#include <PPsat/subprogram/convert.hpp>
+#include <PPsat/subprogram.hpp>
 #include <PPsat/variable_DIMACS.hpp>
 #include <PPsat/variable_SMTLIB.hpp>
 #include <PPsat/variable_simple.hpp>
@@ -122,34 +123,13 @@ std::unique_ptr<PPsat_base::formula::factory_variable> create_variables(
 }
 }
 
-PPsat::subcommand_result PPsat::subprogram::convert_unparsed(
-    const PPsat_base::logger& logger_outer,
-    PPsat_base::cli::arguments& arguments,
-    cli::options& options)
+int PPsat::subprogram::convert(const PPsat_base::logger& logger_outer,
+                               cli::options& options,
+                               cli::argument::file_in& argument_file_in,
+                               cli::argument::file_out& argument_file_out)
 {
-    if (!options.convert)
-    {
-        return {};
-    }
-
     const auto logger_inner =
         PPsat_base::logger_subroutine(logger_outer, "convert");
-
-    PPsat::cli::argument::file_in argument_file_in;
-    PPsat::cli::argument::file_out argument_file_out;
-
-    const auto success = arguments.parse(
-        logger_inner,
-        std::array<std::reference_wrapper<PPsat_base::cli::argument_>, 2>{
-            argument_file_in,
-            argument_file_out});
-
-    if (!success)
-    {
-        logger_inner << "Skipping the subprogram.\n";
-
-        return 1;
-    }
 
     const auto format =
         pick_format(options.format, argument_file_in, formula_format::SMTLIB);
@@ -169,7 +149,7 @@ PPsat::subcommand_result PPsat::subprogram::convert_unparsed(
     {
         logger_inner << "Skipping outputting the formula.\n";
 
-        return 2;
+        return 1;
     }
 
     auto& output_formula = argument_file_out.parsed_stream();

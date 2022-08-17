@@ -26,7 +26,7 @@ private:
     virtual void parse_path(std::filesystem::path path) noexcept = 0;
 
 public:
-    bool parse(const PPsat_base::logger& err,
+    bool parse(const PPsat_base::logger& logger,
                std::string_view argument_path) noexcept override final;
 
     stream_type& parsed_stream();

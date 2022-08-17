@@ -4,11 +4,12 @@
 #include <PPsat/clause_sets.hpp>
 #include <PPsat/clause_type.hpp>
 #include <PPsat/cli/argument/file.hpp>
+#include <PPsat/cli/options.hpp>
 #include <PPsat/create_builder.hpp>
 #include <PPsat/formula_format.hpp>
 #include <PPsat/heuristic_decision.hpp>
 #include <PPsat/heuristic_decision_first.hpp>
-#include <PPsat/subprogram/dpll.hpp>
+#include <PPsat/subprogram.hpp>
 #include <PPsat/variable_DIMACS.hpp>
 #include <PPsat/variable_SMTLIB.hpp>
 #include <PPsat/variable_adjacency.hpp>
@@ -353,30 +354,13 @@ public:
 };
 }
 
-PPsat::subcommand_result PPsat::subprogram::dpll_unparsed(
-    const PPsat_base::logger& logger_outer,
-    PPsat_base::cli::arguments& arguments,
-    cli::options& options)
+int PPsat::subprogram::dpll(const PPsat_base::logger& logger_outer,
+                            cli::options& options,
+                            cli::argument::file_in& argument_file_in,
+                            cli::argument::file_out&)
 {
-    if (!options.dpll)
-    {
-        return {};
-    }
-
     const auto& logger_inner =
         PPsat_base::logger_subroutine(logger_outer, "dpll");
-
-    PPsat::cli::argument::file_in argument_file_in;
-
-    const auto success =
-        arguments.parse(logger_inner, std::array{std::ref(argument_file_in)});
-
-    if (!success)
-    {
-        logger_inner << "Skipping the subprogram.\n";
-
-        return 1;
-    }
 
     const auto format =
         pick_format(options.format, argument_file_in, formula_format::DIMACS);
@@ -399,7 +383,7 @@ PPsat::subcommand_result PPsat::subprogram::dpll_unparsed(
     {
         logger_inner << "Skipping DPLL.\n";
 
-        return 2;
+        return 1;
     }
 
     PPsat::heuristic_decision_first heuristic;

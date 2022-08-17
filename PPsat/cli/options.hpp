@@ -1,5 +1,6 @@
 #pragma once
 #include <PPsat/clause_type.hpp>
+#include <PPsat/cli/option/subprogram.hpp>
 #include <PPsat/formula_format.hpp>
 
 #include <PPsat-base/cli/option.hpp>
@@ -22,9 +23,7 @@ class options
 {
 public:
     PPsat_base::cli::option::simple_named_bool help;
-    PPsat_base::cli::option::simple_named_bool convert;
-    PPsat_base::cli::option::simple_named_bool dpll;
-    PPsat_base::cli::option::simple_named_bool cdcl;
+    PPsat::cli::option::subprogram subprogram;
     PPsat_base::cli::option::simple_named_bool nnf;
     PPsat_base::cli::option::simple_named_bool watched_literals;
     PPsat_base::cli::option::simple_named_enum_typed<formula_format> format;
@@ -32,7 +31,7 @@ public:
 
     options();
 
-    std::array<std::reference_wrapper<PPsat_base::cli::option_>, 8>
+    std::array<std::reference_wrapper<PPsat_base::cli::option_>, 6>
     as_range() noexcept;
 };
 }

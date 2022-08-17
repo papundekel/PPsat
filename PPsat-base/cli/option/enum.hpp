@@ -31,7 +31,8 @@ public:
 
     std::size_t argument_count() const noexcept override final;
 
-    bool parse(std::size_t i,
+    bool parse(const logger& logger_outer,
+               std::size_t i,
                std::string_view argument) noexcept override final;
 };
 }

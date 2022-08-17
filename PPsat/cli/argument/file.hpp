@@ -1,8 +1,8 @@
 #pragma once
-#include "PPsat-base/cli/parameter/simple.hpp"
 #include <PPsat/formula_format.hpp>
 
 #include <PPsat-base/cli/argument/file.hpp>
+#include <PPsat-base/cli/parameter/simple.hpp>
 
 #include <filesystem>
 #include <fstream>

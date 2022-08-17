@@ -1,5 +1,5 @@
-#include <PPsat-crypt-parser_CRYPT/parser_CRYPT.h>
-#include <PPsat-crypt-parser_CRYPT/parser_CRYPTVisitor.h>
+#include <PPsat-crypt-parser/parser_CRYPT.h>
+#include <PPsat-crypt-parser/parser_CRYPTVisitor.h>
 
 #include <PPsat-base/formula.hpp>
 #include <PPsat-base/variable.hpp>
@@ -11,15 +11,18 @@
 
 namespace PPsat_crypt
 {
-class visitor_variable_def final : public parser_CRYPTVisitor
+class visitor_variables final : public parser_CRYPTVisitor
 {
     std::size_t base;
     std::ostream& output;
     std::set<char> variables_defined;
     std::size_t atom_i;
+    bool unique;
 
 public:
-    visitor_variable_def(std::size_t base, std::ostream& output) noexcept;
+    visitor_variables(std::size_t base,
+                      bool unique,
+                      std::ostream& output) noexcept;
 
 private:
     std::any visitInput(parser_CRYPT::InputContext* context) override final;
@@ -36,5 +39,8 @@ private:
     std::any visitAtom(parser_CRYPT::AtomContext* context) override final;
     std::any visitOperation(
         parser_CRYPT::OperationContext* context) override final;
+
+public:
+    void print_get_value() const;
 };
 }
