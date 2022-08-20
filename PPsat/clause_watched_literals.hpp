@@ -1,5 +1,6 @@
 #pragma once
 #include <PPsat-base/clause.hpp>
+
 #include <PPsat-base/formula.hpp>
 #include <PPsat-base/literal.hpp>
 
@@ -11,16 +12,17 @@
 
 namespace PPsat
 {
-class clause_sets final : public PPsat_base::clause
+class clause_watched_literals final : public PPsat_base::clause
 {
-    using set = std::set<PPsat_base::literal>;
+    using literals_t = std::vector<PPsat_base::literal>;
 
-    set unassigned;
-    set assigned_false;
-    set assigned_true;
+    literals_t literals;
+    PPsat_base::literal watched1;
+    PPsat_base::literal watched2;
 
 public:
-    clause_sets(PPsat_base::view_any<const PPsat_base::literal> literals);
+    clause_watched_literals(
+        PPsat_base::view_any<const PPsat_base::literal> literals);
 
     void for_each(
         std::function<void(PPsat_base::literal)> f) const override final;

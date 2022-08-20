@@ -18,8 +18,9 @@ protected:
     int enumeration;
 
 public:
-    enum_(auto&& mapping)
+    enum_(auto default_value, auto&& mapping)
         : mapping()
+        , enumeration((int)default_value)
     {
         for (auto&& key_value : std::forward<decltype(mapping)>(mapping))
         {

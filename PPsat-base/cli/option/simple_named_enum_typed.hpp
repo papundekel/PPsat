@@ -11,9 +11,12 @@ class simple_named_enum_typed
     , public enum_typed<Enum>
 {
 public:
-    simple_named_enum_typed(std::string_view name, auto&& mapping)
+    simple_named_enum_typed(std::string_view name,
+                            Enum default_value,
+                            auto&& mapping)
         : simple_named(name)
-        , enum_typed<Enum>(std::forward<decltype(mapping)>(mapping))
+        , enum_typed<Enum>(default_value,
+                           std::forward<decltype(mapping)>(mapping))
     {}
 };
 }

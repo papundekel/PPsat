@@ -11,39 +11,21 @@ PPsat::clause_sets::clause_sets(
 
 void PPsat::clause_sets::for_each(
     std::function<void(PPsat_base::literal)> f) const
-{
-    std::ranges::for_each(unassigned, f);
-    std::ranges::for_each(assigned_false, f);
-    std::ranges::for_each(assigned_true, f);
-}
+{}
 
-std::size_t PPsat::clause_sets::length() const noexcept
+std::optional<PPsat_base::literal> PPsat::clause_sets::is_unit() const
 {
-    return unassigned.size() + assigned_false.size() + assigned_true.size();
-}
-
-bool PPsat::clause_sets::is_sat() const noexcept
-{
-    return !assigned_true.empty();
-}
-
-std::pair<PPsat_base::clause::category, PPsat_base::literal>
-PPsat::clause_sets::get_category_and_first_literal_impl() const noexcept
-{
-    const auto unassigned_count = unassigned.size();
-    if (unassigned_count == 0)
+    if (!assigned_true.empty() || unassigned.size() != 1)
     {
-        return {category::unsat, {}};
+        return {};
     }
-    else
-    {
-        return {unassigned_count == 1 ? category::unit : category::other,
-                *unassigned.begin()};
-    }
+
+    return *unassigned.begin();
 }
 
-void PPsat::clause_sets::assign(PPsat_base::literal literal_assigned,
-                                bool positive_in_clause)
+std::pair<bool, std::optional<PPsat_base::literal>> PPsat::clause_sets::assign(
+    PPsat_base::literal literal_assigned,
+    bool positive_in_clause)
 {
     const PPsat_base::literal literal_in_clause(literal_assigned,
                                                 positive_in_clause);
@@ -54,6 +36,24 @@ void PPsat::clause_sets::assign(PPsat_base::literal literal_assigned,
          ? assigned_true
          : assigned_false)
         .emplace(literal_in_clause);
+
+    if (!assigned_true.empty())
+    {
+        return {false, {}};
+    }
+
+    const auto unassigned_count = unassigned.size();
+    if (unassigned_count == 0)
+    {
+        return {true, {}};
+    }
+
+    if (unassigned_count != 1)
+    {
+        return {false, {}};
+    }
+
+    return {false, *unassigned.begin()};
 }
 
 void PPsat::clause_sets::unassign(PPsat_base::literal literal_unassigned,
@@ -68,4 +68,9 @@ void PPsat::clause_sets::unassign(PPsat_base::literal literal_unassigned,
         .erase(literal_in_clause);
 
     unassigned.emplace(literal_in_clause);
+}
+
+bool PPsat::clause_sets::is_relevant(PPsat_base::literal literal) const
+{
+    return true;
 }

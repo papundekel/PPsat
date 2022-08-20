@@ -46,7 +46,6 @@ public:
                       std::function<std::ostream&(std::ostream&, literal)>
                           transform = literal_printer) const;
 
-    bool contains_unsat_clause() const noexcept;
     std::optional<PPsat_base::literal> find_unit() const noexcept;
 };
 }

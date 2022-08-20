@@ -5,3 +5,5 @@ build/
 PPsat/inputs
 .cache/
 install/
+callgrind*
+*.svg

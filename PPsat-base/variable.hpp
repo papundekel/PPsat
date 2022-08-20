@@ -1,5 +1,7 @@
 #pragma once
+#include <PPsat-base/clause.hpp>
 #include <PPsat-base/literal.hpp>
+#include <PPsat-base/variable_assignment.hpp>
 
 #include <functional>
 #include <iosfwd>
@@ -7,17 +9,10 @@
 
 namespace PPsat_base
 {
-class clause;
-
 class variable
 {
 public:
-    enum class assignment
-    {
-        positive,
-        negative,
-        unknown,
-    };
+    using assignment = variable_assignment;
 
 private:
     virtual std::string_view representation_set_impl(std::string&& name) = 0;
@@ -34,28 +29,21 @@ public:
     virtual std::size_t representation_hash() const = 0;
 
 private:
-    virtual void for_each_clause_containing(
+    virtual void for_each_clause_relevant_assign(
         std::function<void(clause&, bool)> f) const = 0;
-
-    void assign_helper(void (clause::*memfn)(literal, bool),
-                       bool positive,
-                       std::function<void(clause&)> pre,
-                       std::function<void(clause&)> post);
+    virtual void for_each_clause_relevant_unassign(
+        std::function<void(clause&, bool)> f) const = 0;
 
     virtual void set_assignment(assignment assignment) = 0;
 
 public:
-    virtual void register_containing_clause(clause& clause, bool positive) = 0;
+    virtual void register_(clause& clause, bool positive) = 0;
+    virtual void unregister(clause& clause, bool positive) = 0;
 
     virtual assignment get_assignment() const = 0;
 
-    void assign(bool positive,
-                std::function<void(clause&)> pre,
-                std::function<void(clause&)> post);
-
-    void unassign(bool positive,
-                  std::function<void(clause&)> pre,
-                  std::function<void(clause&)> post);
+    std::tuple<bool, std::optional<literal>, std::size_t> assign(bool positive);
+    void unassign(bool positive);
 };
 
 std::ostream& operator<<(std::ostream& output, const variable& variable);

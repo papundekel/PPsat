@@ -1,37 +1,20 @@
-#include "PPsat-base/literal.hpp"
+#include "PPsat/adjacency.hpp"
 #include <PPsat/variable_adjacency.hpp>
 
-#include <algorithm>
-
-PPsat::variable_adjacency::variable_adjacency() noexcept
-    : assignment_current(assignment::unknown)
-    , adjacency()
-{}
-
-void PPsat::variable_adjacency::set_assignment(assignment assignment)
-{
-    assignment_current = assignment;
-}
-
-PPsat_base::variable::assignment PPsat::variable_adjacency::get_assignment()
-    const
-{
-    return assignment_current;
-}
-
-void PPsat::variable_adjacency::for_each_clause_containing(
+void PPsat::variable_adjacency::for_each_clause_relevant_assign(
     std::function<void(PPsat_base::clause&, bool)> f) const
 {
-    std::ranges::for_each(adjacency,
-                          [&f](auto& pair)
-                          {
-                              f(pair.first, pair.second);
-                          });
+    adjacent_for_each(std::move(f));
 }
 
-void PPsat::variable_adjacency::register_containing_clause(
-    PPsat_base::clause& clause,
-    bool positive)
+void PPsat::variable_adjacency::register_(PPsat_base::clause& clause,
+                                          bool positive)
 {
-    adjacency.emplace_back(clause, positive);
+    adjacent_add(clause, positive);
+}
+
+void PPsat::variable_adjacency::unregister(PPsat_base::clause& clause,
+                                           bool positive)
+{
+    adjacent_remove(clause, positive);
 }

@@ -20,6 +20,7 @@ add_library("PPsat-base" SHARED
     "logger_subroutine.cpp"
     "tseitin_builder_nnf.cpp"
     "variable.cpp"
+    "variable_assignment.cpp"
     "variable_representation.cpp"
     "variable_representation_always.cpp"
     "variable_representation_maybe.cpp"

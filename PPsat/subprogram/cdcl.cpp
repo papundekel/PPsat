@@ -16,7 +16,6 @@ int cdcl_impl(std::istream& input,
               std::ostream& output,
               const PPsat_base::logger& logger_outer,
               const PPsat::formula_format format,
-              const bool watched_literals,
               const bool nnf)
 {
     return 0;
@@ -37,6 +36,5 @@ int PPsat::subprogram::cdcl(const PPsat_base::logger& logger_outer,
                      options.format     ? options.format.parsed()
                      : argument_file_in ? argument_file_in.parsed_format()
                                         : formula_format::DIMACS,
-                     options.watched_literals,
                      options.nnf);
 }

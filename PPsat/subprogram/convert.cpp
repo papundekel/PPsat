@@ -1,3 +1,4 @@
+#include <PPsat/adjacency_none.hpp>
 #include <PPsat/builder_SMTLIB_tseitin.hpp>
 #include <PPsat/clause_simple.hpp>
 #include <PPsat/cli/argument/file.hpp>
@@ -7,7 +8,9 @@
 #include <PPsat/subprogram.hpp>
 #include <PPsat/variable_DIMACS.hpp>
 #include <PPsat/variable_SMTLIB.hpp>
-#include <PPsat/variable_simple.hpp>
+#include <PPsat/variable_adjacency.hpp>
+#include <PPsat/variable_assignable_not.hpp>
+#include <PPsat/variable_unassigning.hpp>
 
 #include <PPsat-base/antlrer.hpp>
 #include <PPsat-base/builder.hpp>
@@ -38,7 +41,10 @@ namespace
 {
 template <PPsat::formula_format format>
 struct variable_ final
-    : public PPsat::variable_simple
+    : public PPsat::adjacency_none
+    , public PPsat::variable_adjacency
+    , public PPsat::variable_assignable_not
+    , public PPsat::variable_unassigning<false>
     , public std::conditional_t<format == PPsat::formula_format::DIMACS,
                                 PPsat::variable_DIMACS,
                                 PPsat::variable_SMTLIB>
@@ -64,7 +70,7 @@ void write_formula(std::ostream& output, PPsat_base::formula& formula)
     std::size_t count_variable_native = 0;
 
     formula.for_each(
-        [&count_variable_native](PPsat_base::variable& variable)
+        [&count_variable_native](const PPsat_base::variable& variable)
         {
             if (variable.representation_has())
             {

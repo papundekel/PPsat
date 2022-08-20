@@ -1,4 +1,5 @@
 #pragma once
+#include <PPsat/adjacency_type.hpp>
 #include <PPsat/clause_type.hpp>
 #include <PPsat/cli/option/subprogram.hpp>
 #include <PPsat/formula_format.hpp>
@@ -25,9 +26,9 @@ public:
     PPsat_base::cli::option::simple_named_bool help;
     PPsat::cli::option::subprogram subprogram;
     PPsat_base::cli::option::simple_named_bool nnf;
-    PPsat_base::cli::option::simple_named_bool watched_literals;
     PPsat_base::cli::option::simple_named_enum_typed<formula_format> format;
     PPsat_base::cli::option::simple_named_enum_typed<clause_type> clause;
+    PPsat_base::cli::option::simple_named_enum_typed<adjacency_type> adjacency;
 
     options();
 

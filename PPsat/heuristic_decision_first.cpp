@@ -24,7 +24,7 @@ void PPsat::heuristic_decision_first::unassigned(PPsat_base::variable& variable)
     set.emplace(&variable);
 }
 
-PPsat_base::variable& PPsat::heuristic_decision_first::get_decision() const
+PPsat_base::literal PPsat::heuristic_decision_first::get_decision() const
 {
-    return **set.begin();
+    return {**set.begin(), false};
 }

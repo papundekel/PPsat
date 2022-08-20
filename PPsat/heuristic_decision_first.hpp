@@ -20,6 +20,6 @@ class heuristic_decision_first final : public heuristic_decision
     void assigned(PPsat_base::variable& variable) override final;
     void unassigned(PPsat_base::variable& variable) override final;
 
-    PPsat_base::variable& get_decision() const override final;
+    PPsat_base::literal get_decision() const override final;
 };
 }

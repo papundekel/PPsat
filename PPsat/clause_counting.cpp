@@ -1,7 +1,9 @@
-#include "PPsat/clause_counting.hpp"
-#include <PPsat/clause_sets.hpp>
+#include <PPsat/clause_counting.hpp>
+
+#include <PPsat-base/literal.hpp>
 
 #include <algorithm>
+#include <iostream>
 
 PPsat::clause_counting::clause_counting(
     PPsat_base::view_any<const PPsat_base::literal> literals)
@@ -9,64 +11,71 @@ PPsat::clause_counting::clause_counting(
     , unassigned(this->literals.size())
     , assigned_false(0)
     , assigned_true(0)
-{
-    if (!this->literals.empty())
-    {
-        literal_unit = this->literals.front();
-    }
-}
+{}
 
 void PPsat::clause_counting::for_each(
     std::function<void(PPsat_base::literal)> f) const
-{
-    std::ranges::for_each(literals, f);
-}
+{}
 
-std::size_t PPsat::clause_counting::length() const noexcept
+std::optional<PPsat_base::literal> PPsat::clause_counting::is_unit() const
 {
-    return literals.size();
-}
-
-bool PPsat::clause_counting::is_sat() const noexcept
-{
-    return literals.size() == 0 || assigned_true != 0;
-}
-
-std::pair<PPsat_base::clause::category, PPsat_base::literal>
-PPsat::clause_counting::get_category_and_first_literal_impl() const noexcept
-{
-    if (unassigned == 0)
+    if (assigned_true != 0 || unassigned != 1)
     {
-        return {category::unsat, {}};
+        return {};
     }
-    else
+
+    std::optional<PPsat_base::literal> literal_unit_opt;
+
+    for (const auto literal : literals)
     {
-        return {unassigned == 1 ? category::unit : category::other,
-                literal_unit};
+        const auto assignment = literal.get_assignment();
+        if (assignment == PPsat_base::variable::assignment::unknown)
+        {
+            literal_unit_opt.emplace(literal);
+        }
     }
+
+    return literal_unit_opt;
 }
 
-void PPsat::clause_counting::assign(PPsat_base::literal literal_assigned,
-                                    bool positive_in_clause)
+std::pair<bool, std::optional<PPsat_base::literal>>
+PPsat::clause_counting::assign(PPsat_base::literal literal_assigned,
+                               bool positive_in_clause)
 {
     --unassigned;
 
     if (literal_assigned.is_positive() == positive_in_clause)
     {
         ++assigned_true;
+        return {false, {}};
     }
-    else
+
+    ++assigned_false;
+
+    if (assigned_true != 0)
     {
-        ++assigned_false;
-        for (auto l : literals)
-        {
-            const auto assignment = l.get_variable().get_assignment();
-            if (assignment == PPsat_base::variable::assignment::unknown)
-            {
-                literal_unit = l;
-            }
-        }
+        return {false, {}};
     }
+
+    if (unassigned == 0)
+    {
+        return {true, {}};
+    }
+
+    if (unassigned != 1)
+    {
+        return {false, {}};
+    };
+
+    const auto i = std::ranges::find_if(
+        literals,
+        [](PPsat_base::literal literal)
+        {
+            return literal.get_assignment() ==
+                   PPsat_base::variable::assignment::unknown;
+        });
+
+    return {false, *i};
 }
 
 void PPsat::clause_counting::unassign(PPsat_base::literal literal_unassigned,
@@ -82,5 +91,9 @@ void PPsat::clause_counting::unassign(PPsat_base::literal literal_unassigned,
     }
 
     ++unassigned;
-    literal_unit = {literal_unassigned, positive_in_clause};
+}
+
+bool PPsat::clause_counting::is_relevant(PPsat_base::literal literal) const
+{
+    return true;
 }

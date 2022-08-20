@@ -2,12 +2,17 @@ cmake_minimum_required(VERSION 3.20)
 
 add_executable("PPsat"
     "main.cpp"
+    "adjacency_list.cpp"
+    "adjacency_none.cpp"
+    "adjacency_set.cpp"
+    "adjacency_set_unordered.cpp"
+    "adjacency_vector.cpp"
     "builder_DIMACS.cpp"
     "builder_SMTLIB_tseitin.cpp"
     "clause_counting.cpp"
     "clause_sets.cpp"
     "clause_simple.cpp"
-    "clause_no_add.cpp"
+    "clause_watched_literals.cpp"
     "cli/argument/file.cpp"
     "cli/options.cpp"
     "create_builder.cpp"
@@ -18,7 +23,8 @@ add_executable("PPsat"
     "subprogram/dpll.cpp"
     "subprogram/help.cpp"
     "variable_adjacency.cpp"
-    "variable_simple.cpp"
+    "variable_assignable.cpp"
+    "variable_assignable_not.cpp"
     "visitor_DIMACS.cpp"
     "visitor_SMTLIB_tseitin.cpp"
 )
@@ -95,9 +101,14 @@ file(GLOB inputs "${inputs_dir}/*/*")
 foreach(file_path ${inputs})
     cmake_path(GET file_path STEM file_name)
 
-    set(test_name "PPsat-dpll-${file_name}")
+    set(test_name_prefix "PPsat-dpll")
+    set(test_name_sets "${test_name_prefix}-sets-${file_name}")
+    set(test_name_counting "${test_name_prefix}-counting-${file_name}")
+    set(test_name_watched_literals "${test_name_prefix}-watched_literals-${file_name}")
 
-    add_test(NAME "${test_name}" COMMAND "PPsat" "-subprogram" "dpll" "${file_path}")
+    add_test(NAME "${test_name_sets}" COMMAND "PPsat" "-subprogram" "dpll" "-clause" "sets" "-adjacency" "vector" "${file_path}")
+    add_test(NAME "${test_name_counting}" COMMAND "PPsat" "-subprogram" "dpll" "-clause" "counting" "-adjacency" "list" "${file_path}")
+    add_test(NAME "${test_name_watched_literals}" COMMAND "PPsat" "-subprogram" "dpll" "-clause" "watched_literals" "-adjacency" "set" "${file_path}")
 
     cmake_path(GET file_path PARENT_PATH parent_path)
     cmake_path(GET parent_path FILENAME parent_name)
@@ -110,7 +121,11 @@ foreach(file_path ${inputs})
         set(regex_pass "${regex_sat}")
     endif()
 
-    set_tests_properties("${test_name}" PROPERTIES
+    set_tests_properties(
+        "${test_name_sets}"
+        "${test_name_counting}"
+        "${test_name_watched_literals}"
+    PROPERTIES
         FAIL_REGULAR_EXPRESSION "${regex_fail}"
         PASS_REGULAR_EXPRESSION "${regex_pass}"
     )

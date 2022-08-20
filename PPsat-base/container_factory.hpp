@@ -28,6 +28,8 @@ public:
 
     virtual bool for_each(std::function<bool(T&)> f) = 0;
     virtual bool for_each(std::function<bool(const T&)> f) const = 0;
+
+    virtual ~container_factory() = default;
 };
 
 namespace detail

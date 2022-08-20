@@ -20,6 +20,13 @@ PPsat_base::variable& PPsat_base::literal::get_variable() const noexcept
     return *var;
 }
 
+PPsat_base::variable_assignment PPsat_base::literal::get_assignment()
+    const noexcept
+{
+    const auto assignment_variable = var->get_assignment();
+    return positive ? assignment_variable : !assignment_variable;
+}
+
 bool PPsat_base::literal::is_positive() const noexcept
 {
     return positive;
@@ -55,7 +62,22 @@ std::strong_ordering PPsat_base::literal::operator<=>(
     return is_positive() <=> other.is_positive();
 }
 
-void PPsat_base::literal::register_containing_clause(clause& clause) const
+void PPsat_base::literal::register_(clause& clause) const
 {
-    get_variable().register_containing_clause(clause, positive);
+    get_variable().register_(clause, positive);
+}
+void PPsat_base::literal::unregister(clause& clause) const
+{
+    get_variable().unregister(clause, positive);
+}
+
+std::tuple<bool, std::optional<PPsat_base::literal>, std::size_t>
+PPsat_base::literal::assign() const
+{
+    return get_variable().assign(positive);
+}
+
+void PPsat_base::literal::unassign() const
+{
+    get_variable().unassign(positive);
 }

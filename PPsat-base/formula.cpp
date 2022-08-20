@@ -15,7 +15,10 @@ PPsat_base::clause& PPsat_base::formula::add_clause(
 
     for (const literal& literal : literals)
     {
-        literal.register_containing_clause(clause_new);
+        if (clause_new.is_relevant(literal))
+        {
+            literal.register_(clause_new);
+        }
     }
 
     return clause_new;
@@ -73,38 +76,16 @@ void PPsat_base::formula::write_DIMACS(
         });
 }
 
-bool PPsat_base::formula::contains_unsat_clause() const noexcept
-{
-    return for_each(
-        [](const clause& clause)
-        {
-            if (clause.get_category_and_first_literal().first ==
-                clause::category::unsat)
-            {
-                return false;
-            }
-
-            return true;
-        });
-}
-
 std::optional<PPsat_base::literal> PPsat_base::formula::find_unit()
     const noexcept
 {
-    literal literal;
+    std::optional<literal> literal_opt;
 
     const auto exists = for_each(
-        [&literal](const clause& clause)
+        [&literal_opt](const clause& clause)
         {
-            clause::category category;
-            std::tie(category, literal) =
-                clause.get_category_and_first_literal();
-            if (category == clause::category::unit)
-            {
-                return false;
-            }
-
-            return true;
+            literal_opt = clause.is_unit();
+            return !literal_opt.has_value();
         });
 
     if (!exists)
@@ -112,5 +93,5 @@ std::optional<PPsat_base::literal> PPsat_base::formula::find_unit()
         return {};
     }
 
-    return literal;
+    return literal_opt;
 }

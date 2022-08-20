@@ -1,4 +1,6 @@
 #pragma once
+#include <PPsat-base/literal.hpp>
+
 #include <cstddef>
 
 namespace PPsat_base
@@ -15,6 +17,6 @@ public:
     virtual void init(PPsat_base::formula& variables) = 0;
     virtual void assigned(PPsat_base::variable& variable) = 0;
     virtual void unassigned(PPsat_base::variable& variable) = 0;
-    virtual PPsat_base::variable& get_decision() const = 0;
+    virtual PPsat_base::literal get_decision() const = 0;
 };
 }

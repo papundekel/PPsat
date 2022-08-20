@@ -12,7 +12,6 @@
 #include <PPsat-base/cli/option/simple_named_number.hpp>
 #include <PPsat-base/cli/parser.hpp>
 #include <PPsat-base/containers.hpp>
-#include <PPsat-base/formula.hpp>
 #include <PPsat-base/logger_ostream.hpp>
 #include <PPsat-base/logger_subroutine.hpp>
 

@@ -19,33 +19,47 @@ std::ostream& PPsat_base::operator<<(std::ostream& output,
     return output;
 }
 
-void PPsat_base::variable::assign_helper(void (clause::*memfn)(literal, bool),
-                                         bool positive,
-                                         std::function<void(clause&)> pre,
-                                         std::function<void(clause&)> post)
-{
-    for_each_clause_containing(
-        [this, memfn, positive, &pre, &post](clause& clause,
-                                             bool positive_in_clause)
-        {
-            pre(clause);
-            (clause.*memfn)({*this, positive}, positive_in_clause);
-            post(clause);
-        });
-}
-
-void PPsat_base::variable::assign(bool positive,
-                                  std::function<void(clause&)> pre,
-                                  std::function<void(clause&)> post)
+std::tuple<bool, std::optional<PPsat_base::literal>, std::size_t>
+PPsat_base::variable::assign(bool positive)
 {
     set_assignment(positive ? assignment::positive : assignment::negative);
-    assign_helper(&clause::assign, positive, std::move(pre), std::move(post));
+
+    auto conflict_anywhere = false;
+    std::optional<PPsat_base::literal> literal_unit_anywhere_opt;
+
+    auto count_visited = 0uz;
+
+    for_each_clause_relevant_assign(
+        [this,
+         positive,
+         &conflict_anywhere,
+         &literal_unit_anywhere_opt,
+         &count_visited](clause& clause, bool positive_in_clause)
+        {
+            ++count_visited;
+
+            const auto [conflict, literal_unit_opt] =
+                clause.assign({*this, positive}, positive_in_clause);
+
+            if (conflict)
+            {
+                conflict_anywhere = true;
+            }
+            else if (literal_unit_opt)
+            {
+                literal_unit_anywhere_opt = literal_unit_opt;
+            }
+        });
+
+    return {conflict_anywhere, literal_unit_anywhere_opt, count_visited};
 }
 
-void PPsat_base::variable::unassign(bool positive,
-                                    std::function<void(clause&)> pre,
-                                    std::function<void(clause&)> post)
+void PPsat_base::variable::unassign(bool positive)
 {
     set_assignment(assignment::unknown);
-    assign_helper(&clause::unassign, positive, std::move(pre), std::move(post));
+    for_each_clause_relevant_unassign(
+        [this, positive](clause& clause, bool positive_in_clause)
+        {
+            clause.unassign({*this, positive}, positive_in_clause);
+        });
 }

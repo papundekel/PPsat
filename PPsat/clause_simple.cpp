@@ -11,24 +11,21 @@ void PPsat::clause_simple::for_each(
     std::ranges::for_each(literals, f);
 }
 
-std::size_t PPsat::clause_simple::length() const noexcept
+std::optional<PPsat_base::literal> PPsat::clause_simple::is_unit() const
 {
-    return literals.size();
+    return {};
 }
 
-bool PPsat::clause_simple::is_sat() const noexcept
+std::pair<bool, std::optional<PPsat_base::literal>>
+PPsat::clause_simple::assign(PPsat_base::literal, bool)
 {
-    return false;
+    return {false, {}};
 }
-
-std::pair<PPsat_base::clause::category, PPsat_base::literal>
-PPsat::clause_simple::get_category_and_first_literal_impl() const noexcept
-{
-    return {category::other, *literals.begin()};
-}
-
-void PPsat::clause_simple::assign(PPsat_base::literal, bool)
-{}
 
 void PPsat::clause_simple::unassign(PPsat_base::literal, bool)
 {}
+
+bool PPsat::clause_simple::is_relevant(PPsat_base::literal literal) const
+{
+    return false;
+}
