@@ -1,4 +1,6 @@
 #pragma once
+#include <PPsat-base/unique_ref.hpp>
+
 #include <memory>
 #include <utility>
 
@@ -14,14 +16,15 @@ public:
     template <typename T>
     using impl = factory_impl<T, Result, Parameters...>;
 
-    virtual std::unique_ptr<Result> create(Parameters...) const = 0;
+    virtual unique_ref<Result> create(Parameters...) const = 0;
+
+    virtual ~factory() = default;
 };
 
 template <typename T, typename Result, typename... Parameters>
 class factory_impl : public virtual factory<Result, Parameters...>
 {
-    std::unique_ptr<Result> create(
-        Parameters... parameters) const override final
+    unique_ref<Result> create(Parameters... parameters) const override final
     {
         return std::make_unique<T>(std::forward<Parameters>(parameters)...);
     }

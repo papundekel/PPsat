@@ -4,7 +4,7 @@
 
 namespace PPsat_base
 {
-template <template <typename> typename Container,
+template <template <typename, typename...> typename Container,
           typename U,
           typename... Parameters>
 class container_factory_
@@ -18,7 +18,7 @@ template <typename T, typename... Parameters>
 class container_factory
 {
 public:
-    template <template <typename> typename Container, typename U>
+    template <template <typename, typename...> typename Container, typename U>
     using impl =
         typename container_factory_<Container, U, Parameters...>::template impl<
             T>;
@@ -49,7 +49,7 @@ bool for_each_impl(auto& range, auto f)
     return false;
 }
 
-template <typename Parent, typename T, typename... Parameters>
+template <typename, typename T, typename... Parameters>
 class for_each_impl_base : public container_factory<T, Parameters...>
 {
 public:
@@ -58,14 +58,14 @@ public:
 };
 }
 
-template <template <typename> typename Container,
+template <template <typename, typename...> typename Container,
           typename U,
           typename... Parameters>
 template <typename... T>
 class container_factory_<Container, U, Parameters...>::impl
     : public detail::for_each_impl_base<impl<T>, T, Parameters...>...
 {
-    template <typename, typename>
+    template <typename, typename, typename...>
     friend class detail::for_each_impl_base;
 
     Container<U> container;

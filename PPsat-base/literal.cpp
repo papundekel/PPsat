@@ -1,3 +1,5 @@
+#include "PPsat-base/clause.hpp"
+#include "PPsat-base/unit.hpp"
 #include <PPsat-base/literal.hpp>
 
 #include <PPsat-base/variable.hpp>
@@ -71,13 +73,30 @@ void PPsat_base::literal::unregister(clause& clause) const
     get_variable().unregister(clause, positive);
 }
 
-std::tuple<bool, std::optional<PPsat_base::literal>, std::size_t>
-PPsat_base::literal::assign() const
+std::tuple<PPsat_base::optional<const PPsat_base::clause&>,
+           std::list<PPsat_base::unit>,
+           std::size_t>
+PPsat_base::literal::assign(std::size_t level, std::size_t recency) const
 {
-    return get_variable().assign(positive);
+    return get_variable().assign(positive, level, recency);
 }
 
 void PPsat_base::literal::unassign() const
 {
     get_variable().unassign(positive);
+}
+
+std::size_t PPsat_base::literal::level_get() const
+{
+    return get_variable().level_get();
+}
+
+std::size_t PPsat_base::literal::recency_get() const
+{
+    return get_variable().recency_get();
+}
+
+const PPsat_base::clause& PPsat_base::literal::antecedent_get() const
+{
+    return *get_variable().antecedent_get();
 }

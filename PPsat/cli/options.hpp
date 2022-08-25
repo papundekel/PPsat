@@ -13,6 +13,7 @@
 #include <PPsat-base/cli/parameter/simple.hpp>
 #include <PPsat-base/cli/parser.hpp>
 #include <PPsat-base/constant_string.hpp>
+#include <PPsat-base/tuple_named.hpp>
 
 #include <array>
 #include <functional>
@@ -20,19 +21,38 @@
 
 namespace PPsat::cli
 {
-class options
+using options_base = PPsat_base::tuple<
+    PPsat_base::cli::option::simple_named_bool,
+    option::subprogram,
+    PPsat_base::cli::option::simple_named_bool,
+    PPsat_base::cli::option::simple_named_bool,
+    PPsat_base::cli::option::simple_named_bool,
+    PPsat_base::cli::option::simple_named_enum_typed<formula_format>,
+    PPsat_base::cli::option::simple_named_enum_typed<clause_type>,
+    PPsat_base::cli::option::simple_named_enum_typed<adjacency_type>>::
+    named<"help",
+          "subprogram",
+          "nnf",
+          "assume",
+          "cdcl",
+          "format",
+          "clause",
+          "adjacency">;
+
+class options : public options_base
 {
 public:
-    PPsat_base::cli::option::simple_named_bool help;
-    PPsat::cli::option::subprogram subprogram;
-    PPsat_base::cli::option::simple_named_bool nnf;
-    PPsat_base::cli::option::simple_named_enum_typed<formula_format> format;
-    PPsat_base::cli::option::simple_named_enum_typed<clause_type> clause;
-    PPsat_base::cli::option::simple_named_enum_typed<adjacency_type> adjacency;
-
     options();
 
-    std::array<std::reference_wrapper<PPsat_base::cli::option_>, 6>
-    as_range() noexcept;
+    auto as_range() noexcept
+    {
+        return std::apply(
+            [](auto&... option)
+            {
+                return std::array{
+                    std::ref((PPsat_base::cli::option_&)option)...};
+            },
+            base());
+    }
 };
 }

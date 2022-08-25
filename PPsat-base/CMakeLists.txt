@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.20)
 
 add_library("PPsat-base" SHARED
+    "antlr_lexer.cpp"
     "antlrer.cpp"
     "builder.cpp"
     "clause.cpp"
@@ -24,6 +25,8 @@ add_library("PPsat-base" SHARED
     "variable_representation.cpp"
     "variable_representation_always.cpp"
     "variable_representation_maybe.cpp"
+    "preprocessor_basic.cpp"
+    "preprocessor_id.cpp"
 )
 
 set_target_properties("PPsat-base" PROPERTIES COMPILE_OPTIONS "-std=c++2b")

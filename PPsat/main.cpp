@@ -1,11 +1,10 @@
-#include "PPsat/cli/argument/file.hpp"
+#include <PPsat/cli/argument/file.hpp>
 #include <PPsat/cli/options.hpp>
 #include <PPsat/help_print.hpp>
 #include <PPsat/subprogram.hpp>
 
 #include <PPsat-base/cli/argument.hpp>
 #include <PPsat-base/cli/parser.hpp>
-#include <PPsat-base/containers.hpp>
 #include <PPsat-base/logger_ostream.hpp>
 #include <PPsat-base/logger_subroutine.hpp>
 
@@ -40,21 +39,21 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    if (options.help)
+    if (options["help"_cst])
     {
         PPsat::help_print(std::cout);
         return 0;
     }
 
-    if (!options.subprogram)
+    if (!options["subprogram"_cst])
     {
         logger << "No subprogram specified, use option -help for help.\n";
         return 2;
     }
 
-    return options.subprogram.parsed_subprogram()(logger,
-                                                  options,
-                                                  argument_file_in,
-                                                  argument_file_out)
+    return options["subprogram"_cst].parsed_subprogram()(logger,
+                                                         options,
+                                                         argument_file_in,
+                                                         argument_file_out)
            << 2;
 }

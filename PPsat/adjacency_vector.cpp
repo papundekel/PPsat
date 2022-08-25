@@ -33,3 +33,7 @@ void PPsat::adjacency_vector::adjacent_remove(PPsat_base::clause& clause,
 
     adjacency.erase(i);
 }
+std::size_t PPsat::adjacency_vector::size() const
+{
+    return adjacency.size();
+}

@@ -34,5 +34,6 @@ class adjacency_set_unordered : public virtual adjacency
     void adjacent_add(PPsat_base::clause& clause, bool positive) override final;
     void adjacent_remove(PPsat_base::clause& clause,
                          bool positive) override final;
+    std::size_t size() const override final;
 };
 }

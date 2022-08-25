@@ -1,10 +1,13 @@
 #pragma once
+#include "PPsat-base/optional.hpp"
+#include "PPsat-base/unit.hpp"
 #include <PPsat-base/clause.hpp>
 #include <PPsat-base/literal.hpp>
 #include <PPsat-base/variable_assignment.hpp>
 
 #include <functional>
 #include <iosfwd>
+#include <list>
 #include <string_view>
 
 namespace PPsat_base
@@ -34,15 +37,29 @@ private:
     virtual void for_each_clause_relevant_unassign(
         std::function<void(clause&, bool)> f) const = 0;
 
-    virtual void set_assignment(assignment assignment) = 0;
+    virtual void assignment_set(assignment assignment) = 0;
+    virtual void level_set(std::size_t level) = 0;
 
 public:
+    virtual void antecedent_set(const clause& antecedent) = 0;
+    virtual void antecedent_reset() = 0;
+    virtual PPsat_base::optional<const clause&> antecedent_get() const = 0;
+
+    virtual void recency_set(std::size_t recency) = 0;
+    virtual std::size_t recency_get() const = 0;
+
     virtual void register_(clause& clause, bool positive) = 0;
     virtual void unregister(clause& clause, bool positive) = 0;
 
-    virtual assignment get_assignment() const = 0;
+    virtual std::size_t adjacency_size() const = 0;
 
-    std::tuple<bool, std::optional<literal>, std::size_t> assign(bool positive);
+    virtual assignment get_assignment() const = 0;
+    virtual std::size_t level_get() const = 0;
+
+    std::tuple<PPsat_base::optional<PPsat_base::clause&>,
+               std::list<unit>,
+               std::size_t>
+    assign(bool positive, std::size_t level, std::size_t recency);
     void unassign(bool positive);
 };
 

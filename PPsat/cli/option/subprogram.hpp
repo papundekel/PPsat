@@ -26,14 +26,10 @@ public:
     {
         switch (parsed())
         {
-            case PPsat::subprogram::selection::help:
-                return PPsat::subprogram::help;
             case PPsat::subprogram::selection::convert:
                 return PPsat::subprogram::convert;
-            case PPsat::subprogram::selection::dpll:
-                return PPsat::subprogram::dpll;
-            case PPsat::subprogram::selection::cdcl:
-                return PPsat::subprogram::cdcl;
+            case PPsat::subprogram::selection::solve:
+                return PPsat::subprogram::solve;
             default:
                 return fallback;
         }

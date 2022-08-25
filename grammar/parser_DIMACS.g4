@@ -21,11 +21,11 @@ options
 }
 
 input
-    : MAGIC NUMBER NUMBER clause* EOF
+    : MAGIC NUMBER NUMBER clause*
     ;
 
 clause
-    : literal* ZERO
+    : literal* CLAUSE_END
     ;
 
 literal

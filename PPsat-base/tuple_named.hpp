@@ -28,6 +28,7 @@ public:
         }
 
     public:
+        using base_t = std::tuple<Types...>;
         using std::tuple<Types...>::tuple;
 
         decltype(auto) operator[](auto name_t) & noexcept
@@ -46,6 +47,33 @@ public:
         {
             return get_helper<decltype(name_t)::string>(std::move(*this));
         }
+
+        static constexpr inline auto tag_tuple_named = nullptr;
+
+        auto& base()
+        {
+            return (base_t&)*this;
+        }
+        const auto& base() const
+        {
+            return (const base_t&)*this;
+        }
     };
 };
+
+template <typename T>
+concept concept_tuple_named = requires
+{
+    T::tag_tuple_named;
+};
+}
+
+namespace std
+{
+template <PPsat_base::concept_tuple_named T>
+struct tuple_size<T> : public tuple_size<typename T::base_t>
+{};
+template <size_t I, PPsat_base::concept_tuple_named T>
+struct tuple_element<I, T> : public tuple_element<I, typename T::base_t>
+{};
 }

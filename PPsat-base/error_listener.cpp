@@ -2,6 +2,7 @@
 
 PPsat_base::error_listener::error_listener(const logger& logger_outer) noexcept
     : logger_inner(logger_outer, "parsing")
+    , was_error_syntax(false)
     , was_error(false)
 {}
 
@@ -20,7 +21,7 @@ void PPsat_base::error_listener::syntaxError(antlr4::Recognizer*,
     if (!was_error_syntax)
     {
         logger_inner << "Syntax error at line: " << l << ", column: " << c
-                     << ".\n";
+                     << "." << std::endl;
     }
 
     was_error_syntax = true;

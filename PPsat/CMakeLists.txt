@@ -7,24 +7,40 @@ add_executable("PPsat"
     "adjacency_set.cpp"
     "adjacency_set_unordered.cpp"
     "adjacency_vector.cpp"
+    "assumptions_basic.cpp"
+    "builder_ASSUME.cpp"
     "builder_DIMACS.cpp"
     "builder_SMTLIB_tseitin.cpp"
+    "clause_basic.cpp"
     "clause_counting.cpp"
-    "clause_sets.cpp"
     "clause_simple.cpp"
     "clause_watched_literals.cpp"
     "cli/argument/file.cpp"
     "cli/options.cpp"
     "create_builder.cpp"
+    "conflict_analysis_dpll.cpp"
+    "conflict_analysis_uip.cpp"
     "help_print.cpp"
+    "heuristic_decision_assume.cpp"
     "heuristic_decision_first.cpp"
-    "subprogram/cdcl.cpp"
+    "heuristic_decision_priority.cpp"
+    "restart_strategy_never.cpp"
+    "renaming_basic.cpp"
+    "renaming_int.cpp"
+    "renaming_int_basic.cpp"
+    "solver.cpp"
     "subprogram/convert.cpp"
-    "subprogram/dpll.cpp"
-    "subprogram/help.cpp"
+    "subprogram/solve.cpp"
     "variable_adjacency.cpp"
     "variable_assignable.cpp"
     "variable_assignable_not.cpp"
+    "variable_antecedent_none.cpp"
+    "variable_antecedent_with.cpp"
+    "variable_level_none.cpp"
+    "variable_level_with.cpp"
+    "variable_recency_none.cpp"
+    "variable_recency_with.cpp"
+    "visitor_ASSUME.cpp"
     "visitor_DIMACS.cpp"
     "visitor_SMTLIB_tseitin.cpp"
 )
@@ -75,11 +91,33 @@ antlr4_generate(
     "${ANTLR4_TOKEN_DIRECTORY_PPsat-lexer_DIMACS}"
 )
 
+antlr4_generate(
+    "PPsat-lexer_ASSUME"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../grammar/lexer_ASSUME.g4"
+    LEXER
+    FALSE
+    FALSE
+    "PPsat"
+)
+
+antlr4_generate(
+    "PPsat-parser_ASSUME"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../grammar/parser_ASSUME.g4"
+    PARSER
+    FALSE
+    TRUE
+    "PPsat"
+    "${ANTLR4_TOKEN_FILES_PPsat-lexer_ASSUME}"
+    "${ANTLR4_TOKEN_DIRECTORY_PPsat-lexer_ASSUME}"
+)
+
 target_sources("PPsat" PUBLIC
     "${ANTLR4_SRC_FILES_PPsat-lexer_SMTLIB}"
     "${ANTLR4_SRC_FILES_PPsat-parser_SMTLIB}"
     "${ANTLR4_SRC_FILES_PPsat-lexer_DIMACS}"
     "${ANTLR4_SRC_FILES_PPsat-parser_DIMACS}"
+    "${ANTLR4_SRC_FILES_PPsat-lexer_ASSUME}"
+    "${ANTLR4_SRC_FILES_PPsat-parser_ASSUME}"
 )
 
 target_include_directories("PPsat" PUBLIC
@@ -101,14 +139,17 @@ file(GLOB inputs "${inputs_dir}/*/*")
 foreach(file_path ${inputs})
     cmake_path(GET file_path STEM file_name)
 
-    set(test_name_prefix "PPsat-dpll")
-    set(test_name_sets "${test_name_prefix}-sets-${file_name}")
+    set(test_name_prefix "PPsat-solve")
+    
+    set(test_name_basic "${test_name_prefix}-basic-${file_name}")
     set(test_name_counting "${test_name_prefix}-counting-${file_name}")
     set(test_name_watched_literals "${test_name_prefix}-watched_literals-${file_name}")
+    set(test_name_cdcl "${test_name_prefix}-cdcl-${file_name}")
 
-    add_test(NAME "${test_name_sets}" COMMAND "PPsat" "-subprogram" "dpll" "-clause" "sets" "-adjacency" "vector" "${file_path}")
-    add_test(NAME "${test_name_counting}" COMMAND "PPsat" "-subprogram" "dpll" "-clause" "counting" "-adjacency" "list" "${file_path}")
-    add_test(NAME "${test_name_watched_literals}" COMMAND "PPsat" "-subprogram" "dpll" "-clause" "watched_literals" "-adjacency" "set" "${file_path}")
+    add_test(NAME "${test_name_basic}" COMMAND "PPsat" "-subprogram" "solve" "-clause" "basic" "-adjacency" "vector" "${file_path}" CONFIGURATIONS Release)
+    add_test(NAME "${test_name_counting}" COMMAND "PPsat" "-subprogram" "solve" "-clause" "counting" "-adjacency" "vector" "${file_path}" CONFIGURATIONS Release)
+    add_test(NAME "${test_name_watched_literals}" COMMAND "PPsat" "-subprogram" "solve" "-clause" "watched_literals" "-adjacency" "list" "${file_path}" CONFIGURATIONS Release)
+    add_test(NAME "${test_name_cdcl}" COMMAND "PPsat" "-subprogram" "solve" "-cdcl" "-clause" "watched_literals" "-adjacency" "list" "${file_path}" CONFIGURATIONS Release)
 
     cmake_path(GET file_path PARENT_PATH parent_path)
     cmake_path(GET parent_path FILENAME parent_name)
@@ -122,9 +163,10 @@ foreach(file_path ${inputs})
     endif()
 
     set_tests_properties(
-        "${test_name_sets}"
+        "${test_name_basic}"
         "${test_name_counting}"
         "${test_name_watched_literals}"
+        #"${test_name_cdcl}"
     PROPERTIES
         FAIL_REGULAR_EXPRESSION "${regex_fail}"
         PASS_REGULAR_EXPRESSION "${regex_pass}"

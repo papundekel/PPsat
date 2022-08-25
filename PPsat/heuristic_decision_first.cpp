@@ -3,10 +3,10 @@
 #include <PPsat-base/formula.hpp>
 #include <PPsat-base/variable.hpp>
 
-void PPsat::heuristic_decision_first::init(PPsat_base::formula& formula)
+PPsat::heuristic_decision_first::heuristic_decision_first(
+    PPsat_base::formula& formula)
+    : set()
 {
-    set.clear();
-
     formula.for_each(
         [this](PPsat_base::variable& variable)
         {
@@ -24,7 +24,9 @@ void PPsat::heuristic_decision_first::unassigned(PPsat_base::variable& variable)
     set.emplace(&variable);
 }
 
-PPsat_base::literal PPsat::heuristic_decision_first::get_decision() const
+PPsat_base::optional<PPsat_base::literal>
+PPsat::heuristic_decision_first::get_decision() const
 {
-    return {**set.begin(), false};
+    auto& variable = **set.begin();
+    return PPsat_base::literal(variable, false);
 }

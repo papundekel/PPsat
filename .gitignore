@@ -2,7 +2,6 @@
 .antlr/
 .vscode/
 build/
-PPsat/inputs
 .cache/
 install/
 callgrind*

@@ -1,7 +1,9 @@
 #pragma once
+#include "PPsat-base/optional.hpp"
 #include <PPsat-base/clause.hpp>
 #include <PPsat-base/container_factory.hpp>
 #include <PPsat-base/literal.hpp>
+#include <PPsat-base/preprocessor.hpp>
 #include <PPsat-base/variable.hpp>
 #include <PPsat-base/view_any.hpp>
 
@@ -10,32 +12,32 @@
 
 namespace PPsat_base
 {
-using view_literal = view_any<const literal>;
-
 class formula
 {
 public:
-    using factory_clause = container_factory<clause, view_any<const literal>>;
+    using factory_clause = container_factory<clause, view_any<literal>>;
     using factory_variable = container_factory<variable>;
 
 private:
+    const preprocessor& preprocessor_;
     factory_clause& clauses;
     factory_variable& variables;
+    bool empty_clause;
 
 public:
-    formula(factory_clause& clauses, factory_variable& variables) noexcept;
+    formula(const preprocessor& preprocessor,
+            factory_clause& clauses,
+            factory_variable& variables) noexcept;
 
     std::size_t count_clause() const noexcept;
     std::size_t count_variable() const noexcept;
 
     variable& create_new_variable();
 
-    clause& add_clause(view_literal literals);
-    clause& add_clause(const auto&... literals)
+    void add_clause(view_any<literal> literals);
+    void add_clause(auto... literals)
     {
-        return add_clause(view_literal(
-            std::array{std::reference_wrapper<const literal>(literals)...} |
-            std::views::transform([](auto& x) -> auto& { return x.get(); })));
+        add_clause(view_any<literal>(std::array{literals...}));
     }
 
     bool for_each(std::function<bool(clause&)> f);
@@ -46,6 +48,6 @@ public:
                       std::function<std::ostream&(std::ostream&, literal)>
                           transform = literal_printer) const;
 
-    std::optional<PPsat_base::literal> find_unit() const noexcept;
+    bool has_empty_clause();
 };
 }

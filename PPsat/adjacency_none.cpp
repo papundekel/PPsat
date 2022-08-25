@@ -7,3 +7,7 @@ void PPsat::adjacency_none::adjacent_add(PPsat_base::clause&, bool)
 {}
 void PPsat::adjacency_none::adjacent_remove(PPsat_base::clause&, bool)
 {}
+std::size_t PPsat::adjacency_none::size() const
+{
+    return 0;
+}

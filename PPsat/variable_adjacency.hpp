@@ -17,5 +17,6 @@ private:
         std::function<void(PPsat_base::clause&, bool)> f) const override final;
     void register_(PPsat_base::clause& clause, bool positive) override final;
     void unregister(PPsat_base::clause& clause, bool positive) override final;
+    std::size_t adjacency_size() const override final;
 };
 }

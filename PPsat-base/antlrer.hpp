@@ -12,17 +12,17 @@ namespace PPsat_base
 class antlrer
 {
     error_listener listener;
-    antlr4::ANTLRInputStream input_antlr;
-    std::unique_ptr<antlr4::Lexer> lexer;
+    const unique_ref<antlr4::Lexer> lexer;
     antlr4::CommonTokenStream token_stream;
-    std::unique_ptr<PPsat_base::antlr_parser> parser;
+    const unique_ref<PPsat_base::antlr_parser> parser;
     antlr4::ParserRuleContext* parsed_tree;
 
 public:
     antlrer(const logger& logger_outer,
-            std::istream& input,
+            antlr4::CharStream& input,
             const factory_lexer& factory_lexer,
-            const factory_parser& factory_parser);
+            const factory_parser& factory_parser,
+            bool lexer_error_is_fail);
 
     antlr4::ParserRuleContext* parse() const noexcept;
 };

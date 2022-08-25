@@ -4,12 +4,6 @@
 #include <PPsat-base/formula.hpp>
 #include <PPsat-base/literal.hpp>
 
-#include <algorithm>
-#include <iostream>
-#include <iterator>
-#include <set>
-#include <vector>
-
 namespace PPsat
 {
 class clause_watched_literals final : public PPsat_base::clause
@@ -21,13 +15,13 @@ class clause_watched_literals final : public PPsat_base::clause
     PPsat_base::literal watched2;
 
 public:
-    clause_watched_literals(
-        PPsat_base::view_any<const PPsat_base::literal> literals);
+    clause_watched_literals(PPsat_base::view_any<PPsat_base::literal> literals);
 
     void for_each(
         std::function<void(PPsat_base::literal)> f) const override final;
 
-    std::optional<PPsat_base::literal> is_unit() const override final;
+    PPsat_base::optional<PPsat_base::literal> is_unary_unit()
+        const override final;
 
     std::pair<bool, std::optional<PPsat_base::literal>> assign(
         PPsat_base::literal literal_assigned,

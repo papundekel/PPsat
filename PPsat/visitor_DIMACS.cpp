@@ -1,57 +1,32 @@
-#include "PPsat-base/formula.hpp"
+#include "PPsat-base/logger_subroutine.hpp"
 #include <PPsat/visitor_DIMACS.hpp>
+
+#include <PPsat-base/formula.hpp>
 
 #include <charconv>
 
-PPsat::visitor_DIMACS::visitor_DIMACS(PPsat_base::formula& formula) noexcept
-    : f(formula)
-    , renaming_from_input()
+PPsat::visitor_DIMACS::visitor_DIMACS(
+    const PPsat_base::logger& logger_outer,
+    PPsat_base::formula& formula,
+    renaming_int& renaming_from_input) noexcept
+    : logger(logger_outer, "visitor-DIMACS")
+    , formula(formula)
+    , renaming_from_input(renaming_from_input)
     , name_next(0)
-    , parse_error(false)
 {}
-
-std::optional<std::size_t> PPsat::visitor_DIMACS::parse_number(
-    antlr4::tree::TerminalNode* number_node)
-{
-    std::size_t number;
-
-    const auto number_string = number_node->getSymbol()->getText();
-
-    const auto result =
-        std::from_chars(number_string.data(),
-                        number_string.data() + number_string.size(),
-                        number);
-
-    if (result.ec != std::errc())
-    {
-        parse_error = true;
-        return std::nullopt;
-    }
-
-    return number;
-}
 
 std::any PPsat::visitor_DIMACS::visitInput(parser_DIMACS::InputContext* context)
 {
-    const auto variable_count_opt = parse_number(context->NUMBER(0));
-
-    // TODO
-    if (!variable_count_opt)
-    {
-        return {};
-    }
-
     for (auto* const clause_context : context->clause())
     {
-        visit(clause_context);
-
-        if (parse_error)
+        const auto result = visit(clause_context);
+        if (!result.has_value())
         {
             return {};
         }
     }
 
-    return *variable_count_opt;
+    return nullptr;
 }
 
 std::any PPsat::visitor_DIMACS::visitClause(
@@ -71,41 +46,41 @@ std::any PPsat::visitor_DIMACS::visitClause(
         clause.push_back(std::any_cast<PPsat_base::literal>(literal_any));
     }
 
-    f.add_clause(PPsat_base::view_literal(clause));
+    formula.add_clause(PPsat_base::view_any<PPsat_base::literal>(clause));
 
-    return {};
+    return nullptr;
 }
 
 std::any PPsat::visitor_DIMACS::visitLiteral(
     parser_DIMACS::LiteralContext* context)
 {
-    const auto name_input_opt = parse_number(context->NUMBER());
+    const auto name_input_str = context->NUMBER()->getText();
+    const auto name_input_parsed_opt =
+        renaming_int::parse_number(name_input_str);
 
-    // TODO
-    if (!name_input_opt)
+    if (!name_input_parsed_opt)
     {
+        logger << "Couldn't parse \"" << name_input_str << "\" as a number\n";
         return {};
     }
 
     auto& variable = [this](std::size_t name_input) -> auto&
     {
-        const auto name_input_renaming_i = renaming_from_input.find(name_input);
+        const auto variable_opt = renaming_from_input.contains(name_input);
 
-        if (name_input_renaming_i != renaming_from_input.end())
+        if (variable_opt)
         {
-            return name_input_renaming_i->second;
+            return *variable_opt;
         }
-        else
-        {
-            auto& variable_new = f.create_new_variable();
 
-            variable_new.representation_set(name_input);
-            renaming_from_input.try_emplace(name_input, variable_new);
+        auto& variable_new = formula.create_new_variable();
 
-            return variable_new;
-        }
+        variable_new.representation_set(name_input);
+        renaming_from_input.emplace(name_input, variable_new);
+
+        return variable_new;
     }
-    (*name_input_opt);
+    (*name_input_parsed_opt);
 
     return PPsat_base::literal{variable, context->NEGATED() == nullptr};
 }

@@ -3,12 +3,6 @@
 #include <PPsat-base/literal.hpp>
 #include <PPsat-base/view_any.hpp>
 
-#include <algorithm>
-#include <iostream>
-#include <iterator>
-#include <list>
-#include <vector>
-
 namespace PPsat
 {
 class clause_simple final : public PPsat_base::clause
@@ -16,13 +10,14 @@ class clause_simple final : public PPsat_base::clause
     std::vector<PPsat_base::literal> literals;
 
 public:
-    clause_simple(PPsat_base::view_any<const PPsat_base::literal> literals);
+    clause_simple(PPsat_base::view_any<PPsat_base::literal> literals);
 
 private:
     void for_each(
         std::function<void(PPsat_base::literal)> f) const override final;
 
-    std::optional<PPsat_base::literal> is_unit() const override final;
+    PPsat_base::optional<PPsat_base::literal> is_unary_unit()
+        const override final;
 
     std::pair<bool, std::optional<PPsat_base::literal>> assign(
         PPsat_base::literal literal_assigned,

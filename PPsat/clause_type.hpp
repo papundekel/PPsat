@@ -4,7 +4,7 @@ namespace PPsat
 {
 enum class clause_type
 {
-    sets,
+    basic,
     counting,
     watched_literals,
 };

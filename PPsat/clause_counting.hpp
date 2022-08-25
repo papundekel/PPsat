@@ -2,12 +2,7 @@
 #include <PPsat-base/clause.hpp>
 #include <PPsat-base/formula.hpp>
 #include <PPsat-base/literal.hpp>
-
-#include <algorithm>
-#include <iostream>
-#include <iterator>
-#include <set>
-#include <vector>
+#include <PPsat-base/optional.hpp>
 
 namespace PPsat
 {
@@ -19,12 +14,13 @@ class clause_counting final : public PPsat_base::clause
     std::size_t assigned_true;
 
 public:
-    clause_counting(PPsat_base::view_any<const PPsat_base::literal> literals);
+    clause_counting(PPsat_base::view_any<PPsat_base::literal> literals);
 
     void for_each(
         std::function<void(PPsat_base::literal)> f) const override final;
 
-    std::optional<PPsat_base::literal> is_unit() const override final;
+    PPsat_base::optional<PPsat_base::literal> is_unary_unit()
+        const override final;
 
     std::pair<bool, std::optional<PPsat_base::literal>> assign(
         PPsat_base::literal literal_assigned,

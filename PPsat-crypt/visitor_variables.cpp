@@ -1,6 +1,5 @@
 #include <PPsat-crypt/visitor_variables.hpp>
 
-#include <PPsat-base/containers.hpp>
 #include <PPsat-base/ranges_to.hpp>
 #include <PPsat-base/view_chain.hpp>
 
@@ -91,7 +90,7 @@ std::any PPsat_crypt::visitor_variables::visitAtomFormula(
 std::any PPsat_crypt::visitor_variables::visitAtom(
     parser_CRYPT::AtomContext* context)
 {
-    auto words = PPsat_base::ranges_to<PPsat_base::vector>(
+    auto words = PPsat_base::ranges_to<std::vector>(
         context->WORD() |
         std::views::transform(&antlr4::tree::TerminalNode::getText));
 

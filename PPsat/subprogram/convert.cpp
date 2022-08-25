@@ -1,3 +1,10 @@
+#include "ANTLRInputStream.h"
+#include "PPsat-base/preprocessor.hpp"
+#include "PPsat-base/preprocessor_basic.hpp"
+#include "PPsat-base/preprocessor_id.hpp"
+#include "PPsat/variable_antecedent_none.hpp"
+#include "PPsat/variable_level_none.hpp"
+#include "PPsat/variable_recency_none.hpp"
 #include <PPsat/adjacency_none.hpp>
 #include <PPsat/builder_SMTLIB_tseitin.hpp>
 #include <PPsat/clause_simple.hpp>
@@ -12,9 +19,7 @@
 #include <PPsat/variable_assignable_not.hpp>
 #include <PPsat/variable_unassigning.hpp>
 
-#include <PPsat-base/antlrer.hpp>
 #include <PPsat-base/builder.hpp>
-#include <PPsat-base/containers.hpp>
 #include <PPsat-base/discard_iterator.hpp>
 #include <PPsat-base/error_listener.hpp>
 #include <PPsat-base/factory_lexer.hpp>
@@ -48,6 +53,9 @@ struct variable_ final
     , public std::conditional_t<format == PPsat::formula_format::DIMACS,
                                 PPsat::variable_DIMACS,
                                 PPsat::variable_SMTLIB>
+    , public PPsat::variable_level_none
+    , public PPsat::variable_recency_none
+    , public PPsat::variable_antecedent_none
 {};
 
 constexpr auto greater_power_10(const auto x) noexcept
@@ -117,11 +125,11 @@ std::unique_ptr<PPsat_base::formula::factory_variable> create_variables(
     {
         case PPsat::formula_format::DIMACS:
             return std::make_unique<PPsat_base::formula::factory_variable::impl<
-                PPsat_base::list,
+                std::list,
                 variable_<PPsat::formula_format::DIMACS>>>();
         case PPsat::formula_format::SMTLIB:
             return std::make_unique<PPsat_base::formula::factory_variable::impl<
-                PPsat_base::list,
+                std::list,
                 variable_<PPsat::formula_format::SMTLIB>>>();
         default:
             return nullptr;
@@ -137,19 +145,20 @@ int PPsat::subprogram::convert(const PPsat_base::logger& logger_outer,
     const auto logger_inner =
         PPsat_base::logger_subroutine(logger_outer, "convert");
 
-    const auto format =
-        pick_format(options.format, argument_file_in, formula_format::SMTLIB);
+    const auto format = pick_format(options["format"_cst],
+                                    argument_file_in,
+                                    formula_format::SMTLIB);
 
-    const auto builder = create_builder(format, options.nnf);
-
-    PPsat_base::formula::factory_clause::impl<PPsat_base::list, clause_simple>
-        clauses;
+    const PPsat_base::preprocessor_basic preprocessor;
+    PPsat_base::formula::factory_clause::impl<std::list, clause_simple> clauses;
     auto variables = create_variables(format);
-    PPsat_base::formula formula(clauses, *variables);
+    PPsat_base::formula formula(preprocessor, clauses, *variables);
 
-    auto& input_formula = argument_file_in.parsed_stream();
+    antlr4::ANTLRInputStream input_formula(argument_file_in.parsed_stream());
 
-    const auto result = builder->read(logger_inner, input_formula, formula);
+    const auto [builder, renaming] =
+        create_builder(formula, format, options["nnf"_cst]);
+    const auto result = builder->read(logger_inner, input_formula, true);
 
     if (!result)
     {

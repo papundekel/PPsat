@@ -12,7 +12,7 @@ public:
 
 public:
     template <typename U>
-    unique_ref(std::unique_ptr<U> ptr) noexcept
+    unique_ref(std::unique_ptr<U>&& ptr) noexcept
         : ptr(std::move(ptr))
     {}
     unique_ref(std::nullptr_t) noexcept
@@ -22,6 +22,11 @@ public:
     operator T&() const
     {
         return *ptr;
+    }
+
+    T* get() const
+    {
+        return ptr.get();
     }
 
     T* operator->() const

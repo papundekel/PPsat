@@ -1,6 +1,7 @@
 #pragma once
 #include <PPsat-base/clause_category.hpp>
 #include <PPsat-base/literal.hpp>
+#include <PPsat-base/optional.hpp>
 
 #include <functional>
 #include <optional>
@@ -14,7 +15,7 @@ public:
 
     virtual void for_each(std::function<void(literal)> f) const = 0;
 
-    virtual std::optional<literal> is_unit() const = 0;
+    virtual PPsat_base::optional<literal> is_unary_unit() const = 0;
 
     virtual std::pair<bool, std::optional<literal>> assign(
         literal literal_assigned,
@@ -23,6 +24,8 @@ public:
                           bool positive_in_clause) = 0;
 
     virtual bool is_relevant(literal literal) const = 0;
+
+    virtual ~clause() = default;
 };
 
 struct decisive_t

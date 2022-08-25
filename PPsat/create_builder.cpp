@@ -1,3 +1,7 @@
+#include "PPsat-base/unique_ref.hpp"
+#include "PPsat/renaming.hpp"
+#include "PPsat/renaming_basic.hpp"
+#include "PPsat/renaming_int_basic.hpp"
 #include <PPsat/create_builder.hpp>
 
 #include <PPsat-base/builder.hpp>
@@ -24,15 +28,23 @@ PPsat::formula_format PPsat::pick_format(
     return format_default;
 }
 
-PPsat_base::unique_ref<PPsat_base::builder> PPsat::create_builder(
-    PPsat::formula_format format,
-    bool nnf)
+std::pair<PPsat_base::unique_ref<PPsat_base::builder>,
+          PPsat_base::unique_ref<PPsat::renaming>>
+PPsat::create_builder(PPsat_base::formula& formula,
+                      PPsat::formula_format format,
+                      bool nnf)
 {
-    switch (format)
+    if (format == formula_format::DIMACS)
     {
-        case formula_format::DIMACS:
-            return std::make_unique<builder_DIMACS>();
-        default:
-            return std::make_unique<builder_SMTLIB_tseitin>(nnf);
+        auto renaming = std::make_unique<renaming_int_basic>();
+        auto builder = std::make_unique<builder_DIMACS>(formula, *renaming);
+        return {std::move(builder), std::move(renaming)};
+    }
+    else
+    {
+        auto renaming = std::make_unique<renaming_basic>();
+        auto builder =
+            std::make_unique<builder_SMTLIB_tseitin>(formula, *renaming, nnf);
+        return {std::move(builder), std::move(renaming)};
     }
 }

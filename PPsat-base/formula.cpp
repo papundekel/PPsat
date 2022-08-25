@@ -1,27 +1,48 @@
+#include "PPsat-base/clause.hpp"
+#include "PPsat-base/optional.hpp"
 #include <PPsat-base/formula.hpp>
 
+#include <algorithm>
+#include <iostream>
+#include <optional>
 #include <utility>
+#include <vector>
 
-PPsat_base::formula::formula(factory_clause& clauses,
+PPsat_base::formula::formula(const preprocessor& preprocessor,
+                             factory_clause& clauses,
                              factory_variable& variables) noexcept
-    : clauses(clauses)
+    : preprocessor_(preprocessor)
+    , clauses(clauses)
     , variables(variables)
+    , empty_clause(false)
 {}
 
-PPsat_base::clause& PPsat_base::formula::add_clause(
-    view_any<const literal> literals)
+void PPsat_base::formula::add_clause(view_any<literal> literals)
 {
-    auto& clause_new = clauses.create(literals);
+    auto [literals_preprocessed_opt, empty] =
+        preprocessor_.preprocess(literals);
 
-    for (const literal& literal : literals)
+    if (empty)
     {
-        if (clause_new.is_relevant(literal))
-        {
-            literal.register_(clause_new);
-        }
+        empty_clause = true;
     }
 
-    return clause_new;
+    if (!literals_preprocessed_opt)
+    {
+        return;
+    }
+
+    auto literals_preprocessed = std::move(*literals_preprocessed_opt);
+
+    auto& clause = clauses.create(view_any<literal>(literals_preprocessed));
+
+    for (const auto literal : literals_preprocessed)
+    {
+        if (clause.is_relevant(literal))
+        {
+            literal.register_(clause);
+        }
+    }
 }
 
 PPsat_base::variable& PPsat_base::formula::create_new_variable()
@@ -66,7 +87,7 @@ void PPsat_base::formula::write_DIMACS(
         [&output, &transform](const clause& clause)
         {
             clause.for_each(
-                [&output, &transform](literal literal)
+                [&output, &transform](const literal literal)
                 {
                     transform(output, literal) << " ";
                 });
@@ -76,22 +97,7 @@ void PPsat_base::formula::write_DIMACS(
         });
 }
 
-std::optional<PPsat_base::literal> PPsat_base::formula::find_unit()
-    const noexcept
+bool PPsat_base::formula::has_empty_clause()
 {
-    std::optional<literal> literal_opt;
-
-    const auto exists = for_each(
-        [&literal_opt](const clause& clause)
-        {
-            literal_opt = clause.is_unit();
-            return !literal_opt.has_value();
-        });
-
-    if (!exists)
-    {
-        return {};
-    }
-
-    return literal_opt;
+    return empty_clause;
 }

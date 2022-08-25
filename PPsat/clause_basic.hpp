@@ -11,21 +11,18 @@
 
 namespace PPsat
 {
-class clause_sets final : public PPsat_base::clause
+class clause_basic final : public PPsat_base::clause
 {
-    using set = std::set<PPsat_base::literal>;
-
-    set unassigned;
-    set assigned_false;
-    set assigned_true;
+    std::vector<PPsat_base::literal> literals;
 
 public:
-    clause_sets(PPsat_base::view_any<const PPsat_base::literal> literals);
+    clause_basic(PPsat_base::view_any<PPsat_base::literal> literals);
 
     void for_each(
         std::function<void(PPsat_base::literal)> f) const override final;
 
-    std::optional<PPsat_base::literal> is_unit() const override final;
+    PPsat_base::optional<PPsat_base::literal> is_unary_unit()
+        const override final;
 
     std::pair<bool, std::optional<PPsat_base::literal>> assign(
         PPsat_base::literal literal_assigned,

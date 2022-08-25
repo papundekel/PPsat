@@ -18,10 +18,8 @@ namespace PPsat::subprogram
 {
 enum class selection
 {
-    help,
     convert,
-    dpll,
-    cdcl,
+    solve,
 };
 
 using type = int(const PPsat_base::logger&,
@@ -29,8 +27,6 @@ using type = int(const PPsat_base::logger&,
                  cli::argument::file_in&,
                  cli::argument::file_out&);
 
-type help;
 type convert;
-type dpll;
-type cdcl;
+type solve;
 }

@@ -1,17 +1,20 @@
 #include <PPsat-base/antlrer.hpp>
 
 PPsat_base::antlrer::antlrer(const logger& logger_outer,
-                             std::istream& input,
+                             antlr4::CharStream& input,
                              const factory_lexer& factory_lexer,
-                             const factory_parser& factory_parser)
+                             const factory_parser& factory_parser,
+                             bool lexer_error_is_fail)
     : listener(logger_outer)
-    , input_antlr(input)
     , lexer(
-          [this, &factory_lexer]()
+          [this, &input, &factory_lexer, lexer_error_is_fail]()
           {
-              auto lexer = factory_lexer.create(&input_antlr);
+              auto lexer = factory_lexer.create(&input);
               lexer->removeErrorListeners();
-              lexer->addErrorListener(&listener);
+              if (lexer_error_is_fail)
+              {
+                  lexer->addErrorListener(&listener);
+              }
               return lexer;
           }())
     , token_stream(lexer.get())

@@ -1,3 +1,4 @@
+#include "ANTLRInputStream.h"
 #include <PPsat-crypt/visitor_constraints.hpp>
 #include <PPsat-crypt/visitor_variables.hpp>
 
@@ -11,7 +12,6 @@
 #include <PPsat-base/cli/option/simple_named_bool.hpp>
 #include <PPsat-base/cli/option/simple_named_number.hpp>
 #include <PPsat-base/cli/parser.hpp>
-#include <PPsat-base/containers.hpp>
 #include <PPsat-base/logger_ostream.hpp>
 #include <PPsat-base/logger_subroutine.hpp>
 
@@ -62,11 +62,14 @@ int main(int argc, char** argv)
         return 0;
     }
 
+    antlr4::ANTLRInputStream input(std::cin);
+
     PPsat_base::antlrer antlrer(
         logger,
-        std::cin,
+        input,
         PPsat_base::factory_lexer::impl<PPsat_crypt::lexer_CRYPT>(),
-        PPsat_base::factory_parser::impl<PPsat_crypt::parser_CRYPT>());
+        PPsat_base::factory_parser::impl<PPsat_crypt::parser_CRYPT>(),
+        true);
 
     auto* const parse_tree = antlrer.parse();
 

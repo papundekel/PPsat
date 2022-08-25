@@ -28,21 +28,7 @@ template <typename FStream>
 typename PPsat_base::cli::argument::file<FStream>::stream_type&
 PPsat_base::cli::argument::file<FStream>::parsed_stream()
 {
-    if (is_present())
-    {
-        return stream_file;
-    }
-    else
-    {
-        if constexpr (std::same_as<FStream, std::ifstream>)
-        {
-            return std::cin;
-        }
-        else
-        {
-            return std::cout;
-        }
-    }
+    return stream_file;
 }
 
 template class PPsat_base::cli::argument::file<std::ifstream>;

@@ -1,3 +1,4 @@
+#include "PPsat-base/unit.hpp"
 #include <PPsat-base/clause.hpp>
 #include <PPsat-base/variable.hpp>
 
@@ -19,22 +20,26 @@ std::ostream& PPsat_base::operator<<(std::ostream& output,
     return output;
 }
 
-std::tuple<bool, std::optional<PPsat_base::literal>, std::size_t>
-PPsat_base::variable::assign(bool positive)
+std::tuple<PPsat_base::optional<PPsat_base::clause&>,
+           std::list<PPsat_base::unit>,
+           std::size_t>
+PPsat_base::variable::assign(bool positive,
+                             std::size_t level,
+                             std::size_t recency)
 {
-    set_assignment(positive ? assignment::positive : assignment::negative);
+    assignment_set(positive ? assignment::positive : assignment::negative);
+    level_set(level);
+    recency_set(recency);
 
-    auto conflict_anywhere = false;
-    std::optional<PPsat_base::literal> literal_unit_anywhere_opt;
+    PPsat_base::optional<PPsat_base::clause&> conflict_anywhere;
+    std::list<unit> units;
 
     auto count_visited = 0uz;
 
     for_each_clause_relevant_assign(
-        [this,
-         positive,
-         &conflict_anywhere,
-         &literal_unit_anywhere_opt,
-         &count_visited](clause& clause, bool positive_in_clause)
+        [this, positive, &conflict_anywhere, &units, &count_visited](
+            clause& clause,
+            bool positive_in_clause)
         {
             ++count_visited;
 
@@ -43,20 +48,21 @@ PPsat_base::variable::assign(bool positive)
 
             if (conflict)
             {
-                conflict_anywhere = true;
+                conflict_anywhere = clause;
             }
             else if (literal_unit_opt)
             {
-                literal_unit_anywhere_opt = literal_unit_opt;
+                units.emplace_back(*literal_unit_opt, clause);
             }
         });
 
-    return {conflict_anywhere, literal_unit_anywhere_opt, count_visited};
+    return {conflict_anywhere, std::move(units), count_visited};
 }
 
 void PPsat_base::variable::unassign(bool positive)
 {
-    set_assignment(assignment::unknown);
+    assignment_set(assignment::unknown);
+    antecedent_reset();
     for_each_clause_relevant_unassign(
         [this, positive](clause& clause, bool positive_in_clause)
         {

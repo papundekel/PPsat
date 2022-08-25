@@ -18,3 +18,8 @@ void PPsat::variable_adjacency::unregister(PPsat_base::clause& clause,
 {
     adjacent_remove(clause, positive);
 }
+
+std::size_t PPsat::variable_adjacency::adjacency_size() const
+{
+    return size();
+}

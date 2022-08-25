@@ -1,6 +1,5 @@
 #include <PPsat-crypt/visitor_constraints.hpp>
 
-#include <PPsat-base/containers.hpp>
 #include <PPsat-base/ranges_to.hpp>
 #include <PPsat-base/view_chain.hpp>
 
@@ -84,14 +83,14 @@ std::any PPsat_crypt::visitor_constraints::visitAtom(
         const auto get_text = &antlr4::tree::TerminalNode::getText;
 
         const auto context_words = context->WORD();
-        return std::make_pair(PPsat_base::ranges_to<PPsat_base::vector>(
+        return std::make_pair(PPsat_base::ranges_to<std::vector>(
                                   context_words |
                                   std::views::take(context_words.size() - 1) |
                                   std::views::transform(get_text)),
                               std::invoke(get_text, context_words.back()));
     }();
 
-    const auto operators = PPsat_base::ranges_to<PPsat_base::vector>(
+    const auto operators = PPsat_base::ranges_to<std::vector>(
         context->operation() |
         std::views::transform(
             [this](auto* context_operator)

@@ -8,7 +8,7 @@ PPsat::variable_assignable::variable_assignable() noexcept
     : assignment_current(assignment::unknown)
 {}
 
-void PPsat::variable_assignable::set_assignment(assignment assignment)
+void PPsat::variable_assignable::assignment_set(assignment assignment)
 {
     assignment_current = assignment;
 }

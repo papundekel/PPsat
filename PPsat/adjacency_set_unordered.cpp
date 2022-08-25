@@ -38,3 +38,7 @@ void PPsat::adjacency_set_unordered::adjacent_remove(PPsat_base::clause& clause,
 {
     adjacency.erase(std::make_pair(std::ref(clause), positive));
 }
+std::size_t PPsat::adjacency_set_unordered::size() const
+{
+    return adjacency.size();
+}

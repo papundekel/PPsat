@@ -10,6 +10,17 @@ Newline or a sequence of whitespace characters should be allowed wherever space 
 
 lexer grammar lexer_SMTLIB;
 
+@header
+{
+    #include <PPsat-base/antlr_lexer.hpp>
+    namespace PPsat { using antlr_lexer = PPsat_base::antlr_lexer; }
+}
+
+options
+{
+    superClass=antlr_lexer;
+}
+
 PARENTHESISL: '(';
 PARENTHESISR: ')';
 AND: 'and';
