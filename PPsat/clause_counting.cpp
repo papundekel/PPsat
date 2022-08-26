@@ -94,3 +94,44 @@ bool PPsat::clause_counting::is_relevant(PPsat_base::literal literal) const
 {
     return true;
 }
+
+bool PPsat::clause_counting::antecedent_to_some() const
+{
+    if (literals.size() == 1)
+    {
+        return true;
+    }
+
+    if (assigned_true == 0)
+    {
+        return false;
+    }
+
+    const auto i = std::ranges::find_if(
+        literals,
+        [this](const PPsat_base::literal literal)
+        {
+            for (const auto& antecedent : literal.antecedent_get())
+            {
+                return &antecedent == this;
+            }
+
+            return false;
+        });
+
+    return i != literals.end();
+}
+
+void PPsat::clause_counting::unregister()
+{
+    std::ranges::for_each(literals,
+                          [this](const PPsat_base::literal literal)
+                          {
+                              literal.unregister(*this);
+                          });
+}
+
+std::size_t PPsat::clause_counting::length() const
+{
+    return literals.size();
+}

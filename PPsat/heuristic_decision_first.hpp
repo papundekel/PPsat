@@ -1,13 +1,13 @@
 #pragma once
 #include <PPsat/heuristic_decision.hpp>
 
-#include <set>
+#include <unordered_set>
 
 namespace PPsat
 {
 class heuristic_decision_first final : public heuristic_decision
 {
-    std::set<PPsat_base::variable*> set;
+    std::unordered_set<PPsat_base::variable*> set;
 
 public:
     heuristic_decision_first(PPsat_base::formula& formula);

@@ -24,6 +24,10 @@ public:
                           bool positive_in_clause) = 0;
 
     virtual bool is_relevant(literal literal) const = 0;
+    virtual bool antecedent_to_some() const = 0;
+    virtual void unregister() = 0;
+
+    virtual std::size_t length() const = 0;
 
     virtual ~clause() = default;
 };

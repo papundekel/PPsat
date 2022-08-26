@@ -1,7 +1,7 @@
 #pragma once
 #include "PPsat-base/optional.hpp"
 #include <PPsat-base/clause.hpp>
-#include <PPsat-base/container_factory.hpp>
+#include <PPsat-base/factory_container.hpp>
 #include <PPsat-base/literal.hpp>
 #include <PPsat-base/preprocessor.hpp>
 #include <PPsat-base/variable.hpp>
@@ -15,8 +15,8 @@ namespace PPsat_base
 class formula
 {
 public:
-    using factory_clause = container_factory<clause, view_any<literal>>;
-    using factory_variable = container_factory<variable>;
+    using factory_clause = factory_container<clause, view_any<literal>>;
+    using factory_variable = factory_container<variable>;
 
 private:
     const preprocessor& preprocessor_;

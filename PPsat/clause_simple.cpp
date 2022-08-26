@@ -32,3 +32,14 @@ bool PPsat::clause_simple::is_relevant(PPsat_base::literal literal) const
 {
     return false;
 }
+
+bool PPsat::clause_simple::antecedent_to_some() const
+{
+    return false;
+}
+
+void PPsat::clause_simple::unregister()
+{}
+
+std::size_t PPsat::clause_simple::length() const
+{}

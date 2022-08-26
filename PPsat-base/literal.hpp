@@ -43,7 +43,7 @@ public:
 
     std::size_t level_get() const;
     std::size_t recency_get() const;
-    const clause& antecedent_get() const;
+    optional<const clause&> antecedent_get() const;
 };
 
 std::ostream& operator<<(std::ostream& output, const literal& literal);

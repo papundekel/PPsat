@@ -1,3 +1,4 @@
+#include "PPsat-base/literal.hpp"
 #include <PPsat/clause_basic.hpp>
 
 #include <PPsat-base/variable_assignment.hpp>
@@ -93,4 +94,40 @@ void PPsat::clause_basic::unassign(PPsat_base::literal literal_unassigned,
 bool PPsat::clause_basic::is_relevant(PPsat_base::literal literal) const
 {
     return true;
+}
+
+bool PPsat::clause_basic::antecedent_to_some() const
+{
+    if (literals.size() == 1)
+    {
+        return true;
+    }
+
+    const auto i = std::ranges::find_if(
+        literals,
+        [this](const PPsat_base::literal literal)
+        {
+            for (const auto& antecedent : literal.antecedent_get())
+            {
+                return &antecedent == this;
+            }
+
+            return false;
+        });
+
+    return i != literals.end();
+}
+
+void PPsat::clause_basic::unregister()
+{
+    std::ranges::for_each(literals,
+                          [this](const PPsat_base::literal literal)
+                          {
+                              literal.unregister(*this);
+                          });
+}
+
+std::size_t PPsat::clause_basic::length() const
+{
+    return literals.size();
 }

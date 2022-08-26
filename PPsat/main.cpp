@@ -45,15 +45,9 @@ int main(int argc, char** argv)
         return 0;
     }
 
-    if (!options["subprogram"_cst])
-    {
-        logger << "No subprogram specified, use option -help for help.\n";
-        return 2;
-    }
-
     return options["subprogram"_cst].parsed_subprogram()(logger,
                                                          options,
                                                          argument_file_in,
                                                          argument_file_out)
-           << 2;
+           << 1;
 }

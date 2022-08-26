@@ -96,7 +96,8 @@ std::size_t PPsat_base::literal::recency_get() const
     return get_variable().recency_get();
 }
 
-const PPsat_base::clause& PPsat_base::literal::antecedent_get() const
+PPsat_base::optional<const PPsat_base::clause&>
+PPsat_base::literal::antecedent_get() const
 {
-    return *get_variable().antecedent_get();
+    return get_variable().antecedent_get();
 }

@@ -97,7 +97,7 @@ PPsat_base::optional<std::size_t> PPsat::conflict_analysis_uip::analyse(
                 return a.recency_get() < b.recency_get();
             });
 
-        resolve(C, literal.antecedent_get());
+        resolve(C, *literal.antecedent_get());
     }
 
 #ifndef NDEBUG
@@ -149,4 +149,38 @@ PPsat::conflict_analysis_uip::post_backtrack(solver&, PPsat_base::literal)
 }
 
 void PPsat::conflict_analysis_uip::restarted()
-{}
+{
+#ifndef NDEBUG
+    std::cout << "LSB " << learnt->count() << std::endl;
+#endif
+
+    const auto max_deleted = learnt->count() / 2;
+    auto deleted = 0uz;
+    learnt->erase(
+        [max_deleted, &deleted](PPsat_base::clause& clause)
+        {
+            if (deleted >= max_deleted)
+            {
+                return false;
+            }
+
+            if (clause.length() <= 2)
+            {
+                return false;
+            }
+
+            if (clause.antecedent_to_some())
+            {
+                return false;
+            }
+
+            clause.unregister();
+
+            ++deleted;
+            return true;
+        });
+
+#ifndef NDEBUG
+    std::cout << "LSA " << learnt->count() << std::endl;
+#endif
+}

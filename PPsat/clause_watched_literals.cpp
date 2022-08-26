@@ -6,7 +6,9 @@
 #include <PPsat/clause_watched_literals.hpp>
 
 #include <algorithm>
+#include <cassert>
 #include <ranges>
+#include <tuple>
 
 PPsat::clause_watched_literals::clause_watched_literals(
     PPsat_base::view_any<PPsat_base::literal> literals)
@@ -21,8 +23,15 @@ PPsat::clause_watched_literals::clause_watched_literals(
         auto recency_first = recent_first.recency_get();
         auto recency_second = recent_second.recency_get();
 
-        for (const auto literal : this->literals)
+        if (recency_second > recency_first)
         {
+            std::swap(recent_first, recent_second);
+            std::swap(recency_first, recency_second);
+        }
+
+        for (auto i = 2uz; i != this->literals.size(); ++i)
+        {
+            const auto literal = this->literals[i];
             const auto recency = literal.recency_get();
             if (recency > recency_first)
             {
@@ -31,8 +40,7 @@ PPsat::clause_watched_literals::clause_watched_literals(
                 recent_first = literal;
                 recency_first = recency;
             }
-
-            if (recency > recency_second)
+            else if (recency > recency_second)
             {
                 recent_second = literal;
                 recency_second = recency;
@@ -41,6 +49,7 @@ PPsat::clause_watched_literals::clause_watched_literals(
 
         watched1 = recent_first;
         watched2 = recent_second;
+        assert(watched1 != watched2);
     }
 }
 
@@ -135,4 +144,42 @@ bool PPsat::clause_watched_literals::is_relevant(
     PPsat_base::literal literal) const
 {
     return literal == watched1 || literal == watched2;
+}
+
+bool PPsat::clause_watched_literals::antecedent_to_some() const
+{
+    if (watched1.get_assignment() == PPsat_base::variable_assignment::positive)
+    {
+        for (const auto& antecedent : watched1.antecedent_get())
+        {
+            if (&antecedent == this)
+            {
+                return true;
+            }
+        }
+    }
+
+    if (watched2.get_assignment() == PPsat_base::variable_assignment::positive)
+    {
+        for (const auto& antecedent : watched2.antecedent_get())
+        {
+            if (&antecedent == this)
+            {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+void PPsat::clause_watched_literals::unregister()
+{
+    watched1.unregister(*this);
+    watched2.unregister(*this);
+}
+
+std::size_t PPsat::clause_watched_literals::length() const
+{
+    return literals.size();
 }

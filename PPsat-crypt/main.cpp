@@ -1,4 +1,3 @@
-#include "ANTLRInputStream.h"
 #include <PPsat-crypt/visitor_constraints.hpp>
 #include <PPsat-crypt/visitor_variables.hpp>
 
@@ -10,7 +9,7 @@
 #include <PPsat-base/cli/argument/simple_number.hpp>
 #include <PPsat-base/cli/option.hpp>
 #include <PPsat-base/cli/option/simple_named_bool.hpp>
-#include <PPsat-base/cli/option/simple_named_number.hpp>
+#include <PPsat-base/cli/option/simple_named_int.hpp>
 #include <PPsat-base/cli/parser.hpp>
 #include <PPsat-base/logger_ostream.hpp>
 #include <PPsat-base/logger_subroutine.hpp>
@@ -38,7 +37,7 @@ int main(int argc, char** argv)
         PPsat_base::logger_subroutine(logger_cerr, "PPsat-crypt");
 
     PPsat_base::cli::option::simple_named_bool option_help("help");
-    PPsat_base::cli::option::simple_named_number option_base("base");
+    PPsat_base::cli::option::simple_named_int option_base("base");
     PPsat_base::cli::option::simple_named_bool option_repeating("repeating");
 
     const auto success_cli =

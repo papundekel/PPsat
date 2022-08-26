@@ -7,8 +7,11 @@ namespace PPsat_base
 {
 namespace detail
 {
+template <auto Key, auto...>
+constexpr inline std::size_t find_in_pack = 0;
 template <auto Key, auto Head, auto... Tail>
-constexpr inline std::size_t find_in_pack = find_in_pack<Key, Tail...> + 1;
+constexpr inline std::size_t find_in_pack<Key, Head, Tail...> =
+    find_in_pack<Key, Tail...> + 1;
 template <auto Key, auto... Tail>
 constexpr inline std::size_t find_in_pack<Key, Key, Tail...> = 0;
 }
@@ -18,9 +21,11 @@ class tuple
 {
 public:
     template <constant_string... Names>
+        requires(sizeof...(Types) == sizeof...(Names))
     class named : public std::tuple<Types...>
     {
         template <constant_string Name>
+            requires(detail::find_in_pack<Name, Names...> != sizeof...(Types))
         static decltype(auto) get_helper(auto&& tuple) noexcept
         {
             return std::get<detail::find_in_pack<Name, Names...>>(

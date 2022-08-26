@@ -1,14 +1,12 @@
 #pragma once
-#include "PPsat-base/unit.hpp"
-#include "PPsat/restart_strategy.hpp"
 #include <PPsat/heuristic_decision.hpp>
+#include <PPsat/restart_strategy.hpp>
 
 #include <PPsat-base/clause.hpp>
 #include <PPsat-base/formula.hpp>
 #include <PPsat-base/literal.hpp>
 #include <PPsat-base/tuple_named.hpp>
-
-#include <algorithm>
+#include <PPsat-base/unit.hpp>
 
 namespace PPsat
 {
@@ -36,6 +34,7 @@ private:
     std::size_t count_decision;
     std::size_t count_unit_propagation;
     std::size_t count_visited_clauses;
+    std::size_t count_restarts;
 
 public:
     solver(PPsat_base::formula& formula,
@@ -68,10 +67,17 @@ public:
 
     void for_each_assignment(std::function<void(literal)> f) const;
 
-    PPsat_base::tuple<std::size_t, std::size_t, std::size_t>::named<
-        "count_decision",
-        "count_unit_propagation",
-        "count_visited_clauses">
-    get_statistics() const noexcept;
+    PPsat_base::tuple<std::size_t, std::size_t, std::size_t, std::size_t>::
+        named<"count_decision",
+              "count_unit_propagation",
+              "count_visited_clauses",
+              "count_restarts">
+        get_statistics() const noexcept
+    {
+        return {count_decision,
+                count_unit_propagation,
+                count_visited_clauses,
+                count_restarts};
+    }
 };
 }

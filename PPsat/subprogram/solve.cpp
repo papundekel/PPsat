@@ -1,5 +1,4 @@
-#include "PPsat/conflict_analysis.hpp"
-#include "PPsat/conflict_analysis_uip.hpp"
+#include "PPsat-base/cli/option/simple_named_double.hpp"
 #include <PPsat/adjacency_list.hpp>
 #include <PPsat/adjacency_set.hpp>
 #include <PPsat/adjacency_set_unordered.hpp>
@@ -16,13 +15,17 @@
 #include <PPsat/clause_watched_literals.hpp>
 #include <PPsat/cli/argument/file.hpp>
 #include <PPsat/cli/options.hpp>
+#include <PPsat/conflict_analysis.hpp>
 #include <PPsat/conflict_analysis_dpll.hpp>
+#include <PPsat/conflict_analysis_uip.hpp>
 #include <PPsat/create_builder.hpp>
 #include <PPsat/formula_format.hpp>
 #include <PPsat/heuristic_decision.hpp>
 #include <PPsat/heuristic_decision_assume.hpp>
 #include <PPsat/heuristic_decision_first.hpp>
 #include <PPsat/heuristic_decision_priority.hpp>
+#include <PPsat/restart_strategy.hpp>
+#include <PPsat/restart_strategy_geometric.hpp>
 #include <PPsat/restart_strategy_never.hpp>
 #include <PPsat/solver.hpp>
 #include <PPsat/subprogram.hpp>
@@ -39,6 +42,8 @@
 
 #include <PPsat-base/builder.hpp>
 #include <PPsat-base/clause.hpp>
+#include <PPsat-base/cli/option/simple_named_bool.hpp>
+#include <PPsat-base/cli/option/simple_named_int.hpp>
 #include <PPsat-base/conditional.hpp>
 #include <PPsat-base/discard_iterator.hpp>
 #include <PPsat-base/error_listener.hpp>
@@ -228,6 +233,22 @@ PPsat_base::unique_ref<PPsat::conflict_analysis> create_analysis(
         return std::make_unique<PPsat::conflict_analysis_dpll>();
     }
 }
+
+PPsat_base::unique_ref<PPsat::restart_strategy> create_restarts(
+    PPsat_base::cli::option::simple_named_bool& option_cdcl,
+    PPsat_base::cli::option::simple_named_double& option_restart)
+{
+    if (option_cdcl)
+    {
+        return std::make_unique<PPsat::restart_strategy_geometric>(
+            100,
+            option_restart ? option_restart.parsed() : 2.5);
+    }
+    else
+    {
+        return std::make_unique<PPsat::restart_strategy_never>();
+    }
+}
 }
 
 int PPsat::subprogram::solve(const PPsat_base::logger& logger_outer,
@@ -287,7 +308,9 @@ int PPsat::subprogram::solve(const PPsat_base::logger& logger_outer,
     const auto analysis = create_analysis(options["cdcl"_cst], clauses_factory);
     const auto heuristic =
         create_heuristic(formula, assumption.get(), options["assume"_cst]);
-    PPsat::restart_strategy_never restarts;
+    const auto restarts =
+        create_restarts(options["cdcl"_cst], options["restart"_cst]);
+    ;
     PPsat::solver solver(formula, analysis, heuristic, restarts);
 
     const auto time_solving_start = std::chrono::steady_clock::now();
@@ -339,11 +362,12 @@ int PPsat::subprogram::solve(const PPsat_base::logger& logger_outer,
         std::chrono::duration_cast<std::chrono::milliseconds>(
             time_solving_end - time_solving_start);
 
-    std::cout << "c parse,solve,decision,unit,visit\n";
+    std::cout << "c parse,solve,decision,unit,visit,restart\n";
     std::cout << "c " << time_parsing.count() << "," << time_solving.count()
               << "," << statistics["count_decision"_cst] << ","
               << statistics["count_unit_propagation"_cst] << ","
-              << statistics["count_visited_clauses"_cst] << "\n";
+              << statistics["count_visited_clauses"_cst] << ","
+              << statistics["count_restarts"_cst] << "\n";
 
     return 0;
 }

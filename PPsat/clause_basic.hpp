@@ -31,6 +31,10 @@ public:
     void unassign(PPsat_base::literal literal_unassigned,
                   bool positive_in_clause) override final;
 
+    bool antecedent_to_some() const override final;
+    void unregister() override final;
+    std::size_t length() const override final;
+
     bool is_relevant(PPsat_base::literal literal) const override final;
 };
 }

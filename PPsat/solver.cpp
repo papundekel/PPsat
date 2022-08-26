@@ -1,18 +1,22 @@
-#include "PPsat-base/clause.hpp"
-#include "PPsat-base/formula.hpp"
-#include "PPsat-base/unit.hpp"
-#include "PPsat-base/variable_assignment.hpp"
-#include "PPsat-base/view_nonempty.hpp"
-#include "PPsat-base/view_repeat.hpp"
-#include "PPsat/restart_strategy.hpp"
-#include <PPsat/conflict_analysis.hpp>
 #include <PPsat/solver.hpp>
 
+#include <PPsat/conflict_analysis.hpp>
+#include <PPsat/restart_strategy.hpp>
+
+#include <PPsat-base/clause.hpp>
+#include <PPsat-base/formula.hpp>
 #include <PPsat-base/optional.hpp>
+#include <PPsat-base/unit.hpp>
+#include <PPsat-base/variable_assignment.hpp>
+#include <PPsat-base/view_nonempty.hpp>
+#include <PPsat-base/view_repeat.hpp>
 
 #include <functional>
-#include <iostream>
 #include <ranges>
+
+#ifndef NDEBUG
+#include <iostream>
+#endif
 
 PPsat::solver::solver(PPsat_base::formula& formula,
                       conflict_analysis& analysis,
@@ -30,6 +34,7 @@ PPsat::solver::solver(PPsat_base::formula& formula,
     , count_decision(0)
     , count_unit_propagation(0)
     , count_visited_clauses(0)
+    , count_restarts(0)
 {}
 
 std::pair<PPsat_base::optional<const PPsat_base::clause&>,
@@ -164,9 +169,12 @@ bool PPsat::solver::solve()
             const auto do_restart = restarts.conflict();
             if (do_restart)
             {
+                ++count_restarts;
+
                 backtrack(0);
                 analysis.restarted();
                 conflict = {};
+                units = find_unary_unit();
                 continue;
             }
 
@@ -199,11 +207,4 @@ bool PPsat::solver::solve()
 void PPsat::solver::for_each_assignment(std::function<void(literal)> f) const
 {
     std::ranges::for_each(stack_assignment, std::move(f));
-}
-
-PPsat_base::tuple<std::size_t, std::size_t, std::size_t>::
-    named<"count_decision", "count_unit_propagation", "count_visited_clauses">
-    PPsat::solver::get_statistics() const noexcept
-{
-    return {count_decision, count_unit_propagation, count_visited_clauses};
 }

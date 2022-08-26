@@ -24,6 +24,7 @@ add_executable("PPsat"
     "heuristic_decision_assume.cpp"
     "heuristic_decision_first.cpp"
     "heuristic_decision_priority.cpp"
+    "restart_strategy_geometric.cpp"
     "restart_strategy_never.cpp"
     "renaming_basic.cpp"
     "renaming_int.cpp"
@@ -146,10 +147,10 @@ foreach(file_path ${inputs})
     set(test_name_watched_literals "${test_name_prefix}-watched_literals-${file_name}")
     set(test_name_cdcl "${test_name_prefix}-cdcl-${file_name}")
 
-    add_test(NAME "${test_name_basic}" COMMAND "PPsat" "-subprogram" "solve" "-clause" "basic" "-adjacency" "vector" "${file_path}" CONFIGURATIONS Release)
-    add_test(NAME "${test_name_counting}" COMMAND "PPsat" "-subprogram" "solve" "-clause" "counting" "-adjacency" "vector" "${file_path}" CONFIGURATIONS Release)
-    add_test(NAME "${test_name_watched_literals}" COMMAND "PPsat" "-subprogram" "solve" "-clause" "watched_literals" "-adjacency" "list" "${file_path}" CONFIGURATIONS Release)
-    add_test(NAME "${test_name_cdcl}" COMMAND "PPsat" "-subprogram" "solve" "-cdcl" "-clause" "watched_literals" "-adjacency" "list" "${file_path}" CONFIGURATIONS Release)
+    #add_test(NAME "${test_name_basic}" COMMAND "PPsat" "-subprogram" "solve" "-clause" "basic" "-adjacency" "vector" "${file_path}" CONFIGURATIONS Release)
+    #add_test(NAME "${test_name_counting}" COMMAND "PPsat" "-subprogram" "solve" "-clause" "counting" "-adjacency" "vector" "${file_path}" CONFIGURATIONS Release)
+    #add_test(NAME "${test_name_watched_literals}" COMMAND "PPsat" "-subprogram" "solve" "-clause" "watched_literals" "-adjacency" "set_unordered" "${file_path}" CONFIGURATIONS Release)
+    add_test(NAME "${test_name_cdcl}" COMMAND "PPsat" "-subprogram" "solve" "-cdcl" "-clause" "watched_literals" "-adjacency" "set_unordered" "${file_path}" CONFIGURATIONS Release)
 
     cmake_path(GET file_path PARENT_PATH parent_path)
     cmake_path(GET parent_path FILENAME parent_name)
@@ -163,10 +164,10 @@ foreach(file_path ${inputs})
     endif()
 
     set_tests_properties(
-        "${test_name_basic}"
-        "${test_name_counting}"
-        "${test_name_watched_literals}"
-        #"${test_name_cdcl}"
+        #"${test_name_basic}"
+        #"${test_name_counting}"
+        #"${test_name_watched_literals}"
+        "${test_name_cdcl}"
     PROPERTIES
         FAIL_REGULAR_EXPRESSION "${regex_fail}"
         PASS_REGULAR_EXPRESSION "${regex_pass}"

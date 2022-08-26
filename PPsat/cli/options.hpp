@@ -9,6 +9,7 @@
 #include <PPsat-base/cli/option/enum.hpp>
 #include <PPsat-base/cli/option/named.hpp>
 #include <PPsat-base/cli/option/simple_named_bool.hpp>
+#include <PPsat-base/cli/option/simple_named_double.hpp>
 #include <PPsat-base/cli/option/simple_named_enum_typed.hpp>
 #include <PPsat-base/cli/parameter/simple.hpp>
 #include <PPsat-base/cli/parser.hpp>
@@ -27,6 +28,7 @@ using options_base = PPsat_base::tuple<
     PPsat_base::cli::option::simple_named_bool,
     PPsat_base::cli::option::simple_named_bool,
     PPsat_base::cli::option::simple_named_bool,
+    PPsat_base::cli::option::simple_named_double,
     PPsat_base::cli::option::simple_named_enum_typed<formula_format>,
     PPsat_base::cli::option::simple_named_enum_typed<clause_type>,
     PPsat_base::cli::option::simple_named_enum_typed<adjacency_type>>::
@@ -35,6 +37,7 @@ using options_base = PPsat_base::tuple<
           "nnf",
           "assume",
           "cdcl",
+          "restart",
           "format",
           "clause",
           "adjacency">;
