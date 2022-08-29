@@ -48,12 +48,15 @@ public:
     virtual void recency_set(std::size_t recency) = 0;
     virtual std::size_t recency_get() const = 0;
 
+    virtual void score_set(double score) = 0;
+    virtual double score_get() const = 0;
+
     virtual void register_(clause& clause, bool positive) = 0;
     virtual void unregister(clause& clause, bool positive) = 0;
 
     virtual std::size_t adjacency_size() const = 0;
 
-    virtual assignment get_assignment() const = 0;
+    virtual assignment assignment_get() const = 0;
     virtual std::size_t level_get() const = 0;
 
     std::tuple<PPsat_base::optional<PPsat_base::clause&>,

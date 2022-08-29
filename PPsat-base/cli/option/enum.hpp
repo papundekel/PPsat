@@ -30,7 +30,8 @@ public:
         }
     }
 
-    std::size_t argument_count() const noexcept override final;
+    std::size_t argument_count_min() const noexcept override final;
+    std::size_t argument_count_max() const noexcept override final;
 
     bool parse(const logger& logger_outer,
                std::size_t i,

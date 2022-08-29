@@ -25,7 +25,7 @@ public:
     literal(variable& variable, bool positive) noexcept;
 
     variable& get_variable() const noexcept;
-    variable_assignment get_assignment() const noexcept;
+    variable_assignment assignment_get() const noexcept;
 
     bool is_positive() const noexcept;
 

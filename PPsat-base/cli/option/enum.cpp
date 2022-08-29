@@ -1,7 +1,12 @@
 #include "PPsat-base/logger_subroutine.hpp"
 #include <PPsat-base/cli/option/enum.hpp>
 
-std::size_t PPsat_base::cli::option::enum_::argument_count() const noexcept
+std::size_t PPsat_base::cli::option::enum_::argument_count_min() const noexcept
+{
+    return 1;
+}
+
+std::size_t PPsat_base::cli::option::enum_::argument_count_max() const noexcept
 {
     return 1;
 }

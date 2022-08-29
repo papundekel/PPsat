@@ -1,10 +1,14 @@
 #include "PPsat-base/clause.hpp"
 #include "PPsat-base/literal.hpp"
+#include "PPsat-base/ranges_to.hpp"
 #include "PPsat-base/view_any.hpp"
+#include "PPsat/decision.hpp"
 #include <PPsat/conflict_analysis_uip.hpp>
 
 #include <algorithm>
+#include <bits/ranges_util.h>
 #include <list>
+#include <ranges>
 #include <utility>
 
 #ifndef NDEBUG
@@ -43,16 +47,33 @@ void resolve(std::list<PPsat_base::literal>& C,
 }
 
 PPsat::conflict_analysis_uip::conflict_analysis_uip(
-    PPsat_base::unique_ref<PPsat_base::formula::factory_clause>&&
-        learnt) noexcept
-    : learnt(std::move(learnt))
+    PPsat_base::unique_ref<PPsat_base::formula::factory_clause>&& learnt,
+    decision& decision) noexcept
+    : decision_(decision)
+    , learnt(std::move(learnt))
+    , learnt_unary()
+    , unary_last_found(std::prev(learnt_unary.end()))
+    , unit()
     , count(0)
 {}
 
-bool PPsat::conflict_analysis_uip::for_each(
-    std::function<bool(const PPsat_base::clause&)> f) const
+std::list<PPsat_base::unit> PPsat::conflict_analysis_uip::find_unary_unit()
+    const
 {
-    return std::as_const(*learnt.get()).for_each(f);
+    std::list<PPsat_base::unit> units;
+
+    for (PPsat_base::clause& clause :
+         std::ranges::subrange(std::next(unary_last_found), learnt_unary.end()))
+    {
+        for (auto literal : clause.is_unary_unit())
+        {
+            units.emplace_back(literal, clause);
+        }
+    }
+
+    unary_last_found = std::prev(learnt_unary.end());
+
+    return units;
 }
 
 PPsat_base::optional<std::size_t> PPsat::conflict_analysis_uip::analyse(
@@ -125,7 +146,10 @@ PPsat_base::optional<std::size_t> PPsat::conflict_analysis_uip::analyse(
         }
     }
 
-    auto& clause = learnt->create(PPsat_base::view_any<PPsat_base::literal>(C));
+    auto& clause =
+        C.size() == 1
+            ? learnt_unary.emplace_back(C.back())
+            : learnt->create(PPsat_base::view_any<PPsat_base::literal>(C));
     for (const auto literal : C)
     {
         if (clause.is_relevant(literal))
@@ -133,6 +157,8 @@ PPsat_base::optional<std::size_t> PPsat::conflict_analysis_uip::analyse(
             literal.register_(clause);
         }
     }
+
+    decision_.clause_learnt(clause);
 
     unit.emplace(*literal_unit, clause);
 
@@ -148,7 +174,7 @@ PPsat::conflict_analysis_uip::post_backtrack(solver&, PPsat_base::literal)
     return {{}, std::move(units)};
 }
 
-void PPsat::conflict_analysis_uip::restarted()
+void PPsat::conflict_analysis_uip::restart()
 {
 #ifndef NDEBUG
     std::cout << "LSB " << learnt->count() << std::endl;
@@ -157,14 +183,14 @@ void PPsat::conflict_analysis_uip::restarted()
     const auto max_deleted = learnt->count() / 2;
     auto deleted = 0uz;
     learnt->erase(
-        [max_deleted, &deleted](PPsat_base::clause& clause)
+        [this, max_deleted, &deleted](PPsat_base::clause& clause)
         {
             if (deleted >= max_deleted)
             {
                 return false;
             }
 
-            if (clause.length() <= 2)
+            if (clause.length() == 2)
             {
                 return false;
             }

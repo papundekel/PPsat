@@ -4,5 +4,4 @@
 build/
 .cache/
 install/
-callgrind*
-*.svg
+temp/

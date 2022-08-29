@@ -49,10 +49,12 @@ bool PPsat_base::cli::parser::parse(const int argc,
 
             option.set_presence();
 
-            const auto option_argument_count = option.argument_count();
+            const auto option_argument_count_min = option.argument_count_min();
+            const auto option_argument_count_max = option.argument_count_max();
             auto option_argument_counter = 0uz;
 
-            for (; option_argument_counter != option_argument_count && i != end;
+            for (; option_argument_counter != option_argument_count_max &&
+                   i != end;
                  ++option_argument_counter, ++i)
             {
                 const auto option_argument = *i;
@@ -64,17 +66,21 @@ bool PPsat_base::cli::parser::parse(const int argc,
 
                 if (!option_argument_parse_success)
                 {
-                    logger << "Option `" << option_string
-                           << "` argument parsing failed.\n";
-                    return false;
+                    if (option_argument_counter < option_argument_count_min)
+                    {
+                        logger << "Option `" << option_string
+                               << "`'s argument \"" << option_argument
+                               << "\" parsing failed.\n";
+                    }
+                    break;
                 }
             }
 
-            if (option_argument_counter != option_argument_count)
+            if (option_argument_counter < option_argument_count_min)
             {
                 logger << "Not enough `" << option_string
-                       << "` option arguments, should be "
-                       << option_argument_count << ".\n ";
+                       << "` option arguments, should be at least"
+                       << option_argument_count_min << ".\n ";
                 return false;
             }
         }

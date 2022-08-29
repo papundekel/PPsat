@@ -30,7 +30,7 @@ PPsat::clause_counting::is_unary_unit() const
     return literals | std::views::filter(
                           [](const PPsat_base::literal literal)
                           {
-                              return literal.get_assignment() ==
+                              return literal.assignment_get() ==
                                      PPsat_base::variable_assignment::unknown;
                           });
 }
@@ -68,7 +68,7 @@ PPsat::clause_counting::assign(PPsat_base::literal literal_assigned,
         literals,
         [](PPsat_base::literal literal)
         {
-            return literal.get_assignment() ==
+            return literal.assignment_get() ==
                    PPsat_base::variable::assignment::unknown;
         });
 

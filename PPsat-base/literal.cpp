@@ -22,10 +22,10 @@ PPsat_base::variable& PPsat_base::literal::get_variable() const noexcept
     return *var;
 }
 
-PPsat_base::variable_assignment PPsat_base::literal::get_assignment()
+PPsat_base::variable_assignment PPsat_base::literal::assignment_get()
     const noexcept
 {
-    const auto assignment_variable = var->get_assignment();
+    const auto assignment_variable = var->assignment_get();
     return positive ? assignment_variable : !assignment_variable;
 }
 

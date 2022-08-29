@@ -10,6 +10,9 @@ class simple_named_int
     , public int_
 {
 public:
-    using simple_named::simple_named;
+    simple_named_int(std::string_view name, std::size_t default_)
+        : simple_named(name)
+        , int_(default_)
+    {}
 };
 }

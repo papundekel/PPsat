@@ -5,7 +5,16 @@
 #include <charconv>
 #include <iostream>
 
-std::size_t PPsat_base::cli::option::int_::argument_count() const noexcept
+PPsat_base::cli::option::int_::int_(std::size_t default_) noexcept
+    : value(default_)
+{}
+
+std::size_t PPsat_base::cli::option::int_::argument_count_min() const noexcept
+{
+    return 1;
+}
+
+std::size_t PPsat_base::cli::option::int_::argument_count_max() const noexcept
 {
     return 1;
 }

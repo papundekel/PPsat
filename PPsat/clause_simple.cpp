@@ -42,4 +42,6 @@ void PPsat::clause_simple::unregister()
 {}
 
 std::size_t PPsat::clause_simple::length() const
-{}
+{
+    return 0;
+}

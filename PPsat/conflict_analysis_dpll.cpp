@@ -10,10 +10,10 @@ PPsat::conflict_analysis_dpll::conflict_analysis_dpll() noexcept
     consecutive_second_decisions.emplace_back(0, 0);
 }
 
-bool PPsat::conflict_analysis_dpll::for_each(
-    std::function<bool(const PPsat_base::clause&)>) const
+std::list<PPsat_base::unit> PPsat::conflict_analysis_dpll::find_unary_unit()
+    const
 {
-    return false;
+    return {};
 }
 
 PPsat_base::optional<std::size_t> PPsat::conflict_analysis_dpll::analyse(
@@ -59,5 +59,5 @@ PPsat::conflict_analysis_dpll::post_backtrack(solver& solver,
     return solver.decide(!literal);
 }
 
-void PPsat::conflict_analysis_dpll::restarted()
+void PPsat::conflict_analysis_dpll::restart()
 {}

@@ -7,7 +7,6 @@ add_library("PPsat-base" SHARED
     "clause.cpp"
     "cli/argument/file.cpp"
     "cli/argument/number.cpp"
-    "cli/parameter.cpp"
     "cli/parser.cpp"
     "cli/option/bool.cpp"
     "cli/option/enum.cpp"

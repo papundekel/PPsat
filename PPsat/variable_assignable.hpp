@@ -16,6 +16,6 @@ public:
 
 private:
     void assignment_set(assignment assignment) override final;
-    assignment get_assignment() const override final;
+    assignment assignment_get() const override final;
 };
 }

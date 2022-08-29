@@ -69,7 +69,6 @@ void PPsat_base::formula::for_each(std::function<void(variable&)> f)
             return true;
         });
 }
-
 std::size_t PPsat_base::formula::count_clause() const noexcept
 {
     return clauses.count();
@@ -100,4 +99,24 @@ void PPsat_base::formula::write_DIMACS(
 bool PPsat_base::formula::has_empty_clause()
 {
     return empty_clause;
+}
+
+std::list<PPsat_base::unit> PPsat_base::formula::find_unary_unit() const
+{
+    std::list<PPsat_base::unit> units;
+
+    for_each(
+        [&units](const clause& clause)
+        {
+            const auto literal_opt = clause.is_unary_unit();
+
+            if (literal_opt)
+            {
+                units.emplace_back(*literal_opt, clause);
+            }
+
+            return !literal_opt;
+        });
+
+    return units;
 }

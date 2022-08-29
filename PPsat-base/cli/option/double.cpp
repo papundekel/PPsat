@@ -5,7 +5,18 @@
 #include <cstdlib>
 #include <iostream>
 
-std::size_t PPsat_base::cli::option::double_::argument_count() const noexcept
+PPsat_base::cli::option::double_::double_(double default_) noexcept
+    : value(default_)
+{}
+
+std::size_t PPsat_base::cli::option::double_::argument_count_min()
+    const noexcept
+{
+    return 1;
+}
+
+std::size_t PPsat_base::cli::option::double_::argument_count_max()
+    const noexcept
 {
     return 1;
 }

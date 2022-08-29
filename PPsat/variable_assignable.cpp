@@ -13,7 +13,7 @@ void PPsat::variable_assignable::assignment_set(assignment assignment)
     assignment_current = assignment;
 }
 
-PPsat_base::variable::assignment PPsat::variable_assignable::get_assignment()
+PPsat_base::variable::assignment PPsat::variable_assignable::assignment_get()
     const
 {
     return assignment_current;

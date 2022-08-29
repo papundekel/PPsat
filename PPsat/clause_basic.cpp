@@ -28,7 +28,7 @@ PPsat_base::optional<PPsat_base::literal> PPsat::clause_basic::is_unary_unit()
     return literals | std::views::filter(
                           [](const PPsat_base::literal literal)
                           {
-                              return literal.get_assignment() ==
+                              return literal.assignment_get() ==
                                      PPsat_base::variable_assignment::unknown;
                           });
 }
@@ -52,7 +52,7 @@ std::pair<bool, std::optional<PPsat_base::literal>> PPsat::clause_basic::assign(
 
     for (const auto literal : literals)
     {
-        const auto assignment = literal.get_assignment();
+        const auto assignment = literal.assignment_get();
         if (assignment == PPsat_base::variable_assignment::positive)
         {
             found_sat = true;

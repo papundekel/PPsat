@@ -1,5 +1,5 @@
 #pragma once
-#include <PPsat/heuristic_decision.hpp>
+#include <PPsat/decision.hpp>
 #include <PPsat/restart_strategy.hpp>
 
 #include <PPsat-base/clause.hpp>
@@ -17,13 +17,38 @@ class solver
     using clause = PPsat_base::clause;
     using literal = PPsat_base::literal;
 
+public:
+    class statistics
+    {
+    public:
+        std::size_t count_decision;
+        std::size_t count_unit_propagation;
+        std::size_t count_visited_clauses;
+        std::size_t count_restart;
+
+        statistics()
+            : count_decision(0)
+            , count_unit_propagation(0)
+            , count_visited_clauses(0)
+            , count_restart(0)
+        {}
+    };
+
+    class result
+    {
+    public:
+        bool satisfiable;
+        std::vector<PPsat_base::literal> model;
+        statistics statistic;
+    };
+
 private:
     // formula
     PPsat_base::formula& formula;
 
     // strategies
     conflict_analysis& analysis;
-    heuristic_decision& heuristic;
+    decision& decision_;
     restart_strategy& restarts;
 
     // internal
@@ -31,15 +56,12 @@ private:
     std::size_t level;
 
     // statistics
-    std::size_t count_decision;
-    std::size_t count_unit_propagation;
-    std::size_t count_visited_clauses;
-    std::size_t count_restarts;
+    statistics statistic;
 
 public:
     solver(PPsat_base::formula& formula,
+           decision& decision_,
            conflict_analysis& analysis,
-           heuristic_decision& heuristic,
            restart_strategy& restarts);
 
 private:
@@ -60,24 +82,9 @@ private:
 
     PPsat_base::literal backtrack(std::size_t level);
 
-    std::list<PPsat_base::unit> find_unary_unit() const;
+    bool solve_impl();
 
 public:
-    bool solve();
-
-    void for_each_assignment(std::function<void(literal)> f) const;
-
-    PPsat_base::tuple<std::size_t, std::size_t, std::size_t, std::size_t>::
-        named<"count_decision",
-              "count_unit_propagation",
-              "count_visited_clauses",
-              "count_restarts">
-        get_statistics() const noexcept
-    {
-        return {count_decision,
-                count_unit_propagation,
-                count_visited_clauses,
-                count_restarts};
-    }
+    result solve();
 };
 }

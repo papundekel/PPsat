@@ -10,6 +10,9 @@ class simple_named_double
     , public double_
 {
 public:
-    using simple_named::simple_named;
+    simple_named_double(std::string_view name, double default_)
+        : simple_named(name)
+        , double_(default_)
+    {}
 };
 }

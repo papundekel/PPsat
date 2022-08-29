@@ -1,27 +1,30 @@
 #!/bin/bash
 
+# Example usage
+# PPsat-crypt.sh "PPsat-crypt-generate -repeating" "z3 -in" < input
+
 generator="$1"
 solver="$2"
 
 create_temp_file()
 {
-        local file=`mktemp`
-        trap "rm $file" EXIT
-        echo "$file"
+    local file=`mktemp`
+    trap "rm $file" EXIT
+    echo "$file"
 }
 
 if [ $# -ge 3 ]
 then
-        file_formula="$3"
+    file_formula="$3"
 else
-        file_formula=`create_temp_file`
+    file_formula=`create_temp_file`
 fi
 
 if [ $# -ge 4 ]
 then
-        file_model="$4"
+    file_model="$4"
 else
-        file_model=`create_temp_file`
+    file_model=`create_temp_file`
 fi
 
 file_models=`create_temp_file`
@@ -42,14 +45,15 @@ do
         break
     fi
 
-    grep -v "sat" < "$file_model" >> "$file_models"
+    grep -v "sat" < "$file_model" | tr -d "\n" | sed 's/))/))\n/g' >> "$file_models"
 
     echo "(assert" >> "$file_formula"
 
     grep -v "sat" < "$file_model"\
     | sed 's/([[:space:]]*\([a-zA-Z]\)/(not (= \1/g'\
     | sed 's/\([0-9]\)[[:space:]]*)/\1))/g'\
-    | sed 's/(not/and (not/' >> "$file_formula"
+    | sed 's/((not/(or (not/' >> "$file_formula"
+    
 
     echo ")" >> "$file_formula"
 done

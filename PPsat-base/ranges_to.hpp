@@ -1,17 +1,22 @@
 #pragma once
 #include <ranges>
+#include <type_traits>
+#include <utility>
 
 namespace PPsat_base
 {
 template <template <typename...> typename C, typename... P>
 constexpr inline auto ranges_to = [](auto&& range)
 {
-    auto begin = [&range]() -> decltype(auto)
-    {
-        return std::begin(std::forward<decltype(range)>(range));
-    };
+    using E = std::remove_cvref_t<decltype(*std::ranges::begin(range))>;
 
-    using E = decltype(*begin());
-    return C<E, P...>(begin(), std::end(std::forward<decltype(range)>(range)));
+    C<E, P...> container;
+
+    for (auto&& e : std::forward<decltype(range)>(range))
+    {
+        container.emplace_back(std::forward<decltype(e)>(e));
+    }
+
+    return container;
 };
 }

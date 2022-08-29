@@ -1,4 +1,7 @@
 #pragma once
+#include "PPsat-base/cli/option/simple_named_int.hpp"
+#include "PPsat/decision_type.hpp"
+#include "PPsat/output_type.hpp"
 #include <PPsat/adjacency_type.hpp>
 #include <PPsat/clause_type.hpp>
 #include <PPsat/cli/option/subprogram.hpp>
@@ -29,18 +32,24 @@ using options_base = PPsat_base::tuple<
     PPsat_base::cli::option::simple_named_bool,
     PPsat_base::cli::option::simple_named_bool,
     PPsat_base::cli::option::simple_named_double,
+    PPsat_base::cli::option::simple_named_int,
+    PPsat_base::cli::option::simple_named_enum_typed<decision_type>,
     PPsat_base::cli::option::simple_named_enum_typed<formula_format>,
     PPsat_base::cli::option::simple_named_enum_typed<clause_type>,
-    PPsat_base::cli::option::simple_named_enum_typed<adjacency_type>>::
+    PPsat_base::cli::option::simple_named_enum_typed<adjacency_type>,
+    PPsat_base::cli::option::simple_named_enum_typed<output_type>>::
     named<"help",
           "subprogram",
           "nnf",
           "assume",
           "cdcl",
           "restart",
+          "random",
+          "decision",
           "format",
           "clause",
-          "adjacency">;
+          "adjacency",
+          "output">;
 
 class options : public options_base
 {

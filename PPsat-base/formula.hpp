@@ -1,5 +1,6 @@
 #pragma once
 #include "PPsat-base/optional.hpp"
+#include "PPsat-base/unit.hpp"
 #include <PPsat-base/clause.hpp>
 #include <PPsat-base/factory_container.hpp>
 #include <PPsat-base/literal.hpp>
@@ -47,6 +48,8 @@ public:
     void write_DIMACS(std::ostream& output,
                       std::function<std::ostream&(std::ostream&, literal)>
                           transform = literal_printer) const;
+
+    std::list<unit> find_unary_unit() const;
 
     bool has_empty_clause();
 };

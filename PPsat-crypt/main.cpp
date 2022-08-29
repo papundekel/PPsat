@@ -16,8 +16,11 @@
 
 #include <functional>
 #include <iostream>
+#include <istream>
 #include <iterator>
+#include <ostream>
 #include <ranges>
+#include <sstream>
 #include <type_traits>
 
 namespace
@@ -25,19 +28,30 @@ namespace
 void help_print(std::ostream& output)
 {
     output << "Usage:\n"
-           << "\tPPsat-crypt <BASE>\n"
-           << "\tPPsat-crypt -help\n";
+           << "\tPPsat-crypt [OPTION]...\n"
+           << "\n"
+           << "Options:\n"
+           << "\t-help [<BOOL>]\t\tDisplays this help.\n"
+           << "\t-base <UINT>\t\tThe base.\n"
+           << "\t-repeating\t\tAllows multiple characters to represent the "
+              "same value\n";
 }
 }
 
-int main(int argc, char** argv)
+namespace PPexe
 {
-    const auto logger_cerr = PPsat_base::logger_ostream(std::cerr);
+int main(std::istream& cin,
+         std::ostream& cout,
+         std::ostream& cerr,
+         int argc,
+         char** argv)
+{
+    const auto logger_cerr = PPsat_base::logger_ostream(cerr);
     const auto logger =
         PPsat_base::logger_subroutine(logger_cerr, "PPsat-crypt");
 
     PPsat_base::cli::option::simple_named_bool option_help("help");
-    PPsat_base::cli::option::simple_named_int option_base("base");
+    PPsat_base::cli::option::simple_named_int option_base("base", 10);
     PPsat_base::cli::option::simple_named_bool option_repeating("repeating");
 
     const auto success_cli =
@@ -55,13 +69,13 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    if (option_help)
+    if (option_help.parsed())
     {
-        help_print(std::cout);
+        help_print(cout);
         return 0;
     }
 
-    antlr4::ANTLRInputStream input(std::cin);
+    antlr4::ANTLRInputStream input(cin);
 
     PPsat_base::antlrer antlrer(
         logger,
@@ -78,12 +92,15 @@ int main(int argc, char** argv)
         return 2;
     }
 
-    const auto base = option_base ? option_base.parsed() : 10uz;
+    const auto base = option_base.parsed();
 
-    PPsat_crypt::visitor_variables visitor(base, !option_repeating, std::cout);
+    PPsat_crypt::visitor_variables visitor(base,
+                                           !option_repeating.parsed(),
+                                           cout);
     visitor.visit(parse_tree);
-    PPsat_crypt::visitor_constraints(base, std::cout).visit(parse_tree);
+    PPsat_crypt::visitor_constraints(base, cout).visit(parse_tree);
     visitor.print_get_value();
 
     return 0;
+}
 }

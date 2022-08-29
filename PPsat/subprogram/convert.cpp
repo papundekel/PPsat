@@ -5,6 +5,8 @@
 #include "PPsat/variable_antecedent_none.hpp"
 #include "PPsat/variable_level_none.hpp"
 #include "PPsat/variable_recency_none.hpp"
+#include "PPsat/variable_score_none.hpp"
+#include "PPsat/variable_score_with.hpp"
 #include <PPsat/adjacency_none.hpp>
 #include <PPsat/builder_SMTLIB_tseitin.hpp>
 #include <PPsat/clause_simple.hpp>
@@ -56,6 +58,7 @@ struct variable_ final
     , public PPsat::variable_level_none
     , public PPsat::variable_recency_none
     , public PPsat::variable_antecedent_none
+    , public PPsat::variable_score_none
 {};
 
 constexpr auto greater_power_10(const auto x) noexcept
@@ -157,7 +160,7 @@ int PPsat::subprogram::convert(const PPsat_base::logger& logger_outer,
     antlr4::ANTLRInputStream input_formula(argument_file_in.parsed_stream());
 
     const auto [builder, renaming] =
-        create_builder(formula, format, options["nnf"_cst]);
+        create_builder(formula, format, options["nnf"_cst].parsed());
     const auto result = builder->read(logger_inner, input_formula, true);
 
     if (!result)

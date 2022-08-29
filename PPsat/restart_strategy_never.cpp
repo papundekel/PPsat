@@ -1,6 +1,9 @@
 #include <PPsat/restart_strategy_never.hpp>
 
-bool PPsat::restart_strategy_never::conflict()
+void PPsat::restart_strategy_never::conflict()
+{}
+
+bool PPsat::restart_strategy_never::should_restart() const
 {
     return false;
 }

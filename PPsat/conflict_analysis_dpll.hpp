@@ -23,9 +23,8 @@ public:
               std::list<PPsat_base::unit>>
     post_backtrack(solver& solver, PPsat_base::literal literal) override final;
 
-    void restarted() override final;
+    void restart() override final;
 
-    bool for_each(
-        std::function<bool(const PPsat_base::clause&)> f) const override final;
+    std::list<PPsat_base::unit> find_unary_unit() const override final;
 };
 }

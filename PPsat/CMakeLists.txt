@@ -1,12 +1,12 @@
 cmake_minimum_required(VERSION 3.20)
 
-add_executable("PPsat"
+PPexe_add_executable("PPsat")
+target_sources("PPsat" PUBLIC
     "main.cpp"
     "adjacency_list.cpp"
     "adjacency_none.cpp"
     "adjacency_set.cpp"
     "adjacency_set_unordered.cpp"
-    "adjacency_vector.cpp"
     "assumptions_basic.cpp"
     "builder_ASSUME.cpp"
     "builder_DIMACS.cpp"
@@ -14,6 +14,7 @@ add_executable("PPsat"
     "clause_basic.cpp"
     "clause_counting.cpp"
     "clause_simple.cpp"
+    "clause_unary.cpp"
     "clause_watched_literals.cpp"
     "cli/argument/file.cpp"
     "cli/options.cpp"
@@ -21,9 +22,12 @@ add_executable("PPsat"
     "conflict_analysis_dpll.cpp"
     "conflict_analysis_uip.cpp"
     "help_print.cpp"
-    "heuristic_decision_assume.cpp"
-    "heuristic_decision_first.cpp"
-    "heuristic_decision_priority.cpp"
+    "decision_assume.cpp"
+    "decision_trivial.cpp"
+    "decision_priority.cpp"
+    "decision_random.cpp"
+    "decision_JW_static.cpp"
+    "decision_VSIDS.cpp"
     "restart_strategy_geometric.cpp"
     "restart_strategy_never.cpp"
     "renaming_basic.cpp"
@@ -41,14 +45,16 @@ add_executable("PPsat"
     "variable_level_with.cpp"
     "variable_recency_none.cpp"
     "variable_recency_with.cpp"
+    "variable_score_none.cpp"
+    "variable_score_with.cpp"
     "visitor_ASSUME.cpp"
     "visitor_DIMACS.cpp"
     "visitor_SMTLIB_tseitin.cpp"
 )
 
 set_target_properties("PPsat" PROPERTIES COMPILE_OPTIONS "-std=c++2b")
-target_include_directories("PPsat" PUBLIC "${CMAKE_CURRENT_LIST_DIR}/../")
-target_link_libraries("PPsat" PUBLIC "PPsat-base")
+target_include_directories("PPsat" PRIVATE "${CMAKE_CURRENT_LIST_DIR}/../")
+target_link_libraries("PPsat" INTERFACE "PPsat-base")
 
 # ANTLR
 
@@ -127,7 +133,7 @@ target_include_directories("PPsat" PUBLIC
 )
 
 add_dependencies("PPsat" antlr4_shared)
-target_link_libraries("PPsat" PRIVATE antlr4_shared)
+target_link_libraries("PPsat" INTERFACE antlr4_shared)
 
 # Test
 
@@ -137,21 +143,19 @@ set(regex_sat   "^s *SATISFIABLE")
 
 file(GLOB inputs "${inputs_dir}/*/*")
 
+set(option_adjacency_list )
+set(option_clause_list )
+set(option_decision_list )
+
+foreach(option_cdcl "true" "false")
+foreach(option_adjacency "list" "set" "set_unordered")
+foreach(option_clause "basic" "counting" "watched_literals")
+foreach(option_decision "trivial" "random" "JW_static" "VSIDS")
 foreach(file_path ${inputs})
     cmake_path(GET file_path STEM file_name)
 
     set(test_name_prefix "PPsat-solve")
     
-    set(test_name_basic "${test_name_prefix}-basic-${file_name}")
-    set(test_name_counting "${test_name_prefix}-counting-${file_name}")
-    set(test_name_watched_literals "${test_name_prefix}-watched_literals-${file_name}")
-    set(test_name_cdcl "${test_name_prefix}-cdcl-${file_name}")
-
-    #add_test(NAME "${test_name_basic}" COMMAND "PPsat" "-subprogram" "solve" "-clause" "basic" "-adjacency" "vector" "${file_path}" CONFIGURATIONS Release)
-    #add_test(NAME "${test_name_counting}" COMMAND "PPsat" "-subprogram" "solve" "-clause" "counting" "-adjacency" "vector" "${file_path}" CONFIGURATIONS Release)
-    #add_test(NAME "${test_name_watched_literals}" COMMAND "PPsat" "-subprogram" "solve" "-clause" "watched_literals" "-adjacency" "set_unordered" "${file_path}" CONFIGURATIONS Release)
-    add_test(NAME "${test_name_cdcl}" COMMAND "PPsat" "-subprogram" "solve" "-cdcl" "-clause" "watched_literals" "-adjacency" "set_unordered" "${file_path}" CONFIGURATIONS Release)
-
     cmake_path(GET file_path PARENT_PATH parent_path)
     cmake_path(GET parent_path FILENAME parent_name)
 
@@ -163,17 +167,32 @@ foreach(file_path ${inputs})
         set(regex_pass "${regex_sat}")
     endif()
 
+    set(test_name "PPsat-solve-${option_adjacency}-${option_clause}-${option_decision}-${file_name}-${option_cdcl}")
+
+    add_test(
+    NAME "${test_name}"
+    COMMAND "PPsat"
+        "-adjacency" "${option_adjacency}"
+        "-clause" "${option_clause}"
+        "-decision" "${option_decision}"
+        "-cdcl" "${option_cdcl}"
+        "${file_path}"
+    CONFIGURATIONS Release)
+
     set_tests_properties(
-        #"${test_name_basic}"
-        #"${test_name_counting}"
-        #"${test_name_watched_literals}"
-        "${test_name_cdcl}"
+        "${test_name}"
     PROPERTIES
         FAIL_REGULAR_EXPRESSION "${regex_fail}"
         PASS_REGULAR_EXPRESSION "${regex_pass}"
     )
 endforeach()
+endforeach()
+endforeach()
+endforeach()
+endforeach()
 
 # Install
 
 install(TARGETS "PPsat" RUNTIME)
+install(TARGETS "PPsat-exe" RUNTIME)
+install(PROGRAMS "PPsat-measure.sh" TYPE BIN)

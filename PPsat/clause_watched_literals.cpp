@@ -70,7 +70,7 @@ PPsat::clause_watched_literals::is_unary_unit() const
     return literals | std::views::filter(
                           [](const PPsat_base::literal literal)
                           {
-                              return literal.get_assignment() ==
+                              return literal.assignment_get() ==
                                      PPsat_base::variable_assignment::unknown;
                           });
 }
@@ -98,7 +98,7 @@ PPsat::clause_watched_literals::assign(PPsat_base::literal literal_assigned,
 
     for (const auto literal : literals)
     {
-        const auto assignment = literal.get_assignment();
+        const auto assignment = literal.assignment_get();
         if (assignment == PPsat_base::variable_assignment::positive)
         {
             found_sat = true;
@@ -148,7 +148,7 @@ bool PPsat::clause_watched_literals::is_relevant(
 
 bool PPsat::clause_watched_literals::antecedent_to_some() const
 {
-    if (watched1.get_assignment() == PPsat_base::variable_assignment::positive)
+    if (watched1.assignment_get() == PPsat_base::variable_assignment::positive)
     {
         for (const auto& antecedent : watched1.antecedent_get())
         {
@@ -159,7 +159,7 @@ bool PPsat::clause_watched_literals::antecedent_to_some() const
         }
     }
 
-    if (watched2.get_assignment() == PPsat_base::variable_assignment::positive)
+    if (watched2.assignment_get() == PPsat_base::variable_assignment::positive)
     {
         for (const auto& antecedent : watched2.antecedent_get())
         {

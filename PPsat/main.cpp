@@ -15,9 +15,15 @@
 #include <string_view>
 #include <vector>
 
-int main(int argc, char** argv)
+namespace PPexe
 {
-    const auto logger_cerr = PPsat_base::logger_ostream(std::cerr);
+int main(std::istream& cin,
+         std::ostream& cout,
+         std::ostream& cerr,
+         int argc,
+         char** argv)
+{
+    const auto logger_cerr = PPsat_base::logger_ostream(cerr);
     const auto logger = PPsat_base::logger_subroutine(logger_cerr, "PPsat");
 
     PPsat::cli::options options;
@@ -39,9 +45,9 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    if (options["help"_cst])
+    if (options["help"_cst].parsed())
     {
-        PPsat::help_print(std::cout);
+        PPsat::help_print(cout);
         return 0;
     }
 
@@ -50,4 +56,5 @@ int main(int argc, char** argv)
                                                          argument_file_in,
                                                          argument_file_out)
            << 1;
+}
 }

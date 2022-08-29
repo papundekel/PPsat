@@ -16,7 +16,7 @@ PPsat::formula_format PPsat::pick_format(
     const PPsat::cli::argument::file_in& argument_file,
     PPsat::formula_format format_default)
 {
-    if (option_format)
+    if (option_format.is_present())
     {
         return option_format.parsed();
     }

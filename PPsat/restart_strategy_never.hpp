@@ -5,7 +5,7 @@ namespace PPsat
 {
 class restart_strategy_never : public restart_strategy
 {
-public:
-    bool conflict() override final;
+    void conflict() override final;
+    bool should_restart() const override final;
 };
 }

@@ -1,3 +1,4 @@
+#include "PPsat/decision.hpp"
 #include <PPsat/solver.hpp>
 
 #include <PPsat/conflict_analysis.hpp>
@@ -19,33 +20,30 @@
 #endif
 
 PPsat::solver::solver(PPsat_base::formula& formula,
+                      decision& decision,
                       conflict_analysis& analysis,
-                      heuristic_decision& heuristic,
                       restart_strategy& restarts)
     : formula(formula)
 
+    , decision_(decision)
     , analysis(analysis)
-    , heuristic(heuristic)
     , restarts(restarts)
 
     , stack_assignment()
     , level(0)
 
-    , count_decision(0)
-    , count_unit_propagation(0)
-    , count_visited_clauses(0)
-    , count_restarts(0)
+    , statistic()
 {}
 
 std::pair<PPsat_base::optional<const PPsat_base::clause&>,
           std::list<PPsat_base::unit>>
 PPsat::solver::assign(PPsat_base::literal literal_assigned)
 {
-    heuristic.assigned(literal_assigned.get_variable());
+    decision_.assigned(literal_assigned.get_variable());
     stack_assignment.push_back(literal_assigned);
 
     auto result = literal_assigned.assign(level, stack_assignment.size());
-    count_visited_clauses += std::get<2>(result);
+    statistic.count_visited_clauses += std::get<2>(result);
 
     return {std::get<0>(result), std::move(std::get<1>(result))};
 }
@@ -57,7 +55,7 @@ PPsat_base::literal PPsat::solver::unassign()
     literal_unassigned.unassign();
 
     stack_assignment.pop_back();
-    heuristic.unassigned(literal_unassigned.get_variable());
+    decision_.unassigned(literal_unassigned.get_variable());
 
     return literal_unassigned;
 }
@@ -71,7 +69,7 @@ PPsat_base::optional<const PPsat_base::clause&> PPsat::solver::unit_propagate(
         const auto& antecedent = units.back().antecedent;
         units.pop_back();
 
-        if (literal.get_assignment() !=
+        if (literal.assignment_get() !=
             PPsat_base::variable_assignment::unknown)
         {
             continue;
@@ -84,7 +82,7 @@ PPsat_base::optional<const PPsat_base::clause&> PPsat::solver::unit_propagate(
         literal.get_variable().antecedent_set(antecedent);
         auto [conflict, units_future] = assign(literal);
 
-        ++count_unit_propagation;
+        ++statistic.count_unit_propagation;
 
         if (conflict)
         {
@@ -106,7 +104,7 @@ PPsat::solver::decide(PPsat_base::literal literal)
 #endif
 
     ++level;
-    ++count_decision;
+    ++statistic.count_decision;
 
     return assign(literal);
 }
@@ -130,32 +128,15 @@ PPsat_base::literal PPsat::solver::backtrack(std::size_t level)
     return *decided_literal_opt;
 }
 
-std::list<PPsat_base::unit> PPsat::solver::find_unary_unit() const
+bool PPsat::solver::solve_impl()
 {
-    std::list<PPsat_base::unit> units;
-
-    auto f = [&units](const clause& clause)
+    if (formula.has_empty_clause())
     {
-        const auto literal_opt = clause.is_unary_unit();
+        return false;
+    }
 
-        if (literal_opt)
-        {
-            units.emplace_back(*literal_opt, clause);
-        }
-
-        return !literal_opt;
-    };
-
-    formula.for_each(f);
-    analysis.for_each(f);
-
-    return units;
-}
-
-bool PPsat::solver::solve()
-{
     PPsat_base::optional<const PPsat_base::clause&> conflict;
-    auto units = find_unary_unit();
+    auto units = formula.find_unary_unit();
 
     while (true)
     {
@@ -166,24 +147,15 @@ bool PPsat::solver::solve()
 
         if (conflict)
         {
-            const auto do_restart = restarts.conflict();
-            if (do_restart)
-            {
-                ++count_restarts;
-
-                backtrack(0);
-                analysis.restarted();
-                conflict = {};
-                units = find_unary_unit();
-                continue;
-            }
-
             const auto level_new_view = analysis.analyse(level, *conflict);
 
             if (!level_new_view)
             {
                 return false;
             }
+
+            restarts.conflict();
+            decision_.conflict();
 
             for (const auto level_new : level_new_view)
             {
@@ -197,14 +169,38 @@ bool PPsat::solver::solve()
         {
             return true;
         }
+        else if (restarts.should_restart())
+        {
+            ++statistic.count_restart;
+
+            backtrack(0);
+            analysis.restart();
+            conflict = {};
+            units = analysis.find_unary_unit();
+        }
         else
         {
-            std::tie(conflict, units) = decide(*heuristic.get_decision());
+            std::tie(conflict, units) = decide(*decision_.get_decision());
         }
     }
 }
 
-void PPsat::solver::for_each_assignment(std::function<void(literal)> f) const
+PPsat::solver::result PPsat::solver::solve()
 {
-    std::ranges::for_each(stack_assignment, std::move(f));
+    const auto satisfiable = solve_impl();
+    if (!satisfiable)
+    {
+        stack_assignment.clear();
+    }
+
+    auto model = std::move(stack_assignment);
+    std::ranges::sort(
+        model,
+        [](const PPsat_base::literal a, const PPsat_base::literal b)
+        {
+            return a.get_variable().representation_hash() <
+                   b.get_variable().representation_hash();
+        });
+
+    return {satisfiable, std::move(model), statistic};
 }

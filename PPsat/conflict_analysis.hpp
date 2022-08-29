@@ -22,10 +22,9 @@ public:
                       std::list<PPsat_base::unit>>
     post_backtrack(solver& solver, PPsat_base::literal literal) = 0;
 
-    virtual bool for_each(
-        std::function<bool(const PPsat_base::clause&)> f) const = 0;
+    virtual std::list<PPsat_base::unit> find_unary_unit() const = 0;
 
-    virtual void restarted() = 0;
+    virtual void restart() = 0;
 
     virtual ~conflict_analysis() = default;
 };

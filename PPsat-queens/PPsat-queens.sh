@@ -1,8 +1,7 @@
 #!/bin/bash
 
-generator="$1"
-solver="$2"
-size="$3"
+# Example usage
+# PPsat-queens.sh "PPsat-queens-generate 8" cadical
 
 create_temp_file()
 {
@@ -11,23 +10,26 @@ create_temp_file()
         echo "$file"
 }
 
-if [ $# -ge 4 ]
+generator="$1"
+solver="$2"
+
+if [ $# -ge 3 ]
 then
-        file_formula="$4"
+        file_formula="$3"
 else
         file_formula=`create_temp_file`
 fi
 
-if [ $# -ge 5 ]
+if [ $# -ge 4 ]
 then
-        file_model="$5"
+        file_model="$4"
 else
         file_model=`create_temp_file`
 fi
 
 file_models=`create_temp_file`
 
-"$generator" "$size" > "$file_formula" || { echo "<PPsat-queens>: The generator failed, quitting." >&2; exit 1; }
+$generator > "$file_formula" || { echo "<PPsat-queens>: The generator failed, quitting." >&2; exit 1; }
 
 while true
 do

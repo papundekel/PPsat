@@ -7,11 +7,14 @@ PPsat::restart_strategy_geometric::restart_strategy_geometric(std::size_t init,
     , count(0)
 {}
 
-bool PPsat::restart_strategy_geometric::conflict()
+void PPsat::restart_strategy_geometric::conflict()
 {
     ++count;
+}
 
-    if (count == ceil)
+bool PPsat::restart_strategy_geometric::should_restart() const
+{
+    if (count >= ceil)
     {
         ceil = (double)ceil * mult;
         return true;

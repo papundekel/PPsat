@@ -23,11 +23,17 @@ void help_print(std::ostream& output)
 }
 }
 
-int main(int argc, char** argv)
+namespace PPexe
 {
-    const auto logger_cerr = PPsat_base::logger_ostream(std::cerr);
+int main(std::istream& cin,
+         std::ostream& cout,
+         std::ostream& cerr,
+         int argc,
+         char** argv)
+{
+    const auto logger_cerr = PPsat_base::logger_ostream(cerr);
     const auto logger =
-        PPsat_base::logger_subroutine(logger_cerr, "PPsat-queens");
+        PPsat_base::logger_subroutine(logger_cerr, "PPsat-queens::generate");
 
     PPsat_base::cli::option::simple_named_bool help("help");
     PPsat_base::cli::argument::simple_number argument_dimension;
@@ -43,19 +49,20 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    if (help)
+    if (help.parsed())
     {
-        help_print(std::cout);
+        help_print(cout);
         return 0;
     }
 
-    if (!argument_dimension)
+    if (!argument_dimension.is_present())
     {
         logger << "No dimension argument provided.\n";
         return 2;
     }
 
-    PPsat_queens::generate(argument_dimension.parsed(), std::cout);
+    PPsat_queens::generate(argument_dimension.parsed(), cout);
 
     return 0;
+}
 }
