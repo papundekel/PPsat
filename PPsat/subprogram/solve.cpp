@@ -168,7 +168,7 @@ auto create_variables(auto... options)
 {
     static const auto map = []()
     {
-        constexpr auto combos = PPsat_base::tuple_cart(
+        static constexpr auto combos = PPsat_base::tuple_cart(
             std::make_tuple(PPsat_base::value_v<false>,
                             PPsat_base::value_v<true>),
             std::make_tuple(PPsat_base::value_v<false>,

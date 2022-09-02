@@ -186,11 +186,11 @@ void print_diags(std::size_t dimension, std::ostream& out)
 
 void PPsat_queens::generate(std::size_t dimension, std::ostream& output)
 {
-    constexpr std::array printers = {print_header,
-                                     print_rows_at_least,
-                                     print_rows,
-                                     print_cols,
-                                     print_diags};
+    static constexpr std::array printers = {print_header,
+                                            print_rows_at_least,
+                                            print_rows,
+                                            print_cols,
+                                            print_diags};
 
     for (auto printer : printers)
     {
