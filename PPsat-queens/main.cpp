@@ -17,9 +17,19 @@ namespace
 {
 void help_print(std::ostream& output)
 {
-    output << "Usage:\n"
-           << "\tPPsat-queens-generate <DIMENSION>\n"
-           << "\tPPsat-queens-generate -help\n";
+    output << "Description:\n"
+           << "\tGenerates a CNF DIMACS formula representing the N queens "
+              "puzzle. Uses stdout.\n"
+           << "\n"
+           << "Usage:\n"
+           << "\tPPsat-queens-generate <dimension>\n"
+           << "\tPPsat-queens-generate -help\n"
+           << "\n"
+           << "Arguments:\n"
+           << "\tdimension\tThe dimension of the chess board.\n"
+           << "\n"
+           << "Examples:\n"
+           << "\tPPsat-queens-generate 8\n";
 }
 }
 

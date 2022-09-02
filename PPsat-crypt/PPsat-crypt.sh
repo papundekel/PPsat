@@ -1,34 +1,43 @@
 #!/bin/bash
 
-# Example usage
-# PPsat-crypt.sh "PPsat-crypt-generate -repeating" "z3 -in" < input
+if [ "$1" == "-help" ]
+then
+    echo -e "Description:"
+    echo -e "\tPrints all models for the input cryptarithm."
+    echo -e "\tAccepts the cryptarithm through stdin."
+    echo
+    echo -e "Usage:"
+    echo -e "\tPPsat-crypt.sh <convertor-cmd> <smt-solver-cmd>"
+    echo -e "\tPPsat-crypt.sh -help"
+    echo
+    echo -e "Arguments:"
+    echo -e "\tconvertor-cmd\tA command that converts a cryptarithm input into an SMT-LIB formula."
+    echo -e "\tsmt-solver-cmd\tAn SMT solver command which accepts SMT-LIB on stdin."
+    echo -e "\t\t\tThe model of the formula shall be represented as a list of two element lists"
+    echo -e "\t\t\twhich represent the variable assignment."
+    echo
+    echo -e "Examples:"
+    echo -e "\tPPsat-crypt.sh \"PPsat-crypt-generate -repeating\" \"z3 -in\" < input"
+
+    exit 0
+fi
 
 generator="$1"
 solver="$2"
-
-create_temp_file()
-{
-    local file=`mktemp`
-    trap "rm $file" EXIT
-    echo "$file"
-}
+file_formula=`mktemp`
+file_model=`mktemp`
+file_models=`mktemp`
+trap "rm $file_formula $file_model $file_models" EXIT INT TERM
 
 if [ $# -ge 3 ]
 then
     file_formula="$3"
-else
-    file_formula=`create_temp_file`
 fi
 
 if [ $# -ge 4 ]
 then
     file_model="$4"
-else
-    file_model=`create_temp_file`
 fi
-
-file_models=`create_temp_file`
-touch "$file_models"
 
 $generator > "$file_formula" || { echo "<PPsat-crypt>: The generator failed, quitting." >&2; exit 1; }
 

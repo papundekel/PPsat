@@ -27,14 +27,21 @@ namespace
 {
 void help_print(std::ostream& output)
 {
-    output << "Usage:\n"
-           << "\tPPsat-crypt [OPTION]...\n"
+    output << "Description:\n"
+           << "\tGenerates an SMT-LIB formula from an input cryptarithm file. "
+              "The input is accepted from stdin.\n"
+           << "\n"
+           << "Usage:\n"
+           << "\tPPsat-crypt-generate [OPTION]...\n"
            << "\n"
            << "Options:\n"
-           << "\t-help [<BOOL>]\t\tDisplays this help.\n"
-           << "\t-base <UINT>\t\tThe base.\n"
-           << "\t-repeating\t\tAllows multiple characters to represent the "
-              "same value\n";
+           << "\t-help [<BOOL>]\tDisplays this help.\n"
+           << "\t-base <UINT>\tThe base. The value is 10 if unspecified.\n"
+           << "\t-repeating\tAllows multiple characters to represent the "
+           << "same value\n"
+           << "\n"
+           << "Examples:\n"
+           << "\tPPsat-crypt-generate -repeating < inputs/basic.crypt\n";
 }
 }
 
@@ -48,7 +55,7 @@ int main(std::istream& cin,
 {
     const auto logger_cerr = PPsat_base::logger_ostream(cerr);
     const auto logger =
-        PPsat_base::logger_subroutine(logger_cerr, "PPsat-crypt");
+        PPsat_base::logger_subroutine(logger_cerr, "PPsat-crypt-generate");
 
     PPsat_base::cli::option::simple_named_bool option_help("help");
     PPsat_base::cli::option::simple_named_int option_base("base", 10);
