@@ -24,7 +24,7 @@ PPsat::cli::options::options()
           {"restart", 2.5},
           {"random", 0},
           {"decision",
-           decision_type::VSIDS,
+           decision_type::JW_static,
            std::array{std::make_pair("trivial", decision_type::trivial),
                       std::make_pair("random", decision_type::random),
                       std::make_pair("JW_static", decision_type::JW_static),
