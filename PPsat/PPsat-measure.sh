@@ -1,12 +1,5 @@
 #!/bin/bash
 
-create_temp_file()
-{
-    local file=`mktemp`
-    trap "rm $file" EXIT
-    echo "$file"
-}
-
 if [ $# -ne 2 ]
 then
     echo "Invalid argument count."
@@ -16,7 +9,8 @@ fi
 
 solver="$1"
 inputs_dir="$2"
-temp=`create_temp_file`
+temp=`mktemp`
+trap "rm $temp" EXIT INT TERM
 
 parse_output()
 {
@@ -33,7 +27,7 @@ parse_output()
     echo
 }
 
-echo "parse,solve,decisions,unit,visit,restart,cdcl,adjacency,clause,decision,sat,var"
+echo "parse,solve,decision,unit,visit,restart,cdcl,adjacency,clause,decision,sat,var"
 
 for option_cdcl in "true" "false"
 do
