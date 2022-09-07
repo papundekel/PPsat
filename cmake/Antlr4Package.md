@@ -36,7 +36,7 @@ Output variable  | Meaning
 `ANTLR4_INCLUDE_DIR_<Target name>`       | Directory containing the generated header files
 `ANTLR4_SRC_FILES_<Target name>`         | List of generated source files
 `ANTLR4_TOKEN_FILES_<Target name>`       | List of generated token files
-`ANTLR4_TOKEN_DIRECTORY_<Target name>`   | Directory containing the generated token files
+`ANTLR4_TOKEN_DIRECTORY_<Target name>`  | Directory containing the generated token files
 
 #### Sample:
 ```cmake
@@ -96,7 +96,7 @@ target_link_libraries( Parsertest PRIVATE
  find_package(antlr4-generator REQUIRED)
 
  # Set path to generator
- set(ANTLR4_JAR_LOCATION ${PROJECT_SOURCE_DIR}/thirdparty/antlr/antlr-complete.jar)
+ set(ANTLR4_JAR_LOCATION ${PROJECT_SOURCE_DIR}/thirdparty/antlr/antlr-4.11.1-complete.jar)
 
  # generate lexer
  antlr4_generate(

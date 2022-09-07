@@ -2,24 +2,24 @@ find_package(Java QUIET COMPONENTS Runtime)
 
 if(NOT ANTLR_EXECUTABLE)
   find_program(ANTLR_EXECUTABLE
-               NAMES antlr4)
+               NAMES antlr.jar antlr4.jar antlr-4.jar antlr-4.11.1-complete.jar)
 endif()
 
-if(ANTLR_EXECUTABLE)
+if(ANTLR_EXECUTABLE AND Java_JAVA_EXECUTABLE)
   execute_process(
-      COMMAND ${ANTLR_EXECUTABLE}
+      COMMAND ${Java_JAVA_EXECUTABLE} -jar ${ANTLR_EXECUTABLE}
       OUTPUT_VARIABLE ANTLR_COMMAND_OUTPUT
       ERROR_VARIABLE ANTLR_COMMAND_ERROR
       RESULT_VARIABLE ANTLR_COMMAND_RESULT
       OUTPUT_STRIP_TRAILING_WHITESPACE)
 
   if(ANTLR_COMMAND_RESULT EQUAL 0)
-    string(REGEX MATCH "Version [0-9]+(\\.[0-9])*" ANTLR_VERSION ${ANTLR_COMMAND_OUTPUT})
+    string(REGEX MATCH "Version [0-9]+(\\.[0-9]+)*" ANTLR_VERSION ${ANTLR_COMMAND_OUTPUT})
     string(REPLACE "Version " "" ANTLR_VERSION ${ANTLR_VERSION})
   else()
     message(
         SEND_ERROR
-        "Command '${ANTLR_EXECUTABLE}' "
+        "Command '${Java_JAVA_EXECUTABLE} -jar ${ANTLR_EXECUTABLE}' "
         "failed with the output '${ANTLR_COMMAND_ERROR}'")
   endif()
 
@@ -103,7 +103,7 @@ if(ANTLR_EXECUTABLE)
 
     add_custom_command(
         OUTPUT ${ANTLR_${Name}_OUTPUTS}
-        COMMAND ${ANTLR_EXECUTABLE}
+        COMMAND ${Java_JAVA_EXECUTABLE} -jar ${ANTLR_EXECUTABLE}
                 ${InputFile}
                 -o ${ANTLR_${Name}_OUTPUT_DIR}
                 -no-listener
@@ -115,10 +115,10 @@ if(ANTLR_EXECUTABLE)
         COMMENT "Building ${Name} with ANTLR ${ANTLR_VERSION}")
   endmacro(ANTLR_TARGET)
 
-endif(ANTLR_EXECUTABLE)
+endif(ANTLR_EXECUTABLE AND Java_JAVA_EXECUTABLE)
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(
     ANTLR
-    REQUIRED_VARS ANTLR_EXECUTABLE
+    REQUIRED_VARS ANTLR_EXECUTABLE Java_JAVA_EXECUTABLE
     VERSION_VAR ANTLR_VERSION)
