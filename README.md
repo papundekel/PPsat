@@ -9,6 +9,7 @@ Also contains programs `PPsat-queens-generate`, `PPsat-queens.sh`, `PPsat-crypt-
 * C++2b capable compiler
 * CMake >=3.20
 * Ninja
+* ANTLR4
 * Bash
 * grep, sed, gawk
 
@@ -22,7 +23,7 @@ Also contains programs `PPsat-queens-generate`, `PPsat-queens.sh`, `PPsat-crypt-
 
 `install/bin/PPsat*`
 
-## Usage
+## Documentation
 
 Each executable has a help option which prints its documentation.
 
