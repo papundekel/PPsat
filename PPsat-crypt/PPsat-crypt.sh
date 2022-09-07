@@ -39,6 +39,11 @@ then
     file_model="$4"
 fi
 
+if [ $# -ge 5 ]
+then
+    file_models="$5"
+fi
+
 $generator > "$file_formula" || { echo "<PPsat-crypt>: The generator failed, quitting." >&2; exit 1; }
 
 get_value=`grep "get-value" < "$file_formula"`
