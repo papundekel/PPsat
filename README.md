@@ -6,17 +6,19 @@ Also contains programs `PPsat-queens-generate`, `PPsat-queens.sh`, `PPsat-crypt-
 
 ## Prerequisites
 
-* Bash
-* CMake >=3.20
 * C++2b capable compiler
+* CMake >=3.20
+* Ninja
+* Bash
+* grep, sed, gawk
 
 ## Configuration, build, install and run
 
-`cmake -S ./ -B build/`
+`cmake -S ./ -B build/ -G "Ninja Multi-Config"`
 
 `cmake --build build/ --config Release --target all`
 
-`mkdir install && cmake build/ --prefix install --config Release`
+`mkdir install && cmake --install build/ --prefix install --config Release`
 
 `install/bin/PPsat*`
 
