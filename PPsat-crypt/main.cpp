@@ -41,7 +41,7 @@ void help_print(std::ostream& output)
            << "same value\n"
            << "\n"
            << "Examples:\n"
-           << "\tPPsat-crypt-generate -repeating < inputs/basic.crypt\n";
+           << "\tPPsat-crypt-generate -repeating < input\n";
 }
 }
 
