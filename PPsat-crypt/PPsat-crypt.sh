@@ -59,6 +59,11 @@ do
         break
     fi
 
+    if grep "unknown" < "$file_model" > /dev/null
+    then
+        break
+    fi
+
     grep -v "sat" < "$file_model" | tr -d "\n" | sed 's/))/))\n/g' >> "$file_models"
 
     echo "(assert" >> "$file_formula"
