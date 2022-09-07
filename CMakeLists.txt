@@ -9,13 +9,17 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 include(ExternalAntlr4Cpp)
 
-set(ANTLR4_JAR_LOCATION "/usr/share/java/antlr-complete.jar")
-
 find_package(ANTLR REQUIRED)
+set(ANTLR4_JAR_LOCATION "${ANTLR_EXECUTABLE}")
+
 find_package(antlr4-generator REQUIRED)
 find_package(antlr4-runtime REQUIRED)
 
-list(APPEND CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/lib)
+if(APPLE)
+	set(CMAKE_INSTALL_RPATH "@executable_path/../${CMAKE_INSTALL_LIBDIR}")
+elseif(UNIX)
+	set(CMAKE_INSTALL_RPATH "$ORIGIN/../${CMAKE_INSTALL_LIBDIR}")
+endif()
 
 add_subdirectory("PPexe")
 add_subdirectory("PPsat-base")
