@@ -5,11 +5,12 @@ project("PPsat" VERSION "1.0.0")
 include(CTest)
 include(GNUInstallDirs)
 
-list(APPEND CMAKE_PREFIX_PATH
-	"${CMAKE_CURRENT_SOURCE_DIR}/vendor/lib/cmake"
-	"${ANTLR_DIR}"
-)
+list(APPEND CMAKE_PREFIX_PATH "${CMAKE_CURRENT_SOURCE_DIR}/vendor/lib/cmake")
+list(APPEND CMAKE_PREFIX_PATH "${ANTLR_DIR}")
+
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+
+link_directories("${CMAKE_CURRENT_SOURCE_DIR}/vendor/lib")
 
 set (ANTLR4_TAG "master")
 include(ExternalAntlr4Cpp)
