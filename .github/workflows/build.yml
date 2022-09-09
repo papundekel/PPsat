@@ -16,28 +16,12 @@ jobs:
         ls        
         sudo apt-get update -y
         sudo apt-get update
-        sudo apt-get -y install cmake ninja-build g++ git curl
-    - name: Get ANTLR
-      run: |
-        curl -O https://www.antlr.org/download/antlr-4.11.1-complete.jar
-        export CLASSPATH=".:`pwd`/antlr-4.11.1-complete.jar:$CLASSPATH"
-        pwd
-        ls
-    - name: Configure bootstrap
-      run: |
-        cmake -S . -B build/ -G "Ninja Multi-Config" -DBOOTSTRAP:BOOL=TRUE -DANTLR_EXECUTABLE:FILEPATH=`pwd`/antlr-4.11.1-complete.jar
-    - name: Build bootstrap
-      run: |
-        cmake --build build/ --config Release --target antlr4_runtime
-    - name: Remove bootstrap
-      uses: JesseTG/rm@v1.0.3
-      with:
-        path: build/
+        sudo apt-get -y install cmake ninja-build g++ git curl antlr4 libantlr4-runtime-dev
     - name: Configure
       run: |
         pwd
         ls
-        cmake -S . -B build/ -G "Ninja Multi-Config" -DANTLR_EXECUTABLE:FILEPATH=`pwd`/antlr-4.11.1-complete.jar
+        cmake -S . -B build/ -G "Ninja Multi-Config" -DANTLR_ROOT:FILEPATH=/usr/share/java
     - name: Build
       run: |
         cmake --build build/ --config Release --target all
