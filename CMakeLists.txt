@@ -7,8 +7,6 @@ include(GNUInstallDirs)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
-link_directories("${CMAKE_CURRENT_SOURCE_DIR}/vendor/lib")
-
 set (ANTLR4_TAG "master")
 include(ExternalAntlr4Cpp)
 
