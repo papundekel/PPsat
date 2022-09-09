@@ -1,0 +1,46 @@
+name: "Build"
+
+on:
+  push:
+    branches:
+    - 'main'
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+    - uses: actions/checkout@v3
+    - name: Install packages
+      run: |
+        pwd
+        ls        
+        sudo apt-get update -y
+        sudo apt-get update
+        sudo apt-get -y install cmake ninja-build antlr4 g++ git curl
+    - name: Get ANTLR
+      run: |
+        mkdir ANTLR
+        cd ANTLR
+        curl -O https://www.antlr.org/download/antlr-4.11.1-complete.jar
+        export CLASSPATH=".:`pwd`/antlr-4.11.1-complete.jar:$CLASSPATH"
+        cd ..
+        pwd
+        ls
+    - name: Configure bootstrap
+      run: |
+        cmake -S . -B build/ -G "Ninja Multi-Config" -DBOOTSTRAP:BOOL=TRUE -DANTLR_DIR:FILEPATH=ANTLR
+    - name: Build bootstrap
+      run: |
+        cmake --build build/ --config Release --target antlr4_runtime
+    - name: Remove bootstrap
+      uses: JesseTG/rm@v1.0.3
+      with:
+        path: build/
+    - name: Configure
+      run: |
+        pwd
+        ls
+        cmake -S . -B build/ -G "Ninja Multi-Config" -DANTLR_DIR:FILEPATH=ANTLR
+    - name: Build
+      run: |
+        cmake --build build/ --config Release --target all
