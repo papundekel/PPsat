@@ -16,9 +16,12 @@ jobs:
         sudo apt-get update
         sudo apt-get -y install cmake ninja-build g++ git curl antlr4 libantlr4-runtime-dev
         ls /usr/share/java
+    - name: Get ANTLR
+      run: |
+        curl -O https://www.antlr.org/download/antlr-4.11.1-complete.jar
     - name: Configure
       run: |
-        cmake -S . -B build/ -G "Ninja Multi-Config" -DANTLR_ROOT:FILEPATH=/usr/share/java
+        cmake -S . -B build/ -G "Ninja Multi-Config" -DANTLR_ROOT:FILEPATH=./
     - name: Build
       run: |
         cmake --build build/ --config Release --target all
