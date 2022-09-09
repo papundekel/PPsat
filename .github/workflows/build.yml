@@ -21,7 +21,7 @@ jobs:
         curl -O https://www.antlr.org/download/antlr-4.11.1-complete.jar
     - name: Configure
       run: |
-        cmake -S . -B build/ -G "Ninja Multi-Config" -DANTLR_EXECUTABLE:FILEPATH=./antlr-4.11.1-complete.jar
+        cmake -S . -B build/ -G "Ninja Multi-Config" -DANTLR_EXECUTABLE:FILEPATH=./antlr-4.11.1-complete.jar -Dantlr4-runtime_DIR:FILEPATH=./cmake/antlr4-runtime -Dantlr4-generator_DIR:FILEPATH=./cmake/antlr4-generator
     - name: Build
       run: |
         cmake --build build/ --config Release --target all
