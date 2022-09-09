@@ -1,4 +1,4 @@
-#include "PPsat/decision.hpp"
+#include <PPsat/decision.hpp>
 #include <PPsat/solver.hpp>
 
 #include <PPsat/conflict_analysis.hpp>

@@ -1,4 +1,3 @@
-#include "PPsat/output_type.hpp"
 #include <PPsat/adjacency_list.hpp>
 #include <PPsat/adjacency_set.hpp>
 #include <PPsat/adjacency_set_unordered.hpp>
@@ -27,6 +26,7 @@
 #include <PPsat/decision_trivial.hpp>
 #include <PPsat/decision_type.hpp>
 #include <PPsat/formula_format.hpp>
+#include <PPsat/output_type.hpp>
 #include <PPsat/restart_strategy.hpp>
 #include <PPsat/restart_strategy_geometric.hpp>
 #include <PPsat/restart_strategy_never.hpp>
@@ -68,7 +68,6 @@
 
 #include <algorithm>
 #include <array>
-#include <bits/utility.h>
 #include <chrono>
 #include <functional>
 #include <iostream>
