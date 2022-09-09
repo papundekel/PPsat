@@ -90,9 +90,15 @@ std::any PPsat_crypt::visitor_variables::visitAtomFormula(
 std::any PPsat_crypt::visitor_variables::visitAtom(
     parser_CRYPT::AtomContext* context)
 {
-    auto words = PPsat_base::ranges_to<std::vector>(
-        context->WORD() |
-        std::views::transform(&antlr4::tree::TerminalNode::getText));
+    // auto words = PPsat_base::ranges_to<std::vector>(
+    //     context->WORD() |
+    //     std::views::transform(&antlr4::tree::TerminalNode::getText));
+
+    std::vector<std::string> words;
+    for (const auto context_word : context->WORD())
+    {
+        words.emplace_back(context_word->getText());
+    }
 
     output << "\n"
            << "; Variables representing characters from input.\n";

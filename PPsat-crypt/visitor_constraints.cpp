@@ -90,13 +90,21 @@ std::any PPsat_crypt::visitor_constraints::visitAtom(
                               std::invoke(get_text, context_words.back()));
     }();
 
-    const auto operators = PPsat_base::ranges_to<std::vector>(
-        context->operation() |
-        std::views::transform(
-            [this](auto* context_operator)
-            {
-                return std::any_cast<bool>(visit(context_operator)) ? '+' : '-';
-            }));
+    // const auto operators = PPsat_base::ranges_to<std::vector>(
+    //     context->operation() |
+    //     std::views::transform(
+    //         [this](auto* context_operator)
+    //         {
+    //             return std::any_cast<bool>(visit(context_operator)) ? '+' :
+    //             '-';
+    //         }));
+
+    std::vector<char> operators;
+    for (const auto operator_context : context->operation())
+    {
+        operators.emplace_back(
+            std::any_cast<bool>(visit(operator_context)) ? '+' : '-');
+    }
 
     output << "; ";
 
