@@ -10,6 +10,7 @@ Also contains programs `PPsat-queens-generate`, `PPsat-queens.sh`, `PPsat-crypt-
 * CMake >=3.20
 * Ninja
 * ANTLR4
+* Boost
 * Bash
 * grep, sed, gawk
 
