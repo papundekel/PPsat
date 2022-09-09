@@ -6,7 +6,6 @@
 #include <PPsat/conflict_analysis_uip.hpp>
 
 #include <algorithm>
-#include <bits/ranges_util.h>
 #include <list>
 #include <ranges>
 #include <utility>

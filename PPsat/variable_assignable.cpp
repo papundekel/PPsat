@@ -2,7 +2,7 @@
 #include "PPsat-base/literal.hpp"
 
 #include <algorithm>
-#include <bits/ranges_algo.h>
+#include <ranges>
 
 PPsat::variable_assignable::variable_assignable() noexcept
     : assignment_current(assignment::unknown)

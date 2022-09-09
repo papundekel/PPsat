@@ -4,7 +4,7 @@
 #include <PPsat-base/variable_assignment.hpp>
 
 #include <algorithm>
-#include <bits/ranges_algo.h>
+#include <ranges>
 
 PPsat::clause_basic::clause_basic(
     PPsat_base::view_any<PPsat_base::literal> literals)
