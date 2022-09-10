@@ -30,13 +30,10 @@ add_library("PPsat-base" SHARED
 )
 
 set_target_properties("PPsat-base" PROPERTIES COMPILE_OPTIONS "-std=c++2b")
-target_include_directories("PPsat-base" PUBLIC "${CMAKE_CURRENT_LIST_DIR}/../")
 
 # ANTLR
 
-target_include_directories("PPsat-base" PUBLIC "${ANTLR4_INCLUDE_DIR}")
-
-add_dependencies("PPsat-base" antlr4_shared)
+target_include_directories("PPsat-base" PRIVATE "${ANTLR4_INCLUDE_DIR}")
 target_link_libraries("PPsat-base" PRIVATE antlr4_shared)
 
 # Install

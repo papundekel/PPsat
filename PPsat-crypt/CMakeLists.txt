@@ -45,7 +45,6 @@ target_include_directories("PPsat-crypt-generate" PUBLIC
     "${ANTLR4_INCLUDE_DIR_PPsat-crypt-lexer}/../"
 )
 
-add_dependencies("PPsat-crypt-generate" antlr4_shared)
 target_link_libraries("PPsat-crypt-generate" INTERFACE antlr4_shared)
 
 # Install

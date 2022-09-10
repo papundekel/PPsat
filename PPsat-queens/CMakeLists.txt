@@ -7,7 +7,6 @@ target_sources("PPsat-queens-generate" PUBLIC
 )
 
 set_target_properties("PPsat-queens-generate" PROPERTIES COMPILE_OPTIONS "-std=c++2b")
-target_include_directories("PPsat-queens-generate" PRIVATE "${CMAKE_CURRENT_LIST_DIR}/../")
 target_link_libraries("PPsat-queens-generate" INTERFACE "PPsat-base")
 
 # Install

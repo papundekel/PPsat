@@ -5,7 +5,6 @@ add_library("PPexe" SHARED
 )
 
 set_target_properties("PPexe" PROPERTIES COMPILE_OPTIONS "-std=c++2b")
-target_include_directories("PPexe" PUBLIC "${CMAKE_CURRENT_LIST_DIR}/../")
 
 # Install
 

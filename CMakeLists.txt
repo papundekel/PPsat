@@ -18,13 +18,15 @@ if (NOT BOOTSTRAP)
 	find_package(antlr4-runtime REQUIRED)
 
 	find_package(Boost 1.74 REQUIRED)
-	
+
 	if(APPLE)
 		set(CMAKE_INSTALL_RPATH "@executable_path/../${CMAKE_INSTALL_LIBDIR}")
 	elseif(UNIX)
 		set(CMAKE_INSTALL_RPATH "$ORIGIN/../${CMAKE_INSTALL_LIBDIR}")
 	endif()
 
+	include_directories("${PROJECT_SOURCE_DIR}")
+	
 	add_subdirectory("PPexe")
 	add_subdirectory("PPsat-base")
 	add_subdirectory("PPsat")
