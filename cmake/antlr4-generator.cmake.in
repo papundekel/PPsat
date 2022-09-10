@@ -8,28 +8,6 @@ endif()
 
 FIND_PACKAGE(Java COMPONENTS Runtime REQUIRED)
 
-#
-# The ANTLR generator will output the following files given the input file f.g4
-#
-# Input  -> f.g4
-# Output -> f.h
-#        -> f.cpp
-#
-# the following files will only be produced if there is a parser contained
-# Flag -visitor active
-# Output -> <f>BaseVisitor.h
-#        -> <f>BaseVisitor.cpp
-#        -> <f>Visitor.h
-#        -> <f>Visitor.cpp
-#
-# Flag -listener active
-# Output -> <f>BaseListener.h
-#        -> <f>BaseListener.cpp
-#        -> <f>Listener.h
-#        -> <f>Listener.cpp
-#
-# See documentation in markup
-#
 function(antlr4_generate
     Antlr4_ProjectTarget
     Antlr4_InputFile
