@@ -1,0 +1,151 @@
+---
+title: "SAT solver evaluation"
+output: html_notebook
+---
+
+```{r}
+library("tidyverse")
+```
+
+# Measurement
+
+We measured all combinations of the accepted options by the solver
+on random 3-SAT formulas with variable counts 50, 75, 100 and 125.
+
+```{r}
+results <- read_csv("results.csv", col_types = "-nnnn-lfffln")
+```
+
+# DPLL Algorithm
+
+Here are the average solve durations in milliseconds for the basic DPLL version of the solver.
+We can see that the algorithm's time complexity is near exponential as expected.
+
+```{r}
+results_ <- results %>%
+    filter(!cdcl, adjacency == "list", clause == "basic", decision == "trivial") %>%
+    group_by(var) %>%
+    summarize(solve = mean(solve))
+
+ggplot(results_, aes(x = var, y = solve)) +
+    geom_point() +
+    scale_x_continuous(name = "variable count", breaks = seq(50, 125, 25)) +
+    scale_y_log10(
+        name = "time (millisecond) (logarithmic)") +
+    ggtitle("dpll,clause=basic, adjacency=list, decision=trivial")
+```
+
+We also tried the solver on non random instances.
+
+```{r}
+read_csv("results-nonrandom.csv", col_types = "-nnnn-nc")
+```
+
+# Watched Literals
+
+We compare the solve time and the number of visited clauses between adjacency lists and watched literals.
+
+```{r}
+results_ <- results %>%
+    filter(!cdcl, adjacency == "list", clause != "counting", decision == "trivial") %>%
+    group_by(var, clause) %>%
+    summarize(solve = mean(solve), visit = mean(visit), .groups = "keep")
+
+plot <- ggplot(results_, aes(x = var, color = clause)) +
+    ggtitle("dpll,clause=basic|watched_literals, adjacency=list, decision=trivial") +
+    scale_x_continuous(name = "variable count", breaks = seq(50, 125, 25))
+
+plot +
+    geom_point(aes(y = solve)) +
+    scale_y_log10(name = "time (millisecond) (logarithmic)")
+    
+
+plot +
+    geom_point(aes(y = visit)) +
+    scale_y_log10(name = "visited clauses (logarithmic)")
+```
+
+We can see that watched literals do save time and the number of visited clauses.
+
+# CDCL
+
+We compare the parameters using formulas with 125 variables.
+
+```{r}
+results_ <- results %>%
+    filter(cdcl, var == 125) %>%
+    group_by(var, clause, adjacency, decision) %>%
+    summarize(solve = mean(solve), .groups = "keep") %>%
+    arrange(solve)
+
+results_
+```
+
+Our solver performs best when it uses watched literals for unit propagation, uses hashsets for keeping the adjacent clauses and uses the static variant of the JW heuristic.
+
+Interesting is the result when the solver doesn't use WL, uses just a list for adjacency but uses the well suiting JW heuristic. Then the result is worse than the best result by just a factor of 1.84.
+
+# Decision Heuristics
+
+```{r}
+results_ <- results %>%
+    filter(cdcl, adjacency == "set_unordered", clause == "watched_literals") %>%
+    group_by(var, decision) %>%
+    summarize(solve = mean(solve), .groups = "keep") 
+
+plot <- ggplot(results_, aes(x = var, color = decision)) +
+    geom_point(aes(y = solve)) +
+    scale_x_continuous(name = "variable count", breaks = seq(50, 125, 25))
+
+plot +
+    ggtitle("cdcl,clause=watched_literals, adjacency=set_unordered")
+
+plot +
+    ggtitle("cdcl,clause=watched_literals, adjacency=set_unordered (zoomed)") +
+    scale_y_continuous(limits = c(0, 200))
+```
+
+We can see that the sophisticated heuristics perform much better than the random and trivial ones.
+The JW heuristic seems to consistently outperform VSIDS in our solver.
+
+We also observe that although with better heuristics the time complexity doesn't change, the factor by which the solving time increses is much smaller.
+The ratio of heuristic performances between the random and the JW heuristic changes from around 7 at 75 variables to 70 at 125 variables.
+
+# N Queens Puzzle
+
+We modelled the N queens puzzle problem as a SAT instance.
+For generating the CNF formula the program `PPsat-queens-generate` is used.
+We also implemented a script named `PPsat-queens.sh`
+which uses a solver passed as an argument
+and prints all models for the queens puzzle for a certain size of the board.
+
+The tested solvers are ours (PPsat), CaDiCaL and Glucose.
+
+```{r}
+results <- read_csv("results-queens.csv", col_types = "nfi")
+
+plot <- ggplot(results, aes(x = size, y = time, color = solver)) +
+    geom_line() +
+    scale_y_continuous(name = "solve time (seconds)", limits = c(0, 70))
+    
+plot +
+    scale_x_continuous(name = "board size") +
+    ggtitle("N queens")
+
+plot +
+    scale_x_continuous(name = "board size", limits = c(0, 18)) +
+    ggtitle("N queens (zoomed)")
+```
+
+We can see that CaDiCaL behaves very well with regards to time complexity compared to Glucose,
+although the variance increases with the size of the board.
+Our solver is orders of magnitude worse performing: it takes it more than a minute to solve the problem of size 17.
+The other two solvers pass this mark at size more than 300.
+
+# Cryptarithms
+
+We implemented a program named `PPsat-crypt-generate` which converts a cryptarithm into an SMT instance in the SMT-LIB format.
+We then implemented the script `PPsat-crypt.sh` which uses said generator and an SMT solver to print all models of the problem.
+
+To solve the long cryptarithm from the assignment it takes around 16 seconds with solver z3.
+This time includes the checking of the uniqueness of the model.
