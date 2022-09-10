@@ -1,7 +1,8 @@
 # Prerequisites
 
 * R
-    * packages `rmarkdown`, `tidyverse`
+    * `rmarkdown`
+    * `tidyverse`
 
 # Rendering the notebook
 
