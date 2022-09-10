@@ -5,8 +5,8 @@
 #include "PPsat-base/variable.hpp"
 
 #include <boost/heap/binomial_heap.hpp>
-
 #include <boost/heap/policies.hpp>
+
 #include <queue>
 #include <random>
 #include <unordered_map>
