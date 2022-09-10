@@ -1,10 +1,11 @@
-#include "PPsat-base/logger.hpp"
-#include "PPsat-base/logger_subroutine.hpp"
-#include "PPsat/renaming.hpp"
+#include <PPsat/renaming.hpp>
+
 #include <PPsat-parser_SMTLIB/parser_SMTLIB.h>
 #include <PPsat-parser_SMTLIB/parser_SMTLIBVisitor.h>
 
 #include <PPsat-base/literal.hpp>
+#include <PPsat-base/logger.hpp>
+#include <PPsat-base/logger_subroutine.hpp>
 #include <PPsat-base/tseitin_builder.hpp>
 #include <PPsat-base/variable.hpp>
 
