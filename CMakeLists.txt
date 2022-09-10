@@ -7,7 +7,7 @@ include(GNUInstallDirs)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
-set (ANTLR4_TAG "master")
+set(ANTLR4_TAG "master")
 include(ExternalAntlr4Cpp)
 
 if (NOT BOOTSTRAP)
@@ -17,6 +17,8 @@ if (NOT BOOTSTRAP)
 	find_package(antlr4-generator REQUIRED)
 	find_package(antlr4-runtime REQUIRED)
 
+	find_package(Boost 1.74 REQUIRED)
+	
 	if(APPLE)
 		set(CMAKE_INSTALL_RPATH "@executable_path/../${CMAKE_INSTALL_LIBDIR}")
 	elseif(UNIX)
