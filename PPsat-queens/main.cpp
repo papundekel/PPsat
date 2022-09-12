@@ -1,8 +1,8 @@
-#include <PPsat-base/cli/argument/simple_number.hpp>
-#include <PPsat-base/cli/option/simple_named_bool.hpp>
 #include <PPsat-queens/generate.hpp>
 
 #include <PPsat-base/cli/argument/number.hpp>
+#include <PPsat-base/cli/argument/simple_number.hpp>
+#include <PPsat-base/cli/option/simple_named_bool.hpp>
 #include <PPsat-base/cli/parser.hpp>
 #include <PPsat-base/logger_ostream.hpp>
 #include <PPsat-base/logger_subroutine.hpp>
