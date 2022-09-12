@@ -11,5 +11,12 @@ target_link_libraries("PPsat-queens-generate" INTERFACE "PPsat-base")
 
 # Install
 
-install(TARGETS "PPsat-queens-generate" "PPsat-queens-generate-exe" RUNTIME)
-install(PROGRAMS "PPsat-queens.sh" "PPsat-queens-measure.sh" TYPE BIN)
+install(TARGETS
+    "PPsat-queens-generate"
+    "PPsat-queens-generate-exe"
+        RUNTIME)
+
+install(PROGRAMS
+    "PPsat-queens.sh"
+    "PPsat-queens-measure.sh"
+        TYPE BIN)
