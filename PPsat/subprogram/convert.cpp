@@ -40,8 +40,10 @@
 #include <list>
 #include <map>
 #include <memory>
+#include <ostream>
 #include <string>
 #include <type_traits>
+#include <unordered_map>
 #include <vector>
 
 namespace
@@ -99,11 +101,13 @@ void write_formula(std::ostream& output, PPsat_base::formula& formula)
     output << "c The introduced variables begin at " << new_introduced_begin
            << ".\n";
 
+    std::unordered_map<PPsat_base::variable*, std::size_t> renaming;
+
     formula.for_each(
         [&output,
          new_native = new_native_begin,
-         new_introduced =
-             new_introduced_begin](PPsat_base::variable& variable) mutable
+         new_introduced = new_introduced_begin,
+         &renaming](PPsat_base::variable& variable) mutable
         {
             const auto is_native = variable.representation_has();
 
@@ -112,13 +116,23 @@ void write_formula(std::ostream& output, PPsat_base::formula& formula)
                 output << "c " << new_native << "->" << variable << "\n";
             }
 
-            variable.representation_set(is_native ? new_native++
-                                                  : new_introduced++);
+            renaming.try_emplace(&variable,
+                                 is_native ? new_native++ : new_introduced++);
         });
 
     output << "p cnf " << count_variable << " " << count_clause << "\n";
 
-    formula.write_DIMACS(output);
+    formula.write_DIMACS(
+        output,
+        [&renaming](std::ostream & output,
+                    const PPsat_base::literal literal) -> auto& {
+            if (!literal.is_positive())
+            {
+                output << "-";
+            }
+            output << renaming.at(&literal.get_variable());
+            return output;
+        });
 }
 
 std::unique_ptr<PPsat_base::formula::factory_variable> create_variables(
@@ -157,7 +171,9 @@ int PPsat::subprogram::convert(const PPsat_base::logger& logger_outer,
     auto variables = create_variables(format);
     PPsat_base::formula formula(preprocessor, clauses, *variables);
 
-    antlr4::ANTLRInputStream input_formula(argument_file_in.parsed_stream());
+    antlr4::ANTLRInputStream input_formula(
+        argument_file_in.is_present() ? argument_file_in.parsed_stream()
+                                      : std::cin);
 
     const auto [builder, renaming] =
         create_builder(formula, format, options["nnf"_cst].parsed());
@@ -170,9 +186,10 @@ int PPsat::subprogram::convert(const PPsat_base::logger& logger_outer,
         return 1;
     }
 
-    auto& output_formula = argument_file_out.parsed_stream();
-
-    write_formula(output_formula, formula);
+    write_formula(argument_file_out.is_present()
+                      ? argument_file_out.parsed_stream()
+                      : std::cout,
+                  formula);
 
     return 0;
 }
