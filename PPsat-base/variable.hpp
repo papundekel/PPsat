@@ -1,8 +1,8 @@
 #pragma once
-#include "PPsat-base/optional.hpp"
-#include "PPsat-base/unit.hpp"
 #include <PPsat-base/clause.hpp>
 #include <PPsat-base/literal.hpp>
+#include <PPsat-base/optional.hpp>
+#include <PPsat-base/unit.hpp>
 #include <PPsat-base/variable_assignment.hpp>
 
 #include <functional>
