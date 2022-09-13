@@ -9,22 +9,11 @@ fi
 
 solver="$1"
 inputs_dir="$2"
-temp=`mktemp`
-trap "rm $temp" EXIT INT TERM
 
 parse_output()
 {
-    grep "^c " | sed 's/c //' > "$temp"
-
-    echo ",$option_cdcl,$option_adjacency,$option_clause,$option_decision" >> "$temp"
-
-    for arg in $@
-    do
-        echo ",$arg" >> "$temp"
-    done
-
-    tr -d "\n" < "$temp"
-    echo
+    grep "^c " | sed 's/c //' | tr -d "\n"
+    echo ",$option_cdcl,$option_adjacency,$option_clause,$option_decision,$is_sat,$var_count"
 }
 
 echo "parse,solve,decision,unit,visit,restart,cdcl,adjacency,clause,decision,sat,var"
@@ -51,7 +40,7 @@ do
             fi
             for i in "10" "11" "12" "13" "14" "15" "16" "17" "18" "19"
             do
-                "$solver" "$inputs_dir/$file_prefix$var_count-0$i.cnf" $options | parse_output "$is_sat" "$var_count"
+                "$solver" "$inputs_dir/$file_prefix$var_count-0$i.cnf" $options | parse_output
             done
         done
     done
