@@ -13,6 +13,9 @@ Also contains programs `PPsat-queens-generate`, `PPsat-queens.sh`, `PPsat-crypt-
 * Boost >=1.74
 * Bash
 * grep, sed, gawk
+* R
+    * `rmarkdown`
+    * `tidyverse`
 
 ## Configuration, build, install and run
 

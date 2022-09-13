@@ -32,4 +32,6 @@ if (NOT BOOTSTRAP)
 	add_subdirectory("PPsat")
 	add_subdirectory("PPsat-queens")
 	add_subdirectory("PPsat-crypt")
+
+	add_subdirectory("report")
 endif()
