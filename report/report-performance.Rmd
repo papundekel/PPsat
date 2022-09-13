@@ -1,0 +1,28 @@
+---
+title: "SAT solver evaluation"
+output: html_notebook
+---
+
+```{r}
+library("tidyverse")
+```
+
+# Cigan
+
+```{r}
+results <- read_csv("results-perf.csv", col_types = "n-f--n-lfffl")
+
+results <- results %>%
+    group_by(counter, cdcl, adjacency, clause, decision) %>%
+    summarize(value = mean(value), ratio = mean(ratio), .groups = "keep")
+
+results %>%
+    filter(!cdcl, adjacency == "list", decision == "trivial") %>%
+    ggplot(aes(fill = counter, x = value, y = clause)) + 
+    geom_bar(position = "dodge", stat = "identity")
+
+results %>%
+    filter(cdcl, adjacency == "set", decision == "trivial") %>%
+    ggplot(aes(fill = counter, x = value, y = clause)) + 
+    geom_bar(position = "dodge", stat = "identity")
+```
