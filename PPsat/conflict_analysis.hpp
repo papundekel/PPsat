@@ -17,7 +17,7 @@ public:
     enum class type
     {
         dpll,
-        cdcl,
+        uip,
     };
 
     virtual PPsat_base::optional<std::size_t> analyse(
