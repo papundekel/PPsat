@@ -176,6 +176,7 @@ foreach(file_path ${inputs})
         "-clause" "${option_clause}"
         "-decision" "${option_decision}"
         "-cdcl" "${option_cdcl}"
+        "-virtual" "false"
         "${file_path}"
     CONFIGURATIONS Release)
 
