@@ -1,9 +1,6 @@
 #include <PPsat-crypt-parser/parser_CRYPT.h>
 #include <PPsat-crypt-parser/parser_CRYPTVisitor.h>
 
-#include <PPsat-base/formula.hpp>
-#include <PPsat-base/variable.hpp>
-
 #include <cstddef>
 #include <functional>
 #include <iosfwd>
