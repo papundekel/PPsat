@@ -1,9 +1,7 @@
-#include "PPsat/decision_deterministic.hpp"
-#include "PPsat/solver_impl.hpp"
+#include <PPsat/adjacency.hpp>
 #include <PPsat/adjacency_list.hpp>
 #include <PPsat/adjacency_set.hpp>
 #include <PPsat/adjacency_set_unordered.hpp>
-#include <PPsat/adjacency_type.hpp>
 #include <PPsat/assumptions.hpp>
 #include <PPsat/assumptions_basic.hpp>
 #include <PPsat/builder_ASSUME.hpp>
@@ -11,7 +9,6 @@
 #include <PPsat/builder_SMTLIB_tseitin.hpp>
 #include <PPsat/clause_basic.hpp>
 #include <PPsat/clause_counting.hpp>
-#include <PPsat/clause_type.hpp>
 #include <PPsat/clause_watched_literals.hpp>
 #include <PPsat/cli/argument/file.hpp>
 #include <PPsat/cli/options.hpp>
@@ -23,16 +20,17 @@
 #include <PPsat/decision_JW_static.hpp>
 #include <PPsat/decision_VSIDS.hpp>
 #include <PPsat/decision_assume.hpp>
+#include <PPsat/decision_deterministic.hpp>
 #include <PPsat/decision_priority.hpp>
 #include <PPsat/decision_random.hpp>
 #include <PPsat/decision_trivial.hpp>
-#include <PPsat/decision_type.hpp>
 #include <PPsat/formula_format.hpp>
 #include <PPsat/output_type.hpp>
 #include <PPsat/restart_strategy.hpp>
 #include <PPsat/restart_strategy_geometric.hpp>
 #include <PPsat/restart_strategy_never.hpp>
 #include <PPsat/solver.hpp>
+#include <PPsat/solver_impl.hpp>
 #include <PPsat/subprogram.hpp>
 #include <PPsat/variable_DIMACS.hpp>
 #include <PPsat/variable_SMTLIB.hpp>
@@ -65,6 +63,7 @@
 #include <PPsat-base/preprocessor_id.hpp>
 #include <PPsat-base/tuple_cart.hpp>
 #include <PPsat-base/tuple_named.hpp>
+#include <PPsat-base/unique_ref.hpp>
 #include <PPsat-base/value_t.hpp>
 #include <PPsat-base/variable.hpp>
 
@@ -90,32 +89,32 @@ using decision_B = decision_random;
 
 namespace
 {
-template <PPsat::clause_type type>
+template <PPsat_base::clause::type type>
 using clause_factory_impl =
     PPsat_base::factory<PPsat_base::formula::factory_clause>::impl<
         PPsat_base::formula::factory_clause::impl<
             std::list,
             std::conditional_t<
-                type == PPsat::clause_type::basic,
+                type == PPsat_base::clause::type::basic,
                 PPsat::clause_basic,
-                std::conditional_t<type == PPsat::clause_type::counting,
+                std::conditional_t<type == PPsat_base::clause::type::counting,
                                    PPsat::clause_counting,
                                    PPsat::clause_watched_literals>>>>;
 
 PPsat_base::unique_ref<PPsat_base::factory<PPsat_base::formula::factory_clause>>
-create_clauses_factory(PPsat::clause_type type)
+create_clauses_factory(PPsat_base::clause::type type)
 {
     switch (type)
     {
-        case PPsat::clause_type::basic:
+        case PPsat_base::clause::type::basic:
             return std::make_unique<
-                clause_factory_impl<PPsat::clause_type::basic>>();
-        case PPsat::clause_type::counting:
+                clause_factory_impl<PPsat_base::clause::type::basic>>();
+        case PPsat_base::clause::type::counting:
             return std::make_unique<
-                clause_factory_impl<PPsat::clause_type::counting>>();
-        case PPsat::clause_type::watched_literals:
-            return std::make_unique<
-                clause_factory_impl<PPsat::clause_type::watched_literals>>();
+                clause_factory_impl<PPsat_base::clause::type::counting>>();
+        case PPsat_base::clause::type::watched_literals:
+            return std::make_unique<clause_factory_impl<
+                PPsat_base::clause::type::watched_literals>>();
         default:
             return nullptr;
     }
@@ -123,16 +122,16 @@ create_clauses_factory(PPsat::clause_type type)
 
 template <bool cdcl,
           bool unassign,
-          PPsat::adjacency_type type,
+          PPsat::adjacency::type type,
           PPsat::formula_format format,
-          PPsat::decision_type decision>
+          PPsat::decision::type decision>
 struct variable_selector
     : public PPsat::variable_adjacency
     , public PPsat::variable_unassigning<unassign>
     , public std::conditional_t<
-          type == PPsat::adjacency_type::list,
+          type == PPsat::adjacency::type::list,
           PPsat::adjacency_list,
-          std::conditional_t<type == PPsat::adjacency_type::set,
+          std::conditional_t<type == PPsat::adjacency::type::set,
                              PPsat::adjacency_set,
                              PPsat::adjacency_set_unordered>>
     , public std::conditional_t<format == PPsat::formula_format::DIMACS,
@@ -146,17 +145,17 @@ struct variable_selector
     , public std::conditional_t<cdcl,
                                 PPsat::variable_antecedent_with,
                                 PPsat::variable_antecedent_none>
-    , public std::conditional_t<decision == PPsat::decision_type::JW_static ||
-                                    decision == PPsat::decision_type::VSIDS,
+    , public std::conditional_t<decision == PPsat::decision::type::JW_static ||
+                                    decision == PPsat::decision::type::VSIDS,
                                 PPsat::variable_score_with,
                                 PPsat::variable_score_none>
 {};
 
 template <bool cdcl,
           bool unassign,
-          PPsat::adjacency_type type,
+          PPsat::adjacency::type type,
           PPsat::formula_format format,
-          PPsat::decision_type decision>
+          PPsat::decision::type decision>
 PPsat_base::unique_ref<PPsat_base::formula::factory_variable>
 create_variables_helper()
 {
@@ -164,6 +163,13 @@ create_variables_helper()
         std::list,
         variable_selector<cdcl, unassign, type, format, decision>>>();
 }
+
+constexpr inline auto combos_decision =
+    std::make_tuple(PPsat_base::value_v<PPsat::decision::type::trivial>,
+                    PPsat_base::value_v<PPsat::decision::type::deterministic>,
+                    PPsat_base::value_v<PPsat::decision::type::random>,
+                    PPsat_base::value_v<PPsat::decision::type::JW_static>,
+                    PPsat_base::value_v<PPsat::decision::type::VSIDS>);
 
 auto create_variables(auto... options)
 {
@@ -175,17 +181,12 @@ auto create_variables(auto... options)
             std::make_tuple(PPsat_base::value_v<false>,
                             PPsat_base::value_v<true>),
             std::make_tuple(
-                PPsat_base::value_v<PPsat::adjacency_type::list>,
-                PPsat_base::value_v<PPsat::adjacency_type::set>,
-                PPsat_base::value_v<PPsat::adjacency_type::set_unordered>),
+                PPsat_base::value_v<PPsat::adjacency::type::list>,
+                PPsat_base::value_v<PPsat::adjacency::type::set>,
+                PPsat_base::value_v<PPsat::adjacency::type::set_unordered>),
             std::make_tuple(PPsat_base::value_v<PPsat::formula_format::DIMACS>,
                             PPsat_base::value_v<PPsat::formula_format::SMTLIB>),
-            std::make_tuple(
-                PPsat_base::value_v<PPsat::decision_type::trivial>,
-                PPsat_base::value_v<PPsat::decision_type::deterministic>,
-                PPsat_base::value_v<PPsat::decision_type::random>,
-                PPsat_base::value_v<PPsat::decision_type::JW_static>,
-                PPsat_base::value_v<PPsat::decision_type::VSIDS>));
+            combos_decision);
 
         std::map<
             decltype(std::apply(
@@ -221,20 +222,20 @@ auto create_variables(auto... options)
 
 std::unique_ptr<PPsat::decision> create_heuristic_main(
     PPsat_base::formula& formula,
-    PPsat::decision_type decision,
+    PPsat::decision::type decision,
     std::size_t seed)
 {
     switch (decision)
     {
-        case PPsat::decision_type::trivial:
+        case PPsat::decision::type::trivial:
             return std::make_unique<PPsat::decision_trivial>(formula);
-        case PPsat::decision_type::deterministic:
+        case PPsat::decision::type::deterministic:
             return std::make_unique<PPsat::decision_deterministic>(formula);
-        case PPsat::decision_type::random:
+        case PPsat::decision::type::random:
             return std::make_unique<PPsat::decision_random>(formula, seed);
-        case PPsat::decision_type::JW_static:
+        case PPsat::decision::type::JW_static:
             return std::make_unique<PPsat::decision_JW_static>(formula);
-        case PPsat::decision_type::VSIDS:
+        case PPsat::decision::type::VSIDS:
             return std::make_unique<PPsat::decision_VSIDS>(formula);
         default:
             return nullptr;
@@ -243,7 +244,7 @@ std::unique_ptr<PPsat::decision> create_heuristic_main(
 
 PPsat_base::unique_ref<PPsat::decision> create_heuristic(
     PPsat_base::formula& formula,
-    PPsat::decision_type decision,
+    PPsat::decision::type decision,
     bool assume,
     PPsat::assumptions* asssumption,
     std::size_t seed)
@@ -289,6 +290,65 @@ PPsat_base::unique_ref<PPsat::restart_strategy> create_restarts(bool cdcl,
     else
     {
         return std::make_unique<PPsat::restart_strategy_never>();
+    }
+}
+
+PPsat_base::unique_ref<PPsat::solver> create_solver(
+    bool virtual_,
+    PPsat_base::formula& formula,
+    PPsat::decision& decision,
+    PPsat::conflict_analysis& analysis,
+    PPsat::restart_strategy& restarts)
+{
+    if (virtual_)
+    {
+        return std::make_unique<PPsat::solver_impl<PPsat::decision,
+                                                   PPsat::conflict_analysis,
+                                                   PPsat::restart_strategy>>(
+            formula,
+            decision,
+            analysis,
+            restarts);
+    }
+    else
+    {
+        return nullptr;
+        // static const auto map = []()
+        // {
+        //     static constexpr auto combos = PPsat_base::tuple_cart(
+        //         combos_decision,
+        //         std::make_tuple(PPsat_base::value_v<false>,
+        //                         PPsat_base::value_v<true>));
+
+        //     std::map<decltype(std::apply(
+        //                  [](auto... values)
+        //                  {
+        //                      return
+        //                      std::make_tuple(decltype(values)::value...);
+        //                  },
+        //                  std::get<0>(combos))),
+        //              PPsat_base::unique_ref<
+        //                  PPsat_base::formula::factory_variable> (&)()>
+        //         map;
+
+        //     std::apply(
+        //         [&map](auto... tuples)
+        //         {
+        //             (std::apply(
+        //                  [&map](auto... values)
+        //                  {
+        //                      map.try_emplace(
+        //                          std::make_tuple(decltype(values)::value...),
+        //                          create_variables_helper<
+        //                              decltype(values)::value...>);
+        //                  },
+        //                  tuples),
+        //              ...);
+        //         },
+        //         combos);
+
+        //     return map;
+        // }();
     }
 }
 
@@ -338,8 +398,9 @@ int PPsat::subprogram::solve(const PPsat_base::logger& logger_outer,
     auto clauses = clauses_factory->create();
     auto variables = create_variables(
         options["cdcl"_cst].parsed(),
-        options["clause"_cst].parsed() != clause_type::watched_literals &&
-            options["clause"_cst].parsed() != clause_type::basic,
+        options["clause"_cst].parsed() !=
+                PPsat_base::clause::type::watched_literals &&
+            options["clause"_cst].parsed() != PPsat_base::clause::type::basic,
         options["adjacency"_cst].parsed(),
         format,
         options["decision"_cst].parsed());

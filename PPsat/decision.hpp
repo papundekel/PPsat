@@ -18,6 +18,15 @@ namespace PPsat
 class decision
 {
 public:
+    enum class type
+    {
+        trivial,
+        deterministic,
+        random,
+        JW_static,
+        VSIDS,
+    };
+
     virtual void assigned(PPsat_base::variable& variable) = 0;
     virtual void unassigned(PPsat_base::variable& variable) = 0;
     virtual PPsat_base::optional<PPsat_base::literal> get_decision() = 0;

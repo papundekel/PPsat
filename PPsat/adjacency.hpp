@@ -10,6 +10,14 @@ namespace PPsat
 {
 class adjacency
 {
+public:
+    enum class type
+    {
+        list,
+        set,
+        set_unordered,
+    };
+
 protected:
     virtual void adjacent_for_each(
         std::function<void(PPsat_base::clause&, bool)> f) const = 0;

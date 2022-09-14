@@ -11,6 +11,13 @@ namespace PPsat_base
 class clause
 {
 public:
+    enum class type
+    {
+        basic,
+        counting,
+        watched_literals,
+    };
+
     using category = clause_category;
 
     virtual void for_each(std::function<void(literal)> f) const = 0;

@@ -1,12 +1,11 @@
 #pragma once
-#include "PPsat-base/cli/option/simple_named_int.hpp"
-#include "PPsat/decision_type.hpp"
-#include "PPsat/output_type.hpp"
-#include <PPsat/adjacency_type.hpp>
-#include <PPsat/clause_type.hpp>
+#include <PPsat/adjacency.hpp>
 #include <PPsat/cli/option/subprogram.hpp>
+#include <PPsat/decision.hpp>
 #include <PPsat/formula_format.hpp>
+#include <PPsat/output_type.hpp>
 
+#include <PPsat-base/clause.hpp>
 #include <PPsat-base/cli/option.hpp>
 #include <PPsat-base/cli/option/bool.hpp>
 #include <PPsat-base/cli/option/enum.hpp>
@@ -14,6 +13,7 @@
 #include <PPsat-base/cli/option/simple_named_bool.hpp>
 #include <PPsat-base/cli/option/simple_named_double.hpp>
 #include <PPsat-base/cli/option/simple_named_enum_typed.hpp>
+#include <PPsat-base/cli/option/simple_named_int.hpp>
 #include <PPsat-base/cli/parameter/simple.hpp>
 #include <PPsat-base/cli/parser.hpp>
 #include <PPsat-base/constant_string.hpp>
@@ -34,10 +34,10 @@ using options_base = PPsat_base::tuple<
     PPsat_base::cli::option::simple_named_bool,
     PPsat_base::cli::option::simple_named_double,
     PPsat_base::cli::option::simple_named_int,
-    PPsat_base::cli::option::simple_named_enum_typed<decision_type>,
+    PPsat_base::cli::option::simple_named_enum_typed<decision::type>,
     PPsat_base::cli::option::simple_named_enum_typed<formula_format>,
-    PPsat_base::cli::option::simple_named_enum_typed<clause_type>,
-    PPsat_base::cli::option::simple_named_enum_typed<adjacency_type>,
+    PPsat_base::cli::option::simple_named_enum_typed<PPsat_base::clause::type>,
+    PPsat_base::cli::option::simple_named_enum_typed<adjacency::type>,
     PPsat_base::cli::option::simple_named_enum_typed<output_type>>::
     named<"help",
           "subprogram",
