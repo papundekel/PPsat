@@ -31,6 +31,7 @@ using options_base = PPsat_base::tuple<
     PPsat_base::cli::option::simple_named_bool,
     PPsat_base::cli::option::simple_named_bool,
     PPsat_base::cli::option::simple_named_bool,
+    PPsat_base::cli::option::simple_named_bool,
     PPsat_base::cli::option::simple_named_double,
     PPsat_base::cli::option::simple_named_int,
     PPsat_base::cli::option::simple_named_enum_typed<decision_type>,
@@ -40,6 +41,7 @@ using options_base = PPsat_base::tuple<
     PPsat_base::cli::option::simple_named_enum_typed<output_type>>::
     named<"help",
           "subprogram",
+          "virtual",
           "nnf",
           "assume",
           "cdcl",

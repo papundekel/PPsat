@@ -9,6 +9,9 @@ class simple_named_bool
     , public bool_
 {
 public:
-    using simple_named::simple_named;
+    simple_named_bool(std::string_view name, bool default_)
+        : simple_named(name)
+        , bool_(default_)
+    {}
 };
 }

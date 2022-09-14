@@ -13,14 +13,15 @@
 
 PPsat::cli::options::options()
     : options_base{
-          {"help"},
+          {"help", false},
           {"subprogram",
            subprogram::selection::solve,
            std::array{std::make_pair("convert", subprogram::selection::convert),
                       std::make_pair("solve", subprogram::selection::solve)}},
-          {"nnf"},
-          {"assume"},
-          {"cdcl"},
+          {"virtual", false},
+          {"nnf", false},
+          {"assume", false},
+          {"cdcl", false},
           {"restart", 2.5},
           {"random", 0},
           {"decision",

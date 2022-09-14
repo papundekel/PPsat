@@ -57,9 +57,10 @@ int main(std::istream& cin,
     const auto logger =
         PPsat_base::logger_subroutine(logger_cerr, "PPsat-crypt-generate");
 
-    PPsat_base::cli::option::simple_named_bool option_help("help");
+    PPsat_base::cli::option::simple_named_bool option_help("help", false);
     PPsat_base::cli::option::simple_named_int option_base("base", 10);
-    PPsat_base::cli::option::simple_named_bool option_repeating("repeating");
+    PPsat_base::cli::option::simple_named_bool option_repeating("repeating",
+                                                                false);
 
     const auto success_cli =
         PPsat_base::cli::parser(

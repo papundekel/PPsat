@@ -1,8 +1,8 @@
 #include <PPsat-base/cli/option/bool.hpp>
 
-PPsat_base::cli::option::bool_::bool_() noexcept
-    : value(false)
-    , had_argument(false)
+PPsat_base::cli::option::bool_::bool_(bool default_) noexcept
+    : value(default_)
+    , no_argument(true)
 {}
 
 std::size_t PPsat_base::cli::option::bool_::argument_count_min() const noexcept
@@ -19,15 +19,15 @@ bool PPsat_base::cli::option::bool_::parse(const logger&,
                                            std::size_t,
                                            std::string_view argument) noexcept
 {
+    no_argument = false;
+
     if (argument == "on" || argument == "true" || argument == "yes")
     {
-        had_argument = true;
         value = true;
         return true;
     }
     else if (argument == "off" || argument == "false" || argument == "no")
     {
-        had_argument = true;
         value = false;
         return true;
     }
@@ -37,10 +37,10 @@ bool PPsat_base::cli::option::bool_::parse(const logger&,
 
 bool PPsat_base::cli::option::bool_::parsed() const
 {
-    if (had_argument)
+    if (is_present() && no_argument)
     {
-        return value;
+        return true;
     }
 
-    return is_present();
+    return value;
 }

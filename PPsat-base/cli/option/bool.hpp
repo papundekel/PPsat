@@ -8,10 +8,10 @@ namespace PPsat_base::cli::option
 class bool_ : public virtual option_
 {
     bool value;
-    bool had_argument;
+    bool no_argument;
 
 public:
-    bool_() noexcept;
+    bool_(bool default_) noexcept;
 
 private:
     std::size_t argument_count_min() const noexcept override final;

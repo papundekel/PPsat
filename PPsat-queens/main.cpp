@@ -45,7 +45,7 @@ int main(std::istream& cin,
     const auto logger =
         PPsat_base::logger_subroutine(logger_cerr, "PPsat-queens::generate");
 
-    PPsat_base::cli::option::simple_named_bool help("help");
+    PPsat_base::cli::option::simple_named_bool help("help", false);
     PPsat_base::cli::argument::simple_number argument_dimension;
 
     const auto success_cli =
