@@ -1,4 +1,5 @@
 #include "PPsat/decision_deterministic.hpp"
+#include "PPsat/solver_impl.hpp"
 #include <PPsat/adjacency_list.hpp>
 #include <PPsat/adjacency_set.hpp>
 #include <PPsat/adjacency_set_unordered.hpp>
@@ -390,7 +391,8 @@ int PPsat::subprogram::solve(const PPsat_base::logger& logger_outer,
     const auto restarts = create_restarts(options["cdcl"_cst].parsed(),
                                           options["restart"_cst].parsed());
 
-    PPsat::solver solver(formula, decision, analysis, restarts);
+    PPsat::solver_impl<PPsat::decision, conflict_analysis, restart_strategy>
+        solver(formula, decision, analysis, restarts);
 
     const auto time_solving_start = std::chrono::steady_clock::now();
     const auto result = solver.solve();

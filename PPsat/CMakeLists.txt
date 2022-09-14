@@ -34,7 +34,6 @@ target_sources("PPsat" PUBLIC
     "renaming_basic.cpp"
     "renaming_int.cpp"
     "renaming_int_basic.cpp"
-    "solver.cpp"
     "subprogram/convert.cpp"
     "subprogram/solve.cpp"
     "variable_adjacency.cpp"

@@ -8,10 +8,10 @@
 #include <PPsat-base/tuple_named.hpp>
 #include <PPsat-base/unit.hpp>
 
+#include <iostream>
+
 namespace PPsat
 {
-class conflict_analysis;
-
 class solver
 {
     using clause = PPsat_base::clause;
@@ -38,53 +38,14 @@ public:
     {
     public:
         bool satisfiable;
-        std::vector<PPsat_base::literal> model;
+        std::vector<literal> model;
         statistics statistic;
     };
 
-private:
-    // formula
-    PPsat_base::formula& formula;
+    virtual std::pair<PPsat_base::optional<const PPsat_base::clause&>,
+                      std::list<PPsat_base::unit>>
+    decide(PPsat_base::literal literal) = 0;
 
-    // strategies
-    conflict_analysis& analysis;
-    decision& decision_;
-    restart_strategy& restarts;
-
-    // internal
-    std::vector<PPsat_base::literal> stack_assignment;
-    std::size_t level;
-
-    // statistics
-    statistics statistic;
-
-public:
-    solver(PPsat_base::formula& formula,
-           decision& decision_,
-           conflict_analysis& analysis,
-           restart_strategy& restarts);
-
-private:
-    friend class conflict_analysis_dpll;
-
-    std::pair<PPsat_base::optional<const PPsat_base::clause&>,
-              std::list<PPsat_base::unit>>
-    assign(PPsat_base::literal literal_assigned);
-
-    PPsat_base::literal unassign();
-
-    PPsat_base::optional<const PPsat_base::clause&> unit_propagate(
-        std::list<PPsat_base::unit> units);
-
-    std::pair<PPsat_base::optional<const PPsat_base::clause&>,
-              std::list<PPsat_base::unit>>
-    decide(PPsat_base::literal literal);
-
-    PPsat_base::literal backtrack(std::size_t level);
-
-    bool solve_impl();
-
-public:
-    result solve();
+    virtual result solve() = 0;
 };
 }
