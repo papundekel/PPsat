@@ -72,8 +72,22 @@ std::size_t PPsat_base::variable_representation<T>::representation_hash() const
     }
     else
     {
-        return 0;
+        return std::hash<std::string>()(representation);
     }
+}
+
+template <typename T>
+bool PPsat_base::variable_representation<T>::representation_less(
+    const PPsat_base::variable& other_) const
+{
+    auto other = dynamic_cast<const variable_representation<T>*>(&other_);
+
+    if (!other)
+    {
+        return false;
+    }
+
+    return representation < other->representation;
 }
 
 template class PPsat_base::variable_representation<std::string>;

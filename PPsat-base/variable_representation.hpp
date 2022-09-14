@@ -17,6 +17,7 @@ class variable_representation : public virtual variable
     std::string_view representation_get_string() const override final;
     std::size_t representation_get_int() const override final;
     std::size_t representation_hash() const override final;
+    bool representation_less(const variable& other) const override final;
 };
 }
 

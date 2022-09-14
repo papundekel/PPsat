@@ -1,3 +1,4 @@
+#include "PPsat/decision_deterministic.hpp"
 #include <PPsat/adjacency_list.hpp>
 #include <PPsat/adjacency_set.hpp>
 #include <PPsat/adjacency_set_unordered.hpp>
@@ -180,6 +181,7 @@ auto create_variables(auto... options)
                             PPsat_base::value_v<PPsat::formula_format::SMTLIB>),
             std::make_tuple(
                 PPsat_base::value_v<PPsat::decision_type::trivial>,
+                PPsat_base::value_v<PPsat::decision_type::deterministic>,
                 PPsat_base::value_v<PPsat::decision_type::random>,
                 PPsat_base::value_v<PPsat::decision_type::JW_static>,
                 PPsat_base::value_v<PPsat::decision_type::VSIDS>));
@@ -225,6 +227,8 @@ std::unique_ptr<PPsat::decision> create_heuristic_main(
     {
         case PPsat::decision_type::trivial:
             return std::make_unique<PPsat::decision_trivial>(formula);
+        case PPsat::decision_type::deterministic:
+            return std::make_unique<PPsat::decision_deterministic>(formula);
         case PPsat::decision_type::random:
             return std::make_unique<PPsat::decision_random>(formula, seed);
         case PPsat::decision_type::JW_static:

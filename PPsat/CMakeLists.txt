@@ -23,6 +23,7 @@ target_sources("PPsat" PUBLIC
     "conflict_analysis_uip.cpp"
     "help_print.cpp"
     "decision_assume.cpp"
+    "decision_deterministic.cpp"
     "decision_trivial.cpp"
     "decision_priority.cpp"
     "decision_random.cpp"

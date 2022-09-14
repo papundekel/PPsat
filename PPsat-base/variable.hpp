@@ -30,6 +30,7 @@ public:
     virtual std::size_t representation_get_int() const = 0;
     virtual bool representation_has() const = 0;
     virtual std::size_t representation_hash() const = 0;
+    virtual bool representation_less(const variable& other) const = 0;
 
 private:
     virtual void for_each_clause_relevant_assign(
