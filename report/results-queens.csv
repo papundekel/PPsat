@@ -1,717 +1,717 @@
-time,solver,size
-0.001329,glucose,1
-0,glucose,2
-0.001452,glucose,3
-0.001484,glucose,4
-0.001047,glucose,5
-0.001696,glucose,6
-0,glucose,7
-0.002227,glucose,8
-0.002502,glucose,9
-0.001063,glucose,10
-0.003774,glucose,11
-0.004473,glucose,12
-0.002647,glucose,13
-0.0058,glucose,14
-0.003603,glucose,15
-0.008611,glucose,16
-0.008437,glucose,17
-0.012158,glucose,18
-0.012362,glucose,19
-0.017159,glucose,20
-0.012377,glucose,21
-0.023015,glucose,22
-0.031096,glucose,23
-0.031573,glucose,24
-0.014434,glucose,25
-0.010693,glucose,26
-0.016813,glucose,27
-0.023937,glucose,28
-0.030298,glucose,29
-0.022575,glucose,30
-0.076217,glucose,31
-0.049677,glucose,32
-0.029987,glucose,33
-0.02357,glucose,34
-0.041278,glucose,35
-0.089396,glucose,36
-0.061181,glucose,37
-0.297574,glucose,38
-0.054782,glucose,39
-0.094679,glucose,40
-0.116631,glucose,41
-0.091196,glucose,42
-0.085234,glucose,43
-0.087972,glucose,44
-0.134679,glucose,45
-0.179977,glucose,46
-0.174557,glucose,47
-0.403812,glucose,48
-0.438754,glucose,49
-0.28508,glucose,50
-0.162712,glucose,51
-0.83623,glucose,52
-0.136529,glucose,53
-0.338425,glucose,54
-1.1123,glucose,55
-0.241193,glucose,56
-0.547928,glucose,57
-0.427449,glucose,58
-0.343913,glucose,59
-0.368994,glucose,60
-0.243983,glucose,61
-1.87248,glucose,62
-0.403249,glucose,63
-1.05979,glucose,64
-1.1059,glucose,65
-1.05888,glucose,66
-2.82667,glucose,67
-0.589824,glucose,68
-0.422249,glucose,69
-1.13531,glucose,70
-0.846498,glucose,71
-3.02088,glucose,72
-0.697019,glucose,73
-6.68544,glucose,74
-5.90125,glucose,75
-2.53737,glucose,76
-2.0532,glucose,77
-5.77711,glucose,78
-1.48573,glucose,79
-5.07176,glucose,80
-2.96104,glucose,81
-2.90213,glucose,82
-2.67292,glucose,83
-3.91761,glucose,84
-1.14091,glucose,85
-3.99496,glucose,86
-5.85816,glucose,87
-2.03157,glucose,88
-7.33652,glucose,89
-2.425,glucose,90
-13.8184,glucose,91
-1.50399,glucose,92
-8.39593,glucose,93
-4.1014,glucose,94
-2.50145,glucose,95
-4.84645,glucose,96
-9.34103,glucose,97
-7.66978,glucose,98
-15.9156,glucose,99
-2.04863,glucose,100
-14.0521,glucose,101
-3.32662,glucose,102
-3.50492,glucose,103
-5.06275,glucose,104
-6.44029,glucose,105
-9.45698,glucose,106
-14.0086,glucose,107
-16.7187,glucose,108
-16.0646,glucose,109
-11.9476,glucose,110
-4.20987,glucose,111
-5.57399,glucose,112
-18.5723,glucose,113
-14.3039,glucose,114
-18.0235,glucose,115
-18.5362,glucose,116
-19.9605,glucose,117
-10.2562,glucose,118
-18.7775,glucose,119
-8.06957,glucose,120
-20.1097,glucose,121
-20.4579,glucose,122
-20.7728,glucose,123
-20.1159,glucose,124
-23.2549,glucose,125
-10.7045,glucose,126
-22.1946,glucose,127
-21.4728,glucose,128
-23.741,glucose,129
-19.4243,glucose,130
-22.0814,glucose,131
-22.581,glucose,132
-22.158,glucose,133
-23.7877,glucose,134
-22.8745,glucose,135
-24.5908,glucose,136
-23.8459,glucose,137
-24.1803,glucose,138
-25.7377,glucose,139
-25.6806,glucose,140
-23.9172,glucose,141
-26.3281,glucose,142
-22.2616,glucose,143
-21.6962,glucose,144
-19.4396,glucose,145
-21.0107,glucose,146
-22.5694,glucose,147
-21.3586,glucose,148
-21.8144,glucose,149
-21.9495,glucose,150
-18.89,glucose,151
-22.2592,glucose,152
-21.9515,glucose,153
-23.5072,glucose,154
-8.09878,glucose,155
-22.266,glucose,156
-20.3266,glucose,157
-22.1948,glucose,158
-23.4042,glucose,159
-22.6543,glucose,160
-23.2394,glucose,161
-23.543,glucose,162
-22.6161,glucose,163
-19.885,glucose,164
-25.0844,glucose,165
-24.96,glucose,166
-19.1776,glucose,167
-24.266,glucose,168
-24.0169,glucose,169
-23.3898,glucose,170
-24.7617,glucose,171
-27.7544,glucose,172
-18.5733,glucose,173
-7.33832,glucose,174
-24.6522,glucose,175
-25.9411,glucose,176
-24.0983,glucose,177
-25.3134,glucose,178
-27.4074,glucose,179
-25.7276,glucose,180
-27.361,glucose,181
-29.9732,glucose,182
-27.0602,glucose,183
-25.0046,glucose,184
-28.7,glucose,185
-29.2102,glucose,186
-24.1491,glucose,187
-27.3475,glucose,188
-28.0584,glucose,189
-28.3719,glucose,190
-28.1697,glucose,191
-30.3832,glucose,192
-25.3222,glucose,193
-28.3335,glucose,194
-32.6715,glucose,195
-29.4078,glucose,196
-25.1936,glucose,197
-29.8512,glucose,198
-27.7656,glucose,199
-28.0351,glucose,200
-30.1658,glucose,201
-30.9874,glucose,202
-27.7396,glucose,203
-29.4899,glucose,204
-27.2069,glucose,205
-31.0415,glucose,206
-33.1831,glucose,207
-37.3455,glucose,208
-30.2191,glucose,209
-30.8546,glucose,210
-30.4073,glucose,211
-36.6545,glucose,212
-33.682,glucose,213
-29.6405,glucose,214
-31.5014,glucose,215
-32.3835,glucose,216
-32.1268,glucose,217
-33.6422,glucose,218
-35.4865,glucose,219
-35.5148,glucose,220
-32.3975,glucose,221
-34.8169,glucose,222
-36.8035,glucose,223
-38.5785,glucose,224
-36.1987,glucose,225
-31.8999,glucose,226
-35.8681,glucose,227
-35.2644,glucose,228
-34.1575,glucose,229
-36.7584,glucose,230
-37.7503,glucose,231
-35.2551,glucose,232
-37.1732,glucose,233
-35.2279,glucose,234
-36.2907,glucose,235
-34.5635,glucose,236
-38.9833,glucose,237
-39.0514,glucose,238
-36.9725,glucose,239
-36.7204,glucose,240
-37.6145,glucose,241
-38.1779,glucose,242
-37.2362,glucose,243
-39.6349,glucose,244
-36.3695,glucose,245
-37.9981,glucose,246
-38.499,glucose,248
-39.9747,glucose,249
-34.7638,glucose,250
-37.5402,glucose,251
-42.0198,glucose,252
-36.6459,glucose,253
-45.3708,glucose,254
-41.157,glucose,255
-43.071,glucose,256
-43.3414,glucose,257
-41.034,glucose,258
-41.2543,glucose,259
-40.6841,glucose,260
-43.1732,glucose,261
-40.9868,glucose,262
-41.2929,glucose,263
-49.615,glucose,264
-45.1726,glucose,265
-47.8641,glucose,266
-40.4804,glucose,267
-47.9863,glucose,268
-46.2856,glucose,269
-43.9219,glucose,270
-49.0434,glucose,271
-45.834,glucose,272
-49.7919,glucose,273
-37.0299,glucose,274
-44.147,glucose,275
-43.816,glucose,276
-46.0114,glucose,277
-46.1095,glucose,278
-43.9193,glucose,279
-44.9168,glucose,280
-46.0649,glucose,281
-49.2609,glucose,282
-43.8499,glucose,283
-45.9335,glucose,284
-40.5247,glucose,285
-43.5891,glucose,286
-45.7625,glucose,287
-45.1147,glucose,288
-48.9111,glucose,289
-47.9702,glucose,290
-49.9422,glucose,291
-48.6351,glucose,292
-52.1233,glucose,293
-48.4879,glucose,294
-49.115,glucose,295
-49.7421,glucose,296
-48.4321,glucose,297
-50.2874,glucose,298
-49.7326,glucose,299
-48.5028,glucose,300
-53.6584,glucose,301
-50.6862,glucose,302
-49.3094,glucose,303
-52.5537,glucose,304
-52.1019,glucose,305
-51.9361,glucose,306
-49.7805,glucose,307
-51.7113,glucose,308
-51.9853,glucose,309
-66.395,glucose,310
-52.1654,glucose,311
-52.2139,glucose,312
-58.8584,glucose,313
-55.1821,glucose,314
-45.2625,glucose,315
-55.6155,glucose,316
-55.111,glucose,317
-54.2729,glucose,318
-53.8818,glucose,319
-59.1437,glucose,320
-56.2984,glucose,321
-56.2259,glucose,322
-53.1546,glucose,323
-54.8985,glucose,324
-62.3611,glucose,325
-52.9186,glucose,326
-55.5836,glucose,327
-57.5657,glucose,328
-52.7182,glucose,329
-57.474,glucose,330
-58.8804,glucose,331
-55.3252,glucose,332
-60.7396,glucose,333
-57.7782,glucose,334
-56.1777,glucose,335
-63.5344,glucose,336
-59.675,glucose,337
-59.1287,glucose,338
-57.6539,glucose,339
-59.7466,glucose,340
-60.4827,glucose,341
-59.5467,glucose,342
-61.6293,glucose,343
-59.4368,glucose,344
-60.5077,glucose,345
-58.9806,glucose,346
-57.4262,glucose,347
-64.3269,glucose,348
-55.2486,glucose,349
-62.8507,glucose,350
-63.9284,glucose,351
-62.1078,glucose,352
-70.348,glucose,353
-57.2894,glucose,354
-267.772,glucose,355
-62.2107,glucose,356
-65.3765,glucose,357
-63.1555,glucose,358
-69.7209,glucose,359
-62.2415,glucose,360
-0.000,PPsat,1
-0.000,PPsat,2
-0.000,PPsat,3
-0.000,PPsat,4
-0.000,PPsat,5
-0.000,PPsat,6
-0.000,PPsat,7
-0.000,PPsat,8
-0.001,PPsat,9
-0.006,PPsat,10
-0.099,PPsat,11
-0.115,PPsat,12
-0.300,PPsat,13
-1.071,PPsat,14
-43.237,PPsat,15
-1.776,PPsat,16
-544.588,PPsat,17
-0.00,cadical,1
-0.00,cadical,2
-0.00,cadical,3
-0.00,cadical,4
-0.00,cadical,5
-0.00,cadical,6
-0.00,cadical,7
-0.00,cadical,8
-0.00,cadical,9
-0.00,cadical,10
-0.00,cadical,11
-0.00,cadical,12
-0.00,cadical,13
-0.00,cadical,14
-0.00,cadical,15
-0.01,cadical,16
-0.01,cadical,17
-0.06,cadical,18
-0.00,cadical,19
-0.04,cadical,20
-0.01,cadical,21
-0.04,cadical,22
-0.01,cadical,23
-0.09,cadical,24
-0.00,cadical,25
-0.10,cadical,26
-0.00,cadical,27
-0.00,cadical,28
-0.02,cadical,29
-0.02,cadical,30
-0.02,cadical,31
-0.12,cadical,32
-0.13,cadical,33
-0.07,cadical,34
-0.06,cadical,35
-0.14,cadical,36
-0.00,cadical,37
-0.00,cadical,38
-0.09,cadical,39
-0.08,cadical,40
-0.03,cadical,41
-0.04,cadical,42
-0.19,cadical,43
-0.05,cadical,44
-0.07,cadical,45
-0.00,cadical,46
-0.09,cadical,47
-0.11,cadical,48
-0.00,cadical,49
-0.23,cadical,50
-0.24,cadical,51
-0.13,cadical,52
-0.26,cadical,53
-0.07,cadical,54
-0.13,cadical,55
-0.10,cadical,56
-0.00,cadical,57
-0.15,cadical,58
-0.11,cadical,59
-0.14,cadical,60
-0.16,cadical,61
-0.17,cadical,62
-0.32,cadical,63
-0.17,cadical,64
-0.17,cadical,65
-0.16,cadical,66
-0.35,cadical,67
-0.18,cadical,68
-0.20,cadical,69
-0.38,cadical,70
-0.22,cadical,71
-0.22,cadical,72
-0.22,cadical,73
-0.20,cadical,74
-0.48,cadical,75
-0.08,cadical,76
-0.22,cadical,77
-0.50,cadical,78
-0.51,cadical,79
-0.53,cadical,80
-0.53,cadical,81
-0.28,cadical,82
-0.23,cadical,83
-0.60,cadical,84
-0.25,cadical,85
-0.59,cadical,86
-0.60,cadical,87
-0.27,cadical,88
-0.64,cadical,89
-0.28,cadical,90
-0.28,cadical,91
-0.67,cadical,92
-0.33,cadical,93
-0.31,cadical,94
-0.31,cadical,95
-0.67,cadical,96
-0.69,cadical,97
-0.34,cadical,98
-0.73,cadical,99
-0.35,cadical,100
-0.37,cadical,101
-0.36,cadical,102
-0.80,cadical,103
-0.84,cadical,104
-0.84,cadical,105
-0.85,cadical,106
-0.85,cadical,107
-0.39,cadical,108
-0.92,cadical,109
-0.43,cadical,110
-0.42,cadical,111
-0.97,cadical,112
-0.98,cadical,113
-1.00,cadical,114
-1.04,cadical,115
-1.06,cadical,116
-0.49,cadical,117
-0.51,cadical,118
-0.52,cadical,119
-0.52,cadical,120
-1.12,cadical,121
-0.57,cadical,122
-0.55,cadical,123
-1.22,cadical,124
-0.57,cadical,125
-1.26,cadical,126
-0.58,cadical,127
-0.60,cadical,128
-0.62,cadical,129
-1.37,cadical,130
-1.37,cadical,131
-1.43,cadical,132
-1.45,cadical,133
-0.66,cadical,134
-1.51,cadical,135
-0.72,cadical,136
-1.60,cadical,137
-1.60,cadical,138
-0.74,cadical,139
-0.77,cadical,140
-1.68,cadical,141
-0.79,cadical,142
-1.76,cadical,143
-1.77,cadical,144
-0.84,cadical,145
-1.85,cadical,146
-0.91,cadical,147
-0.89,cadical,148
-0.89,cadical,149
-1.99,cadical,150
-2.02,cadical,151
-2.08,cadical,152
-2.08,cadical,153
-2.15,cadical,154
-2.20,cadical,155
-1.05,cadical,156
-2.29,cadical,157
-2.35,cadical,158
-2.36,cadical,159
-1.13,cadical,160
-2.70,cadical,161
-2.48,cadical,162
-2.55,cadical,163
-2.57,cadical,164
-2.65,cadical,165
-1.27,cadical,166
-2.75,cadical,167
-1.28,cadical,168
-1.35,cadical,169
-2.89,cadical,170
-2.92,cadical,171
-2.97,cadical,172
-3.03,cadical,173
-3.08,cadical,174
-1.47,cadical,175
-3.20,cadical,176
-3.18,cadical,177
-3.27,cadical,178
-1.53,cadical,179
-1.57,cadical,180
-3.42,cadical,181
-3.44,cadical,182
-1.65,cadical,183
-3.62,cadical,184
-3.69,cadical,185
-1.71,cadical,186
-3.78,cadical,187
-3.79,cadical,188
-1.82,cadical,189
-1.85,cadical,190
-4.01,cadical,191
-7.79,cadical,192
-11.92,cadical,193
-4.18,cadical,194
-4.26,cadical,195
-1.99,cadical,196
-2.07,cadical,197
-2.07,cadical,198
-4.55,cadical,199
-2.11,cadical,200
-4.65,cadical,201
-4.70,cadical,202
-4.86,cadical,203
-4.82,cadical,204
-4.85,cadical,205
-5.05,cadical,206
-5.04,cadical,207
-5.19,cadical,208
-2.43,cadical,209
-5.24,cadical,210
-5.43,cadical,211
-5.40,cadical,212
-2.55,cadical,213
-5.54,cadical,214
-5.68,cadical,215
-2.67,cadical,216
-5.81,cadical,217
-5.84,cadical,218
-6.03,cadical,219
-6.20,cadical,220
-6.05,cadical,221
-6.18,cadical,222
-11.57,cadical,223
-6.39,cadical,224
-3.00,cadical,225
-6.68,cadical,226
-6.68,cadical,227
-6.84,cadical,228
-6.82,cadical,229
-7.00,cadical,230
-7.09,cadical,231
-7.04,cadical,232
-7.39,cadical,233
-7.44,cadical,234
-7.61,cadical,235
-13.47,cadical,236
-7.65,cadical,237
-7.62,cadical,238
-7.82,cadical,239
-14.39,cadical,240
-14.43,cadical,241
-8.44,cadical,242
-6.92,cadical,243
-8.24,cadical,244
-8.28,cadical,245
-8.48,cadical,246
-3.94,cadical,247
-8.78,cadical,248
-8.77,cadical,249
-9.00,cadical,250
-8.95,cadical,251
-16.89,cadical,252
-26.02,cadical,253
-17.63,cadical,254
-9.38,cadical,255
-9.59,cadical,256
-9.90,cadical,257
-9.92,cadical,258
-9.92,cadical,259
-10.29,cadical,260
-10.39,cadical,261
-10.31,cadical,262
-10.41,cadical,263
-18.84,cadical,264
-10.71,cadical,265
-10.65,cadical,266
-10.72,cadical,267
-29.31,cadical,268
-11.08,cadical,269
-11.16,cadical,270
-11.62,cadical,271
-30.75,cadical,272
-12.13,cadical,273
-31.90,cadical,274
-32.45,cadical,275
-22.38,cadical,276
-12.40,cadical,277
-33.27,cadical,278
-13.06,cadical,279
-12.69,cadical,280
-12.71,cadical,281
-35.28,cadical,282
-12.92,cadical,283
-13.78,cadical,284
-22.35,cadical,285
-13.45,cadical,286
-14.15,cadical,287
-14.07,cadical,288
-38.70,cadical,289
-42.20,cadical,290
-38.80,cadical,291
-39.18,cadical,292
-14.80,cadical,293
-14.95,cadical,294
-43.23,cadical,295
-41.35,cadical,296
-42.16,cadical,297
-47.05,cadical,298
-16.08,cadical,299
-28.57,cadical,300
-16.78,cadical,301
-44.45,cadical,302
-44.89,cadical,303
-45.06,cadical,304
-45.88,cadical,305
-17.50,cadical,306
-48.11,cadical,307
-18.07,cadical,308
-52.41,cadical,309
-18.45,cadical,310
-50.59,cadical,311
-53.72,cadical,312
-52.10,cadical,313
-18.79,cadical,314
-19.54,cadical,315
-52.08,cadical,316
-19.64,cadical,317
-54.44,cadical,318
-59.13,cadical,319
-20.66,cadical,320
-55.44,cadical,321
-57.13,cadical,322
-58.01,cadical,323
-57.99,cadical,324
-34.70,cadical,325
-60.16,cadical,326
-34.88,cadical,327
-64.75,cadical,328
-61.78,cadical,329
-67.84,cadical,330
-40.78,cadical,331
-23.46,cadical,332
-37.93,cadical,333
-66.23,cadical,334
-65.46,cadical,335
-23.99,cadical,336
-38.73,cadical,337
-24.71,cadical,338
-40.08,cadical,339
-69.00,cadical,340
+time       ,solver  ,size
+  0.001329 ,glucose ,   1
+  0        ,glucose ,   2
+  0.001452 ,glucose ,   3
+  0.001484 ,glucose ,   4
+  0.001047 ,glucose ,   5
+  0.001696 ,glucose ,   6
+  0        ,glucose ,   7
+  0.002227 ,glucose ,   8
+  0.002502 ,glucose ,   9
+  0.001063 ,glucose ,  10
+  0.003774 ,glucose ,  11
+  0.004473 ,glucose ,  12
+  0.002647 ,glucose ,  13
+  0.0058   ,glucose ,  14
+  0.003603 ,glucose ,  15
+  0.008611 ,glucose ,  16
+  0.008437 ,glucose ,  17
+  0.012158 ,glucose ,  18
+  0.012362 ,glucose ,  19
+  0.017159 ,glucose ,  20
+  0.012377 ,glucose ,  21
+  0.023015 ,glucose ,  22
+  0.031096 ,glucose ,  23
+  0.031573 ,glucose ,  24
+  0.014434 ,glucose ,  25
+  0.010693 ,glucose ,  26
+  0.016813 ,glucose ,  27
+  0.023937 ,glucose ,  28
+  0.030298 ,glucose ,  29
+  0.022575 ,glucose ,  30
+  0.076217 ,glucose ,  31
+  0.049677 ,glucose ,  32
+  0.029987 ,glucose ,  33
+  0.02357  ,glucose ,  34
+  0.041278 ,glucose ,  35
+  0.089396 ,glucose ,  36
+  0.061181 ,glucose ,  37
+  0.297574 ,glucose ,  38
+  0.054782 ,glucose ,  39
+  0.094679 ,glucose ,  40
+  0.116631 ,glucose ,  41
+  0.091196 ,glucose ,  42
+  0.085234 ,glucose ,  43
+  0.087972 ,glucose ,  44
+  0.134679 ,glucose ,  45
+  0.179977 ,glucose ,  46
+  0.174557 ,glucose ,  47
+  0.403812 ,glucose ,  48
+  0.438754 ,glucose ,  49
+  0.28508  ,glucose ,  50
+  0.162712 ,glucose ,  51
+  0.83623  ,glucose ,  52
+  0.136529 ,glucose ,  53
+  0.338425 ,glucose ,  54
+  1.1123   ,glucose ,  55
+  0.241193 ,glucose ,  56
+  0.547928 ,glucose ,  57
+  0.427449 ,glucose ,  58
+  0.343913 ,glucose ,  59
+  0.368994 ,glucose ,  60
+  0.243983 ,glucose ,  61
+  1.87248  ,glucose ,  62
+  0.403249 ,glucose ,  63
+  1.05979  ,glucose ,  64
+  1.1059   ,glucose ,  65
+  1.05888  ,glucose ,  66
+  2.82667  ,glucose ,  67
+  0.589824 ,glucose ,  68
+  0.422249 ,glucose ,  69
+  1.13531  ,glucose ,  70
+  0.846498 ,glucose ,  71
+  3.02088  ,glucose ,  72
+  0.697019 ,glucose ,  73
+  6.68544  ,glucose ,  74
+  5.90125  ,glucose ,  75
+  2.53737  ,glucose ,  76
+  2.0532   ,glucose ,  77
+  5.77711  ,glucose ,  78
+  1.48573  ,glucose ,  79
+  5.07176  ,glucose ,  80
+  2.96104  ,glucose ,  81
+  2.90213  ,glucose ,  82
+  2.67292  ,glucose ,  83
+  3.91761  ,glucose ,  84
+  1.14091  ,glucose ,  85
+  3.99496  ,glucose ,  86
+  5.85816  ,glucose ,  87
+  2.03157  ,glucose ,  88
+  7.33652  ,glucose ,  89
+  2.425    ,glucose ,  90
+ 13.8184   ,glucose ,  91
+  1.50399  ,glucose ,  92
+  8.39593  ,glucose ,  93
+  4.1014   ,glucose ,  94
+  2.50145  ,glucose ,  95
+  4.84645  ,glucose ,  96
+  9.34103  ,glucose ,  97
+  7.66978  ,glucose ,  98
+ 15.9156   ,glucose ,  99
+  2.04863  ,glucose , 100
+ 14.0521   ,glucose , 101
+  3.32662  ,glucose , 102
+  3.50492  ,glucose , 103
+  5.06275  ,glucose , 104
+  6.44029  ,glucose , 105
+  9.45698  ,glucose , 106
+ 14.0086   ,glucose , 107
+ 16.7187   ,glucose , 108
+ 16.0646   ,glucose , 109
+ 11.9476   ,glucose , 110
+  4.20987  ,glucose , 111
+  5.57399  ,glucose , 112
+ 18.5723   ,glucose , 113
+ 14.3039   ,glucose , 114
+ 18.0235   ,glucose , 115
+ 18.5362   ,glucose , 116
+ 19.9605   ,glucose , 117
+ 10.2562   ,glucose , 118
+ 18.7775   ,glucose , 119
+  8.06957  ,glucose , 120
+ 20.1097   ,glucose , 121
+ 20.4579   ,glucose , 122
+ 20.7728   ,glucose , 123
+ 20.1159   ,glucose , 124
+ 23.2549   ,glucose , 125
+ 10.7045   ,glucose , 126
+ 22.1946   ,glucose , 127
+ 21.4728   ,glucose , 128
+ 23.741    ,glucose , 129
+ 19.4243   ,glucose , 130
+ 22.0814   ,glucose , 131
+ 22.581    ,glucose , 132
+ 22.158    ,glucose , 133
+ 23.7877   ,glucose , 134
+ 22.8745   ,glucose , 135
+ 24.5908   ,glucose , 136
+ 23.8459   ,glucose , 137
+ 24.1803   ,glucose , 138
+ 25.7377   ,glucose , 139
+ 25.6806   ,glucose , 140
+ 23.9172   ,glucose , 141
+ 26.3281   ,glucose , 142
+ 22.2616   ,glucose , 143
+ 21.6962   ,glucose , 144
+ 19.4396   ,glucose , 145
+ 21.0107   ,glucose , 146
+ 22.5694   ,glucose , 147
+ 21.3586   ,glucose , 148
+ 21.8144   ,glucose , 149
+ 21.9495   ,glucose , 150
+ 18.89     ,glucose , 151
+ 22.2592   ,glucose , 152
+ 21.9515   ,glucose , 153
+ 23.5072   ,glucose , 154
+  8.09878  ,glucose , 155
+ 22.266    ,glucose , 156
+ 20.3266   ,glucose , 157
+ 22.1948   ,glucose , 158
+ 23.4042   ,glucose , 159
+ 22.6543   ,glucose , 160
+ 23.2394   ,glucose , 161
+ 23.543    ,glucose , 162
+ 22.6161   ,glucose , 163
+ 19.885    ,glucose , 164
+ 25.0844   ,glucose , 165
+ 24.96     ,glucose , 166
+ 19.1776   ,glucose , 167
+ 24.266    ,glucose , 168
+ 24.0169   ,glucose , 169
+ 23.3898   ,glucose , 170
+ 24.7617   ,glucose , 171
+ 27.7544   ,glucose , 172
+ 18.5733   ,glucose , 173
+  7.33832  ,glucose , 174
+ 24.6522   ,glucose , 175
+ 25.9411   ,glucose , 176
+ 24.0983   ,glucose , 177
+ 25.3134   ,glucose , 178
+ 27.4074   ,glucose , 179
+ 25.7276   ,glucose , 180
+ 27.361    ,glucose , 181
+ 29.9732   ,glucose , 182
+ 27.0602   ,glucose , 183
+ 25.0046   ,glucose , 184
+ 28.7      ,glucose , 185
+ 29.2102   ,glucose , 186
+ 24.1491   ,glucose , 187
+ 27.3475   ,glucose , 188
+ 28.0584   ,glucose , 189
+ 28.3719   ,glucose , 190
+ 28.1697   ,glucose , 191
+ 30.3832   ,glucose , 192
+ 25.3222   ,glucose , 193
+ 28.3335   ,glucose , 194
+ 32.6715   ,glucose , 195
+ 29.4078   ,glucose , 196
+ 25.1936   ,glucose , 197
+ 29.8512   ,glucose , 198
+ 27.7656   ,glucose , 199
+ 28.0351   ,glucose , 200
+ 30.1658   ,glucose , 201
+ 30.9874   ,glucose , 202
+ 27.7396   ,glucose , 203
+ 29.4899   ,glucose , 204
+ 27.2069   ,glucose , 205
+ 31.0415   ,glucose , 206
+ 33.1831   ,glucose , 207
+ 37.3455   ,glucose , 208
+ 30.2191   ,glucose , 209
+ 30.8546   ,glucose , 210
+ 30.4073   ,glucose , 211
+ 36.6545   ,glucose , 212
+ 33.682    ,glucose , 213
+ 29.6405   ,glucose , 214
+ 31.5014   ,glucose , 215
+ 32.3835   ,glucose , 216
+ 32.1268   ,glucose , 217
+ 33.6422   ,glucose , 218
+ 35.4865   ,glucose , 219
+ 35.5148   ,glucose , 220
+ 32.3975   ,glucose , 221
+ 34.8169   ,glucose , 222
+ 36.8035   ,glucose , 223
+ 38.5785   ,glucose , 224
+ 36.1987   ,glucose , 225
+ 31.8999   ,glucose , 226
+ 35.8681   ,glucose , 227
+ 35.2644   ,glucose , 228
+ 34.1575   ,glucose , 229
+ 36.7584   ,glucose , 230
+ 37.7503   ,glucose , 231
+ 35.2551   ,glucose , 232
+ 37.1732   ,glucose , 233
+ 35.2279   ,glucose , 234
+ 36.2907   ,glucose , 235
+ 34.5635   ,glucose , 236
+ 38.9833   ,glucose , 237
+ 39.0514   ,glucose , 238
+ 36.9725   ,glucose , 239
+ 36.7204   ,glucose , 240
+ 37.6145   ,glucose , 241
+ 38.1779   ,glucose , 242
+ 37.2362   ,glucose , 243
+ 39.6349   ,glucose , 244
+ 36.3695   ,glucose , 245
+ 37.9981   ,glucose , 246
+ 38.499    ,glucose , 248
+ 39.9747   ,glucose , 249
+ 34.7638   ,glucose , 250
+ 37.5402   ,glucose , 251
+ 42.0198   ,glucose , 252
+ 36.6459   ,glucose , 253
+ 45.3708   ,glucose , 254
+ 41.157    ,glucose , 255
+ 43.071    ,glucose , 256
+ 43.3414   ,glucose , 257
+ 41.034    ,glucose , 258
+ 41.2543   ,glucose , 259
+ 40.6841   ,glucose , 260
+ 43.1732   ,glucose , 261
+ 40.9868   ,glucose , 262
+ 41.2929   ,glucose , 263
+ 49.615    ,glucose , 264
+ 45.1726   ,glucose , 265
+ 47.8641   ,glucose , 266
+ 40.4804   ,glucose , 267
+ 47.9863   ,glucose , 268
+ 46.2856   ,glucose , 269
+ 43.9219   ,glucose , 270
+ 49.0434   ,glucose , 271
+ 45.834    ,glucose , 272
+ 49.7919   ,glucose , 273
+ 37.0299   ,glucose , 274
+ 44.147    ,glucose , 275
+ 43.816    ,glucose , 276
+ 46.0114   ,glucose , 277
+ 46.1095   ,glucose , 278
+ 43.9193   ,glucose , 279
+ 44.9168   ,glucose , 280
+ 46.0649   ,glucose , 281
+ 49.2609   ,glucose , 282
+ 43.8499   ,glucose , 283
+ 45.9335   ,glucose , 284
+ 40.5247   ,glucose , 285
+ 43.5891   ,glucose , 286
+ 45.7625   ,glucose , 287
+ 45.1147   ,glucose , 288
+ 48.9111   ,glucose , 289
+ 47.9702   ,glucose , 290
+ 49.9422   ,glucose , 291
+ 48.6351   ,glucose , 292
+ 52.1233   ,glucose , 293
+ 48.4879   ,glucose , 294
+ 49.115    ,glucose , 295
+ 49.7421   ,glucose , 296
+ 48.4321   ,glucose , 297
+ 50.2874   ,glucose , 298
+ 49.7326   ,glucose , 299
+ 48.5028   ,glucose , 300
+ 53.6584   ,glucose , 301
+ 50.6862   ,glucose , 302
+ 49.3094   ,glucose , 303
+ 52.5537   ,glucose , 304
+ 52.1019   ,glucose , 305
+ 51.9361   ,glucose , 306
+ 49.7805   ,glucose , 307
+ 51.7113   ,glucose , 308
+ 51.9853   ,glucose , 309
+ 66.395    ,glucose , 310
+ 52.1654   ,glucose , 311
+ 52.2139   ,glucose , 312
+ 58.8584   ,glucose , 313
+ 55.1821   ,glucose , 314
+ 45.2625   ,glucose , 315
+ 55.6155   ,glucose , 316
+ 55.111    ,glucose , 317
+ 54.2729   ,glucose , 318
+ 53.8818   ,glucose , 319
+ 59.1437   ,glucose , 320
+ 56.2984   ,glucose , 321
+ 56.2259   ,glucose , 322
+ 53.1546   ,glucose , 323
+ 54.8985   ,glucose , 324
+ 62.3611   ,glucose , 325
+ 52.9186   ,glucose , 326
+ 55.5836   ,glucose , 327
+ 57.5657   ,glucose , 328
+ 52.7182   ,glucose , 329
+ 57.474    ,glucose , 330
+ 58.8804   ,glucose , 331
+ 55.3252   ,glucose , 332
+ 60.7396   ,glucose , 333
+ 57.7782   ,glucose , 334
+ 56.1777   ,glucose , 335
+ 63.5344   ,glucose , 336
+ 59.675    ,glucose , 337
+ 59.1287   ,glucose , 338
+ 57.6539   ,glucose , 339
+ 59.7466   ,glucose , 340
+ 60.4827   ,glucose , 341
+ 59.5467   ,glucose , 342
+ 61.6293   ,glucose , 343
+ 59.4368   ,glucose , 344
+ 60.5077   ,glucose , 345
+ 58.9806   ,glucose , 346
+ 57.4262   ,glucose , 347
+ 64.3269   ,glucose , 348
+ 55.2486   ,glucose , 349
+ 62.8507   ,glucose , 350
+ 63.9284   ,glucose , 351
+ 62.1078   ,glucose , 352
+ 70.348    ,glucose , 353
+ 57.2894   ,glucose , 354
+267.772    ,glucose , 355
+ 62.2107   ,glucose , 356
+ 65.3765   ,glucose , 357
+ 63.1555   ,glucose , 358
+ 69.7209   ,glucose , 359
+ 62.2415   ,glucose , 360
+  0.000    ,PPsat   ,   1
+  0.000    ,PPsat   ,   2
+  0.000    ,PPsat   ,   3
+  0.000    ,PPsat   ,   4
+  0.000    ,PPsat   ,   5
+  0.000    ,PPsat   ,   6
+  0.000    ,PPsat   ,   7
+  0.000    ,PPsat   ,   8
+  0.001    ,PPsat   ,   9
+  0.006    ,PPsat   ,  10
+  0.099    ,PPsat   ,  11
+  0.115    ,PPsat   ,  12
+  0.300    ,PPsat   ,  13
+  1.071    ,PPsat   ,  14
+ 43.237    ,PPsat   ,  15
+  1.776    ,PPsat   ,  16
+544.588    ,PPsat   ,  17
+  0.00     ,cadical ,   1
+  0.00     ,cadical ,   2
+  0.00     ,cadical ,   3
+  0.00     ,cadical ,   4
+  0.00     ,cadical ,   5
+  0.00     ,cadical ,   6
+  0.00     ,cadical ,   7
+  0.00     ,cadical ,   8
+  0.00     ,cadical ,   9
+  0.00     ,cadical ,  10
+  0.00     ,cadical ,  11
+  0.00     ,cadical ,  12
+  0.00     ,cadical ,  13
+  0.00     ,cadical ,  14
+  0.00     ,cadical ,  15
+  0.01     ,cadical ,  16
+  0.01     ,cadical ,  17
+  0.06     ,cadical ,  18
+  0.00     ,cadical ,  19
+  0.04     ,cadical ,  20
+  0.01     ,cadical ,  21
+  0.04     ,cadical ,  22
+  0.01     ,cadical ,  23
+  0.09     ,cadical ,  24
+  0.00     ,cadical ,  25
+  0.10     ,cadical ,  26
+  0.00     ,cadical ,  27
+  0.00     ,cadical ,  28
+  0.02     ,cadical ,  29
+  0.02     ,cadical ,  30
+  0.02     ,cadical ,  31
+  0.12     ,cadical ,  32
+  0.13     ,cadical ,  33
+  0.07     ,cadical ,  34
+  0.06     ,cadical ,  35
+  0.14     ,cadical ,  36
+  0.00     ,cadical ,  37
+  0.00     ,cadical ,  38
+  0.09     ,cadical ,  39
+  0.08     ,cadical ,  40
+  0.03     ,cadical ,  41
+  0.04     ,cadical ,  42
+  0.19     ,cadical ,  43
+  0.05     ,cadical ,  44
+  0.07     ,cadical ,  45
+  0.00     ,cadical ,  46
+  0.09     ,cadical ,  47
+  0.11     ,cadical ,  48
+  0.00     ,cadical ,  49
+  0.23     ,cadical ,  50
+  0.24     ,cadical ,  51
+  0.13     ,cadical ,  52
+  0.26     ,cadical ,  53
+  0.07     ,cadical ,  54
+  0.13     ,cadical ,  55
+  0.10     ,cadical ,  56
+  0.00     ,cadical ,  57
+  0.15     ,cadical ,  58
+  0.11     ,cadical ,  59
+  0.14     ,cadical ,  60
+  0.16     ,cadical ,  61
+  0.17     ,cadical ,  62
+  0.32     ,cadical ,  63
+  0.17     ,cadical ,  64
+  0.17     ,cadical ,  65
+  0.16     ,cadical ,  66
+  0.35     ,cadical ,  67
+  0.18     ,cadical ,  68
+  0.20     ,cadical ,  69
+  0.38     ,cadical ,  70
+  0.22     ,cadical ,  71
+  0.22     ,cadical ,  72
+  0.22     ,cadical ,  73
+  0.20     ,cadical ,  74
+  0.48     ,cadical ,  75
+  0.08     ,cadical ,  76
+  0.22     ,cadical ,  77
+  0.50     ,cadical ,  78
+  0.51     ,cadical ,  79
+  0.53     ,cadical ,  80
+  0.53     ,cadical ,  81
+  0.28     ,cadical ,  82
+  0.23     ,cadical ,  83
+  0.60     ,cadical ,  84
+  0.25     ,cadical ,  85
+  0.59     ,cadical ,  86
+  0.60     ,cadical ,  87
+  0.27     ,cadical ,  88
+  0.64     ,cadical ,  89
+  0.28     ,cadical ,  90
+  0.28     ,cadical ,  91
+  0.67     ,cadical ,  92
+  0.33     ,cadical ,  93
+  0.31     ,cadical ,  94
+  0.31     ,cadical ,  95
+  0.67     ,cadical ,  96
+  0.69     ,cadical ,  97
+  0.34     ,cadical ,  98
+  0.73     ,cadical ,  99
+  0.35     ,cadical , 100
+  0.37     ,cadical , 101
+  0.36     ,cadical , 102
+  0.80     ,cadical , 103
+  0.84     ,cadical , 104
+  0.84     ,cadical , 105
+  0.85     ,cadical , 106
+  0.85     ,cadical , 107
+  0.39     ,cadical , 108
+  0.92     ,cadical , 109
+  0.43     ,cadical , 110
+  0.42     ,cadical , 111
+  0.97     ,cadical , 112
+  0.98     ,cadical , 113
+  1.00     ,cadical , 114
+  1.04     ,cadical , 115
+  1.06     ,cadical , 116
+  0.49     ,cadical , 117
+  0.51     ,cadical , 118
+  0.52     ,cadical , 119
+  0.52     ,cadical , 120
+  1.12     ,cadical , 121
+  0.57     ,cadical , 122
+  0.55     ,cadical , 123
+  1.22     ,cadical , 124
+  0.57     ,cadical , 125
+  1.26     ,cadical , 126
+  0.58     ,cadical , 127
+  0.60     ,cadical , 128
+  0.62     ,cadical , 129
+  1.37     ,cadical , 130
+  1.37     ,cadical , 131
+  1.43     ,cadical , 132
+  1.45     ,cadical , 133
+  0.66     ,cadical , 134
+  1.51     ,cadical , 135
+  0.72     ,cadical , 136
+  1.60     ,cadical , 137
+  1.60     ,cadical , 138
+  0.74     ,cadical , 139
+  0.77     ,cadical , 140
+  1.68     ,cadical , 141
+  0.79     ,cadical , 142
+  1.76     ,cadical , 143
+  1.77     ,cadical , 144
+  0.84     ,cadical , 145
+  1.85     ,cadical , 146
+  0.91     ,cadical , 147
+  0.89     ,cadical , 148
+  0.89     ,cadical , 149
+  1.99     ,cadical , 150
+  2.02     ,cadical , 151
+  2.08     ,cadical , 152
+  2.08     ,cadical , 153
+  2.15     ,cadical , 154
+  2.20     ,cadical , 155
+  1.05     ,cadical , 156
+  2.29     ,cadical , 157
+  2.35     ,cadical , 158
+  2.36     ,cadical , 159
+  1.13     ,cadical , 160
+  2.70     ,cadical , 161
+  2.48     ,cadical , 162
+  2.55     ,cadical , 163
+  2.57     ,cadical , 164
+  2.65     ,cadical , 165
+  1.27     ,cadical , 166
+  2.75     ,cadical , 167
+  1.28     ,cadical , 168
+  1.35     ,cadical , 169
+  2.89     ,cadical , 170
+  2.92     ,cadical , 171
+  2.97     ,cadical , 172
+  3.03     ,cadical , 173
+  3.08     ,cadical , 174
+  1.47     ,cadical , 175
+  3.20     ,cadical , 176
+  3.18     ,cadical , 177
+  3.27     ,cadical , 178
+  1.53     ,cadical , 179
+  1.57     ,cadical , 180
+  3.42     ,cadical , 181
+  3.44     ,cadical , 182
+  1.65     ,cadical , 183
+  3.62     ,cadical , 184
+  3.69     ,cadical , 185
+  1.71     ,cadical , 186
+  3.78     ,cadical , 187
+  3.79     ,cadical , 188
+  1.82     ,cadical , 189
+  1.85     ,cadical , 190
+  4.01     ,cadical , 191
+  7.79     ,cadical , 192
+ 11.92     ,cadical , 193
+  4.18     ,cadical , 194
+  4.26     ,cadical , 195
+  1.99     ,cadical , 196
+  2.07     ,cadical , 197
+  2.07     ,cadical , 198
+  4.55     ,cadical , 199
+  2.11     ,cadical , 200
+  4.65     ,cadical , 201
+  4.70     ,cadical , 202
+  4.86     ,cadical , 203
+  4.82     ,cadical , 204
+  4.85     ,cadical , 205
+  5.05     ,cadical , 206
+  5.04     ,cadical , 207
+  5.19     ,cadical , 208
+  2.43     ,cadical , 209
+  5.24     ,cadical , 210
+  5.43     ,cadical , 211
+  5.40     ,cadical , 212
+  2.55     ,cadical , 213
+  5.54     ,cadical , 214
+  5.68     ,cadical , 215
+  2.67     ,cadical , 216
+  5.81     ,cadical , 217
+  5.84     ,cadical , 218
+  6.03     ,cadical , 219
+  6.20     ,cadical , 220
+  6.05     ,cadical , 221
+  6.18     ,cadical , 222
+ 11.57     ,cadical , 223
+  6.39     ,cadical , 224
+  3.00     ,cadical , 225
+  6.68     ,cadical , 226
+  6.68     ,cadical , 227
+  6.84     ,cadical , 228
+  6.82     ,cadical , 229
+  7.00     ,cadical , 230
+  7.09     ,cadical , 231
+  7.04     ,cadical , 232
+  7.39     ,cadical , 233
+  7.44     ,cadical , 234
+  7.61     ,cadical , 235
+ 13.47     ,cadical , 236
+  7.65     ,cadical , 237
+  7.62     ,cadical , 238
+  7.82     ,cadical , 239
+ 14.39     ,cadical , 240
+ 14.43     ,cadical , 241
+  8.44     ,cadical , 242
+  6.92     ,cadical , 243
+  8.24     ,cadical , 244
+  8.28     ,cadical , 245
+  8.48     ,cadical , 246
+  3.94     ,cadical , 247
+  8.78     ,cadical , 248
+  8.77     ,cadical , 249
+  9.00     ,cadical , 250
+  8.95     ,cadical , 251
+ 16.89     ,cadical , 252
+ 26.02     ,cadical , 253
+ 17.63     ,cadical , 254
+  9.38     ,cadical , 255
+  9.59     ,cadical , 256
+  9.90     ,cadical , 257
+  9.92     ,cadical , 258
+  9.92     ,cadical , 259
+ 10.29     ,cadical , 260
+ 10.39     ,cadical , 261
+ 10.31     ,cadical , 262
+ 10.41     ,cadical , 263
+ 18.84     ,cadical , 264
+ 10.71     ,cadical , 265
+ 10.65     ,cadical , 266
+ 10.72     ,cadical , 267
+ 29.31     ,cadical , 268
+ 11.08     ,cadical , 269
+ 11.16     ,cadical , 270
+ 11.62     ,cadical , 271
+ 30.75     ,cadical , 272
+ 12.13     ,cadical , 273
+ 31.90     ,cadical , 274
+ 32.45     ,cadical , 275
+ 22.38     ,cadical , 276
+ 12.40     ,cadical , 277
+ 33.27     ,cadical , 278
+ 13.06     ,cadical , 279
+ 12.69     ,cadical , 280
+ 12.71     ,cadical , 281
+ 35.28     ,cadical , 282
+ 12.92     ,cadical , 283
+ 13.78     ,cadical , 284
+ 22.35     ,cadical , 285
+ 13.45     ,cadical , 286
+ 14.15     ,cadical , 287
+ 14.07     ,cadical , 288
+ 38.70     ,cadical , 289
+ 42.20     ,cadical , 290
+ 38.80     ,cadical , 291
+ 39.18     ,cadical , 292
+ 14.80     ,cadical , 293
+ 14.95     ,cadical , 294
+ 43.23     ,cadical , 295
+ 41.35     ,cadical , 296
+ 42.16     ,cadical , 297
+ 47.05     ,cadical , 298
+ 16.08     ,cadical , 299
+ 28.57     ,cadical , 300
+ 16.78     ,cadical , 301
+ 44.45     ,cadical , 302
+ 44.89     ,cadical , 303
+ 45.06     ,cadical , 304
+ 45.88     ,cadical , 305
+ 17.50     ,cadical , 306
+ 48.11     ,cadical , 307
+ 18.07     ,cadical , 308
+ 52.41     ,cadical , 309
+ 18.45     ,cadical , 310
+ 50.59     ,cadical , 311
+ 53.72     ,cadical , 312
+ 52.10     ,cadical , 313
+ 18.79     ,cadical , 314
+ 19.54     ,cadical , 315
+ 52.08     ,cadical , 316
+ 19.64     ,cadical , 317
+ 54.44     ,cadical , 318
+ 59.13     ,cadical , 319
+ 20.66     ,cadical , 320
+ 55.44     ,cadical , 321
+ 57.13     ,cadical , 322
+ 58.01     ,cadical , 323
+ 57.99     ,cadical , 324
+ 34.70     ,cadical , 325
+ 60.16     ,cadical , 326
+ 34.88     ,cadical , 327
+ 64.75     ,cadical , 328
+ 61.78     ,cadical , 329
+ 67.84     ,cadical , 330
+ 40.78     ,cadical , 331
+ 23.46     ,cadical , 332
+ 37.93     ,cadical , 333
+ 66.23     ,cadical , 334
+ 65.46     ,cadical , 335
+ 23.99     ,cadical , 336
+ 38.73     ,cadical , 337
+ 24.71     ,cadical , 338
+ 40.08     ,cadical , 339
+ 69.00     ,cadical , 340
