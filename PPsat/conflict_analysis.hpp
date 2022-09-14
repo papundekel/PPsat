@@ -14,6 +14,12 @@ class solver;
 class conflict_analysis
 {
 public:
+    enum class type
+    {
+        dpll,
+        cdcl,
+    };
+
     virtual PPsat_base::optional<std::size_t> analyse(
         std::size_t level,
         const PPsat_base::clause& antecedent) = 0;
