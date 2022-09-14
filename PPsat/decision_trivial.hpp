@@ -13,7 +13,6 @@ class decision_trivial final : public decision
 public:
     decision_trivial(PPsat_base::formula& formula);
 
-private:
     void assigned(PPsat_base::variable& variable) override final;
     void unassigned(PPsat_base::variable& variable) override final;
     PPsat_base::optional<PPsat_base::literal> get_decision() override final;

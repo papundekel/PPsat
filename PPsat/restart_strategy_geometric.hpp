@@ -14,7 +14,6 @@ class restart_strategy_geometric : public restart_strategy
 public:
     restart_strategy_geometric(std::size_t init, double mult);
 
-private:
     void conflict() override final;
     bool should_restart() const override final;
 };

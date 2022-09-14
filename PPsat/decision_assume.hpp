@@ -16,7 +16,6 @@ class decision_assume final : public decision
 public:
     decision_assume(assumptions& assumption);
 
-private:
     void assigned(PPsat_base::variable& variable) override final;
     void unassigned(PPsat_base::variable& variable) override final;
     PPsat_base::optional<PPsat_base::literal> get_decision() override final;

@@ -47,5 +47,7 @@ public:
     decide(PPsat_base::literal literal) = 0;
 
     virtual result solve() = 0;
+
+    virtual ~solver() = default;
 };
 }

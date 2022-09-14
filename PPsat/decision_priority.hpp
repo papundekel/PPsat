@@ -21,7 +21,6 @@ public:
     decision_priority(std::unique_ptr<decision> priority,
                       std::unique_ptr<decision> fallback);
 
-private:
     void assigned(PPsat_base::variable& variable) override final;
     void unassigned(PPsat_base::variable& variable) override final;
     PPsat_base::optional<PPsat_base::literal> get_decision() override final;

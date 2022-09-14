@@ -20,7 +20,6 @@ class decision_deterministic final : public decision
 public:
     decision_deterministic(PPsat_base::formula& formula);
 
-private:
     void assigned(PPsat_base::variable& variable) override final;
     void unassigned(PPsat_base::variable& variable) override final;
     PPsat_base::optional<PPsat_base::literal> get_decision() override final;

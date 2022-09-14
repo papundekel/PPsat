@@ -35,7 +35,6 @@ class decision_VSIDS final : public decision
 public:
     decision_VSIDS(PPsat_base::formula& formula);
 
-private:
     void assigned(PPsat_base::variable& variable) override final;
     void unassigned(PPsat_base::variable& variable) override final;
     PPsat_base::optional<PPsat_base::literal> get_decision() override final;

@@ -293,8 +293,50 @@ PPsat_base::unique_ref<PPsat::restart_strategy> create_restarts(bool cdcl,
     }
 }
 
+template <PPsat::decision::type D,
+          PPsat::conflict_analysis::type CA,
+          PPsat::restart_strategy::type RS>
+PPsat_base::unique_ref<PPsat::solver> create_solver_impl(
+    PPsat_base::formula& formula,
+    PPsat::decision& decision,
+    PPsat::conflict_analysis& analysis,
+    PPsat::restart_strategy& restarts)
+{
+    using Decision = std::conditional_t<
+        D == PPsat::decision::type::deterministic,
+        PPsat::decision_deterministic,
+        std::conditional_t<
+            D == PPsat::decision::type::trivial,
+            PPsat::decision_trivial,
+            std::conditional_t<
+                D == PPsat::decision::type::random,
+                PPsat::decision_random,
+                std::conditional_t<D == PPsat::decision::type::JW_static,
+                                   PPsat::decision_JW_static,
+                                   PPsat::decision_VSIDS>>>>;
+
+    using ConflictAnalysis =
+        std::conditional_t<CA == PPsat::conflict_analysis::type::dpll,
+                           PPsat::conflict_analysis_dpll,
+                           PPsat::conflict_analysis_uip>;
+
+    using RestartStrategy =
+        std::conditional_t<RS == PPsat::restart_strategy::type::geometric,
+                           PPsat::restart_strategy_geometric,
+                           PPsat::restart_strategy_never>;
+
+    return std::make_unique<
+        PPsat::solver_impl<Decision, ConflictAnalysis, RestartStrategy>>(
+        formula,
+        static_cast<Decision&>(decision),
+        static_cast<ConflictAnalysis&>(analysis),
+        static_cast<RestartStrategy&>(restarts));
+}
+
 PPsat_base::unique_ref<PPsat::solver> create_solver(
     bool virtual_,
+    PPsat::decision::type decision_type,
+    bool cdcl,
     PPsat_base::formula& formula,
     PPsat::decision& decision,
     PPsat::conflict_analysis& analysis,
@@ -312,43 +354,59 @@ PPsat_base::unique_ref<PPsat::solver> create_solver(
     }
     else
     {
-        return nullptr;
-        // static const auto map = []()
-        // {
-        //     static constexpr auto combos = PPsat_base::tuple_cart(
-        //         combos_decision,
-        //         std::make_tuple(PPsat_base::value_v<false>,
-        //                         PPsat_base::value_v<true>));
+        static const auto map = []()
+        {
+            static constexpr auto combos = PPsat_base::tuple_cart(
+                combos_decision,
+                std::make_tuple(
+                    PPsat_base::value_v<PPsat::conflict_analysis::type::dpll>,
+                    PPsat_base::value_v<PPsat::conflict_analysis::type::uip>),
+                std::make_tuple(
+                    PPsat_base::value_v<
+                        PPsat::restart_strategy::type::geometric>,
+                    PPsat_base::value_v<PPsat::restart_strategy::type::never>));
 
-        //     std::map<decltype(std::apply(
-        //                  [](auto... values)
-        //                  {
-        //                      return
-        //                      std::make_tuple(decltype(values)::value...);
-        //                  },
-        //                  std::get<0>(combos))),
-        //              PPsat_base::unique_ref<
-        //                  PPsat_base::formula::factory_variable> (&)()>
-        //         map;
+            std::map<decltype(std::apply(
+                         [](auto... values)
+                         {
+                             return std::make_tuple(decltype(values)::value...);
+                         },
+                         std::get<0>(combos))),
+                     PPsat_base::unique_ref<PPsat::solver> (&)(
+                         PPsat_base::formula&,
+                         PPsat::decision&,
+                         PPsat::conflict_analysis&,
+                         PPsat::restart_strategy&)>
+                map;
 
-        //     std::apply(
-        //         [&map](auto... tuples)
-        //         {
-        //             (std::apply(
-        //                  [&map](auto... values)
-        //                  {
-        //                      map.try_emplace(
-        //                          std::make_tuple(decltype(values)::value...),
-        //                          create_variables_helper<
-        //                              decltype(values)::value...>);
-        //                  },
-        //                  tuples),
-        //              ...);
-        //         },
-        //         combos);
+            std::apply(
+                [&map](auto... tuples)
+                {
+                    (std::apply(
+                         [&map](auto... values)
+                         {
+                             map.try_emplace(
+                                 std::make_tuple(decltype(values)::value...),
+                                 create_solver_impl<
+                                     decltype(values)::value...>);
+                         },
+                         tuples),
+                     ...);
+                },
+                combos);
 
-        //     return map;
-        // }();
+            return map;
+        }();
+
+        return map.at(std::make_tuple(
+            decision_type,
+            cdcl ? PPsat::conflict_analysis::type::uip
+                 : PPsat::conflict_analysis::type::dpll,
+            cdcl ? PPsat::restart_strategy::type::geometric
+                 : PPsat::restart_strategy::type::never))(formula,
+                                                          decision,
+                                                          analysis,
+                                                          restarts);
     }
 }
 
@@ -452,11 +510,16 @@ int PPsat::subprogram::solve(const PPsat_base::logger& logger_outer,
     const auto restarts = create_restarts(options["cdcl"_cst].parsed(),
                                           options["restart"_cst].parsed());
 
-    PPsat::solver_impl<PPsat::decision, conflict_analysis, restart_strategy>
-        solver(formula, decision, analysis, restarts);
+    const auto solver = create_solver(options["virtual"_cst].parsed(),
+                                      options["decision"_cst].parsed(),
+                                      options["cdcl"_cst].parsed(),
+                                      formula,
+                                      decision,
+                                      analysis,
+                                      restarts);
 
     const auto time_solving_start = std::chrono::steady_clock::now();
-    const auto result = solver.solve();
+    const auto result = solver->solve();
     const auto time_solving_end = std::chrono::steady_clock::now();
 
     if (result.satisfiable)
