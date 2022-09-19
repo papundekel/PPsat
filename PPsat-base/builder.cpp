@@ -1,8 +1,8 @@
+#include <PPsat-base/builder.hpp>
+
 #include <PPsat-base/antlrer.hpp>
 #include <PPsat-base/logger.hpp>
 #include <PPsat-base/logger_subroutine.hpp>
-
-#include <PPsat-base/builder.hpp>
 
 bool PPsat_base::builder::read_impl(const logger& logger_outer,
                                     antlr4::CharStream& input,

@@ -1,19 +1,21 @@
 #pragma once
-#include "PPsat-base/formula.hpp"
-#include "PPsat/renaming.hpp"
+#include <PPsat/renaming.hpp>
+
 #include <PPsat-base/builder.hpp>
 #include <PPsat-base/factory.hpp>
 
 namespace PPsat
 {
+class formula;
+
 class builder_SMTLIB_tseitin final : public PPsat_base::builder
 {
-    PPsat_base::formula& formula;
+    formula& formula_;
     renaming& renaming_from_input;
     bool nnf;
 
 public:
-    builder_SMTLIB_tseitin(PPsat_base::formula& formula,
+    builder_SMTLIB_tseitin(formula& formula,
                            renaming& renaming_from_input,
                            bool nnf) noexcept;
 

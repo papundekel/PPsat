@@ -11,7 +11,7 @@ class logger;
 
 namespace PPsat::cli
 {
-class options;
+class parameters_value;
 }
 
 namespace PPsat::subprogram
@@ -22,11 +22,9 @@ enum class selection
     solve,
 };
 
-using type = int(const PPsat_base::logger&,
-                 cli::options&,
-                 cli::argument::file_in&,
-                 cli::argument::file_out&);
+using type = int(const PPsat_base::logger&, const cli::parameters_value&);
 
 type convert;
 type solve;
+type invalid;
 }

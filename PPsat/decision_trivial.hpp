@@ -1,4 +1,5 @@
 #pragma once
+#include "PPsat/cli/parameters.hpp"
 #include <PPsat/decision.hpp>
 
 #include <unordered_set>
@@ -6,17 +7,19 @@
 
 namespace PPsat
 {
+class formula;
+
 class decision_trivial final : public decision
 {
-    std::unordered_set<PPsat_base::variable*> set;
+    std::unordered_set<variable*> set;
 
 public:
-    decision_trivial(PPsat_base::formula& formula);
+    decision_trivial(formula& formula, const cli::parameters_value& parameters);
 
-    void assigned(PPsat_base::variable& variable) override final;
-    void unassigned(PPsat_base::variable& variable) override final;
-    PPsat_base::optional<PPsat_base::literal> get_decision() override final;
-    void clause_learnt(const PPsat_base::clause& clause) override final;
+    void assigned(variable& variable) override final;
+    void unassigned(variable& variable) override final;
+    PPsat_base::optional<literal> get_decision() override final;
+    void clause_learnt(const clause& clause) override final;
     void conflict() override final;
 };
 }

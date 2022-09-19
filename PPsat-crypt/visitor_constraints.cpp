@@ -80,14 +80,24 @@ std::any PPsat_crypt::visitor_constraints::visitAtom(
 {
     const auto [operands, result] = [context]()
     {
-        const auto get_text = &antlr4::tree::TerminalNode::getText;
+        // const auto get_text = &antlr4::tree::TerminalNode::getText;
 
         const auto context_words = context->WORD();
-        return std::make_pair(PPsat_base::ranges_to<std::vector>(
-                                  context_words |
-                                  std::views::take(context_words.size() - 1) |
-                                  std::views::transform(get_text)),
-                              std::invoke(get_text, context_words.back()));
+
+        std::vector<std::string> operands;
+        for (std::size_t i = 0; i != context_words.size() - 1; ++i)
+        {
+            operands.emplace_back(context_words[i]->getText());
+        }
+
+        return std::make_pair(std::move(operands),
+                              context_words.back()->getText());
+
+        // return std::make_pair(PPsat_base::ranges_to<std::vector>(
+        //                           context_words |
+        //                           std::views::take(context_words.size() - 1)
+        //                           | std::views::transform(get_text)),
+        //                       std::invoke(get_text, context_words.back()));
     }();
 
     // const auto operators = PPsat_base::ranges_to<std::vector>(
@@ -174,7 +184,7 @@ std::any PPsat_crypt::visitor_constraints::visitAtom(
     };
 
     const auto print_expression =
-        [this, &operators, &operands, get_operator, operand_has_bit](
+        [this, &operators, &operands = operands, get_operator, operand_has_bit](
             std::size_t significance_i)
     {
         auto operator_i = operators.rbegin();

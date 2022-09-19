@@ -1,4 +1,5 @@
 #pragma once
+#include "PPsat/cli/parameters.hpp"
 #include <PPsat/decision.hpp>
 
 #include <random>
@@ -7,18 +8,20 @@
 
 namespace PPsat
 {
+class formula;
+
 class decision_random final : public decision
 {
     std::mt19937 generator;
-    std::vector<PPsat_base::variable*> set;
+    std::vector<variable*> set;
 
 public:
-    decision_random(PPsat_base::formula& formula, std::size_t seed);
+    decision_random(formula& formula, const cli::parameters_value& parameters);
 
-    void assigned(PPsat_base::variable& variable) override final;
-    void unassigned(PPsat_base::variable& variable) override final;
-    PPsat_base::optional<PPsat_base::literal> get_decision() override final;
-    void clause_learnt(const PPsat_base::clause& clause) override final;
+    void assigned(variable& variable) override final;
+    void unassigned(variable& variable) override final;
+    PPsat_base::optional<literal> get_decision() override final;
+    void clause_learnt(const clause& clause) override final;
     void conflict() override final;
 };
 }

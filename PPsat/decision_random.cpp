@@ -1,31 +1,31 @@
 #include <PPsat/decision_random.hpp>
 
-#include <PPsat-base/formula.hpp>
-#include <PPsat-base/variable.hpp>
+#include <PPsat/formula.hpp>
+#include <PPsat/variable.hpp>
 
-PPsat::decision_random::decision_random(PPsat_base::formula& formula,
-                                        std::size_t seed)
-    : generator(seed)
+PPsat::decision_random::decision_random(formula& formula,
+                                        const cli::parameters_value& parameters)
+    : generator(parameters.random_seed)
     , set()
 {
-    formula.for_each(
-        [this](PPsat_base::variable& variable)
+    formula.for_each_variable(
+        [this](variable& variable)
         {
             set.emplace_back(&variable);
         });
 }
 
-void PPsat::decision_random::assigned(PPsat_base::variable& variable)
+void PPsat::decision_random::assigned(variable& variable)
 {}
 
-void PPsat::decision_random::unassigned(PPsat_base::variable& variable)
+void PPsat::decision_random::unassigned(variable& variable)
 {
     set.emplace_back(&variable);
 }
 
-PPsat_base::optional<PPsat_base::literal> PPsat::decision_random::get_decision()
+PPsat_base::optional<PPsat::literal> PPsat::decision_random::get_decision()
 {
-    PPsat_base::variable* variable = nullptr;
+    variable* variable = nullptr;
 
     while (true)
     {
@@ -34,17 +34,16 @@ PPsat_base::optional<PPsat_base::literal> PPsat::decision_random::get_decision()
         variable = set.back();
         set.pop_back();
 
-        if (variable->assignment_get() ==
-            PPsat_base::variable_assignment::unknown)
+        if (variable->assignment_get() == variable_assignment::unknown)
         {
             break;
         }
     }
 
-    return PPsat_base::literal(*variable, false);
+    return literal(*variable, false);
 }
 
-void PPsat::decision_random::clause_learnt(const PPsat_base::clause&)
+void PPsat::decision_random::clause_learnt(const clause&)
 {}
 
 void PPsat::decision_random::conflict()

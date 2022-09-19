@@ -1,5 +1,5 @@
+#include "PPsat/cli/parameters.hpp"
 #include <PPsat/cli/argument/file.hpp>
-#include <PPsat/cli/options.hpp>
 #include <PPsat/help_print.hpp>
 #include <PPsat/subprogram.hpp>
 
@@ -13,7 +13,6 @@
 #include <iostream>
 #include <iterator>
 #include <string_view>
-#include <vector>
 
 namespace PPexe
 {
@@ -26,18 +25,10 @@ int main(std::istream& cin,
     const auto logger_cerr = PPsat_base::logger_ostream(cerr);
     const auto logger = PPsat_base::logger_subroutine(logger_cerr, "PPsat");
 
-    PPsat::cli::options options;
-    PPsat::cli::argument::file_in argument_file_in;
-    PPsat::cli::argument::file_out argument_file_out;
+    PPsat::cli::parameters parameters;
 
     const auto success_cli =
-        PPsat_base::cli::parser(
-            options.as_range(),
-            std::array{std::reference_wrapper<PPsat_base::cli::argument_>(
-                           argument_file_in),
-                       std::reference_wrapper<PPsat_base::cli::argument_>(
-                           argument_file_out)})
-            .parse(argc, argv, logger);
+        PPsat_base::cli::parser(parameters).parse(argc, argv, logger);
 
     if (!success_cli)
     {
@@ -45,16 +36,26 @@ int main(std::istream& cin,
         return 1;
     }
 
-    if (options["help"_cst].parsed())
+    const auto parameters_value = parameters.parsed();
+
+    if (parameters_value.help)
     {
         PPsat::help_print(cout);
         return 0;
     }
 
-    return options["subprogram"_cst].parsed_subprogram()(logger,
-                                                         options,
-                                                         argument_file_in,
-                                                         argument_file_out)
+    return [](PPsat::subprogram::selection subprogram)
+    {
+        switch (subprogram)
+        {
+            case PPsat::subprogram::selection::convert:
+                return PPsat::subprogram::convert;
+            case PPsat::subprogram::selection::solve:
+                return PPsat::subprogram::solve;
+            default:
+                return PPsat::subprogram::invalid;
+        }
+    }(parameters_value.subprogram)(logger, parameters_value)
            << 1;
 }
 }

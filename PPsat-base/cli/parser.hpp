@@ -1,4 +1,5 @@
 #pragma once
+#include "PPsat-base/cli/parameters.hpp"
 #include <PPsat-base/cli/argument.hpp>
 #include <PPsat-base/cli/option.hpp>
 #include <PPsat-base/ranges_to.hpp>
@@ -22,31 +23,19 @@ class parser
     decltype(options)::const_iterator find(std::string_view name) const;
 
 public:
-    parser(auto&& options, auto&& arguments)
-    // : options(PPsat_base::ranges_to<std::vector>(
-    //       std::forward<decltype(options)>(options) |
-    //       std::views::transform(
-    //           [](option_& option)
-    //           {
-    //               return key_value_pair{option.name(), option};
-    //           })))
-    // , arguments(PPsat_base::ranges_to<std::vector>(
-    //       std::forward<decltype(arguments)>(arguments) |
-    //       std::views::transform(
-    //           [](argument_& argument)
-    //           {
-    //               return std::ref(argument);
-    //           })))
+    parser(parameters_base& parameters)
     {
-        for (option_& option : std::forward<decltype(options)>(options))
-        {
-            this->options.emplace_back(option.name(), option);
-        }
+        parameters.options(
+            [this](option_& option)
+            {
+                options.emplace_back(option.name(), option);
+            });
 
-        for (argument_& argument : std::forward<decltype(arguments)>(arguments))
-        {
-            this->arguments.emplace_back(argument);
-        }
+        parameters.arguments(
+            [this](argument_& argument)
+            {
+                arguments.emplace_back(argument);
+            });
 
         std::ranges::sort(this->options,
                           [](const auto& a, const auto& b)

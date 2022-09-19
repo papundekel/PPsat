@@ -1,5 +1,6 @@
-#include "PPsat-base/logger_subroutine.hpp"
 #include <PPsat-base/cli/option/enum.hpp>
+
+#include <PPsat-base/logger_subroutine.hpp>
 
 std::size_t PPsat_base::cli::option::enum_::argument_count_min() const noexcept
 {

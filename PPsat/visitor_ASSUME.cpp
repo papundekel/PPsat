@@ -1,7 +1,10 @@
-#include "PPsat-base/literal.hpp"
-#include "PPsat-base/logger_subroutine.hpp"
-#include "PPsat/assumptions.hpp"
 #include <PPsat/visitor_ASSUME.hpp>
+
+#include <PPsat/assumptions.hpp>
+#include <PPsat/literal.hpp>
+
+#include <PPsat-base/logger_subroutine.hpp>
+
 #include <any>
 
 PPsat::visitor_ASSUME::visitor_ASSUME(
@@ -24,7 +27,7 @@ std::any PPsat::visitor_ASSUME::visitInput(parser_ASSUME::InputContext* context)
             return {};
         }
 
-        assumption.add(std::any_cast<PPsat_base::literal>(literal_any));
+        assumption.add(std::any_cast<literal>(literal_any));
     }
 
     return nullptr;
@@ -42,5 +45,5 @@ std::any PPsat::visitor_ASSUME::visitLiteral(
         return {};
     }
 
-    return PPsat_base::literal(*variable_opt, context->NEGATED() == nullptr);
+    return literal(*variable_opt, context->NEGATED() == nullptr);
 }

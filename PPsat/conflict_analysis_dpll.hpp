@@ -1,6 +1,9 @@
 #pragma once
-#include "PPsat-base/clause.hpp"
+#include "PPsat/formula.hpp"
+#include <PPsat/clause.hpp>
 #include <PPsat/conflict_analysis.hpp>
+
+#include "PPsat-base/factory.hpp"
 
 #include <vector>
 
@@ -14,17 +17,18 @@ class conflict_analysis_dpll : public conflict_analysis
         consecutive_second_decisions;
 
 public:
-    conflict_analysis_dpll() noexcept;
+    conflict_analysis_dpll(const PPsat_base::factory<formula::factory_clause>&
+                               clause_factory_factory,
+                           decision& decision) noexcept;
 
     PPsat_base::optional<std::size_t> analyse(
         std::size_t level,
-        const PPsat_base::clause& antecedent) override final;
-    std::pair<PPsat_base::optional<const PPsat_base::clause&>,
-              std::list<PPsat_base::unit>>
-    post_backtrack(solver& solver, PPsat_base::literal literal) override final;
+        const clause& antecedent) override final;
+    std::pair<PPsat_base::optional<const clause&>, std::list<unit>>
+    post_backtrack(solver& solver, literal literal) override final;
 
     void restart() override final;
 
-    std::list<PPsat_base::unit> find_unary_unit() const override final;
+    std::list<unit> find_unary_unit() const override final;
 };
 }

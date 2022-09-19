@@ -1,17 +1,26 @@
 #pragma once
-#include <PPsat-base/variable.hpp>
-
+#include <PPsat-base/virtual_base.hpp>
+#include <PPsat/variable.hpp>
 namespace PPsat
 {
-class variable_score_with : public virtual PPsat_base::variable
+template <bool virtual_, auto Base>
+class variable_score_with : public PPsat_base::virtual_base<virtual_, Base>
 {
     double score;
 
 public:
-    variable_score_with() noexcept;
+    variable_score_with() noexcept
+        : score(0)
+    {}
 
-private:
-    void score_set(double score) override final;
-    double score_get() const override final;
+    void score_set(double score)
+    {
+        this->score = score;
+    }
+
+    double score_get() const
+    {
+        return score;
+    }
 };
 }

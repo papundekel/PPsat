@@ -1,10 +1,7 @@
 #pragma once
-#include "CharStream.h"
 #include <PPsat-base/factory_lexer.hpp>
 #include <PPsat-base/factory_parser.hpp>
 #include <PPsat-base/logger.hpp>
-
-#include <PPsat-base/formula.hpp>
 
 #include <iosfwd>
 #include <memory>

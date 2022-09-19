@@ -15,15 +15,16 @@ namespace PPsat_base::cli::argument
 template <typename FStream>
 class file : public virtual argument_
 {
+protected:
     using stream_type = std::conditional_t<std::same_as<FStream, std::ifstream>,
                                            std::istream,
                                            std::ostream>;
 
-protected:
     FStream stream_file;
 
 private:
     virtual void parse_path(std::filesystem::path path) noexcept = 0;
+    virtual stream_type& default_stream() const noexcept = 0;
 
 public:
     bool parse(const PPsat_base::logger& logger,

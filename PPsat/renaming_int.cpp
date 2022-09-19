@@ -19,7 +19,7 @@ std::optional<std::size_t> PPsat::renaming_int::parse_number(
     return number;
 }
 
-PPsat_base::variable* PPsat::renaming_int::contains(
+PPsat::variable* PPsat::renaming_int::contains(
     std::string_view name_input) const
 {
     const auto parsed_opt = parse_number(name_input);
@@ -33,7 +33,7 @@ PPsat_base::variable* PPsat::renaming_int::contains(
 }
 
 void PPsat::renaming_int::emplace(std::string_view name_input,
-                                  PPsat_base::variable& variable)
+                                  variable& variable)
 {
     const auto parsed_opt = parse_number(name_input);
 

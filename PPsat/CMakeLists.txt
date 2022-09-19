@@ -3,21 +3,14 @@ cmake_minimum_required(VERSION 3.20)
 PPexe_add_executable("PPsat")
 target_sources("PPsat" PUBLIC
     "main.cpp"
-    "adjacency_list.cpp"
-    "adjacency_none.cpp"
-    "adjacency_set.cpp"
-    "adjacency_set_unordered.cpp"
     "assumptions_basic.cpp"
     "builder_ASSUME.cpp"
     "builder_DIMACS.cpp"
     "builder_SMTLIB_tseitin.cpp"
-    "clause_basic.cpp"
-    "clause_counting.cpp"
-    "clause_simple.cpp"
-    "clause_unary.cpp"
-    "clause_watched_literals.cpp"
+    "clause.cpp"
+    "creator.cpp"
     "cli/argument/file.cpp"
-    "cli/options.cpp"
+    "cli/parameters.cpp"
     "create_builder.cpp"
     "conflict_analysis_dpll.cpp"
     "conflict_analysis_uip.cpp"
@@ -29,30 +22,24 @@ target_sources("PPsat" PUBLIC
     "decision_random.cpp"
     "decision_JW_static.cpp"
     "decision_VSIDS.cpp"
-    "restart_strategy_geometric.cpp"
-    "restart_strategy_never.cpp"
+    "literal.cpp"
+    "preprocessor_basic.cpp"
+    "preprocessor_id.cpp"
     "renaming_basic.cpp"
     "renaming_int.cpp"
     "renaming_int_basic.cpp"
     "subprogram/convert.cpp"
+    "subprogram/invalid.cpp"
     "subprogram/solve.cpp"
-    "variable_adjacency.cpp"
-    "variable_assignable.cpp"
-    "variable_assignable_not.cpp"
-    "variable_antecedent_none.cpp"
-    "variable_antecedent_with.cpp"
-    "variable_level_none.cpp"
-    "variable_level_with.cpp"
-    "variable_recency_none.cpp"
-    "variable_recency_with.cpp"
-    "variable_score_none.cpp"
-    "variable_score_with.cpp"
+    "tseitin_builder_nnf.cpp"
+    "variable.cpp"
+    "variable_assignment.cpp"
     "visitor_ASSUME.cpp"
     "visitor_DIMACS.cpp"
     "visitor_SMTLIB_tseitin.cpp"
 )
 
-set_target_properties("PPsat" PROPERTIES COMPILE_OPTIONS "-std=c++2b")
+target_compile_options("PPsat" PUBLIC "-std=c++2b")
 target_include_directories("PPsat" PRIVATE "${CMAKE_CURRENT_LIST_DIR}/../")
 target_link_libraries("PPsat" INTERFACE "PPsat-base")
 
@@ -148,9 +135,9 @@ set(option_clause_list )
 set(option_decision_list )
 
 foreach(option_cdcl "true" "false")
-foreach(option_adjacency "list" "set" "set_unordered")
+foreach(option_adjacency "vector" "list" "set" "set_unordered")
 foreach(option_clause "basic" "counting" "watched_literals")
-foreach(option_decision "trivial" "random" "JW_static" "VSIDS")
+foreach(option_decision "deterministic" "trivial" "random" "JW_static" "VSIDS")
 foreach(file_path ${inputs})
     cmake_path(GET file_path STEM file_name)
 

@@ -20,10 +20,19 @@ class file
     formula_format format;
 
 public:
+    file();
+
+private:
     void parse_path(
         std::filesystem::path argument_path) noexcept override final;
 
-    formula_format parsed_format() const;
+    typename PPsat_base::cli::argument::file<FStream>::stream_type&
+    default_stream() const noexcept override final;
+
+public:
+    std::pair<formula_format,
+              typename PPsat_base::cli::argument::file<FStream>::stream_type&>
+    parsed();
 };
 
 extern template class PPsat::cli::argument::file<std::ifstream>;

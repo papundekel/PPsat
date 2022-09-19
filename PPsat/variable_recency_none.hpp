@@ -1,11 +1,20 @@
 #pragma once
-#include <PPsat-base/variable.hpp>
+#include <PPsat/variable.hpp>
+
+#include "PPsat-base/virtual_base.hpp"
 
 namespace PPsat
 {
-class variable_recency_none : public virtual PPsat_base::variable
+template <bool virtual_, auto Base>
+class variable_recency_none : public PPsat_base::virtual_base<virtual_, Base>
 {
-    void recency_set(std::size_t recency) override final;
-    std::size_t recency_get() const override final;
+public:
+    void recency_set(std::size_t)
+    {}
+
+    std::size_t recency_get() const
+    {
+        return 0;
+    }
 };
 }

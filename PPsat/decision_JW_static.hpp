@@ -1,5 +1,5 @@
 #pragma once
-#include "PPsat-base/variable.hpp"
+#include "PPsat/cli/parameters.hpp"
 #include <PPsat/decision.hpp>
 
 #include <queue>
@@ -9,26 +9,26 @@
 
 namespace PPsat
 {
+class formula;
+
 class decision_JW_static final : public decision
 {
     class comparer
     {
     public:
-        bool operator()(PPsat_base::variable* a, PPsat_base::variable* b) const;
+        bool operator()(variable* a, variable* b) const;
     };
 
-    std::priority_queue<PPsat_base::variable*,
-                        std::vector<PPsat_base::variable*>,
-                        comparer>
-        set;
+    std::priority_queue<variable*, std::vector<variable*>, comparer> set;
 
 public:
-    decision_JW_static(PPsat_base::formula& formula);
+    decision_JW_static(formula& formula,
+                       const cli::parameters_value& parameters);
 
-    void assigned(PPsat_base::variable& variable) override final;
-    void unassigned(PPsat_base::variable& variable) override final;
-    PPsat_base::optional<PPsat_base::literal> get_decision() override final;
-    void clause_learnt(const PPsat_base::clause& clause) override final;
+    void assigned(variable& variable) override final;
+    void unassigned(variable& variable) override final;
+    PPsat_base::optional<literal> get_decision() override final;
+    void clause_learnt(const clause& clause) override final;
     void conflict() override final;
 };
 }

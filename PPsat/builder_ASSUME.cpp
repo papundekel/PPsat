@@ -1,10 +1,12 @@
-#include "PPsat-base/factory_lexer.hpp"
-#include "PPsat/assumptions.hpp"
-#include "PPsat/visitor_ASSUME.hpp"
 #include <PPsat/builder_ASSUME.hpp>
+
+#include <PPsat/assumptions.hpp>
+#include <PPsat/visitor_ASSUME.hpp>
 
 #include <PPsat-lexer_ASSUME/lexer_ASSUME.h>
 #include <PPsat-parser_ASSUME/parser_ASSUME.h>
+
+#include <PPsat-base/factory_lexer.hpp>
 
 PPsat::builder_ASSUME::builder_ASSUME(
     assumptions& assumption,

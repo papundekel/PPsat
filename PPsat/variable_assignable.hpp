@@ -1,21 +1,30 @@
 #pragma once
-#include <PPsat-base/variable.hpp>
-
+#include "PPsat-base/virtual_base.hpp"
+#include <PPsat/variable.hpp>
 #include <functional>
 #include <utility>
 #include <vector>
 
 namespace PPsat
 {
-class variable_assignable : public virtual PPsat_base::variable
+template <bool virtual_, auto Base>
+class variable_assignable : public PPsat_base::virtual_base<virtual_, Base>
 {
-    assignment assignment_current;
+    variable_assignment assignment_current;
 
 public:
-    variable_assignable() noexcept;
+    variable_assignable() noexcept
+        : assignment_current(variable_assignment::unknown)
+    {}
 
-private:
-    void assignment_set(assignment assignment) override final;
-    assignment assignment_get() const override final;
+    void assignment_set(variable_assignment assignment) override final
+    {
+        assignment_current = assignment;
+    }
+
+    variable_assignment assignment_get() const override final
+    {
+        return assignment_current;
+    }
 };
 }

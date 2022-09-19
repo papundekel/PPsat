@@ -1,24 +1,25 @@
-#include "PPsat-base/clause.hpp"
-#include "PPsat-base/unit.hpp"
 #include <PPsat/conflict_analysis_dpll.hpp>
 
+#include <PPsat/clause.hpp>
 #include <PPsat/solver.hpp>
+#include <PPsat/unit.hpp>
 
-PPsat::conflict_analysis_dpll::conflict_analysis_dpll() noexcept
+PPsat::conflict_analysis_dpll::conflict_analysis_dpll(
+    const PPsat_base::factory<formula::factory_clause>&,
+    decision&) noexcept
     : consecutive_second_decisions()
 {
     consecutive_second_decisions.emplace_back(0, 0);
 }
 
-std::list<PPsat_base::unit> PPsat::conflict_analysis_dpll::find_unary_unit()
-    const
+std::list<PPsat::unit> PPsat::conflict_analysis_dpll::find_unary_unit() const
 {
     return {};
 }
 
 PPsat_base::optional<std::size_t> PPsat::conflict_analysis_dpll::analyse(
     std::size_t level,
-    const PPsat_base::clause& antecedent)
+    const clause& antecedent)
 {
     const auto [level_first, level_last] = consecutive_second_decisions.back();
 
@@ -37,10 +38,8 @@ PPsat_base::optional<std::size_t> PPsat::conflict_analysis_dpll::analyse(
     return level - 1;
 }
 
-std::pair<PPsat_base::optional<const PPsat_base::clause&>,
-          std::list<PPsat_base::unit>>
-PPsat::conflict_analysis_dpll::post_backtrack(solver& solver,
-                                              PPsat_base::literal literal)
+std::pair<PPsat_base::optional<const PPsat::clause&>, std::list<PPsat::unit>>
+PPsat::conflict_analysis_dpll::post_backtrack(solver& solver, literal literal)
 {
     const auto level_literal = literal.level_get();
 

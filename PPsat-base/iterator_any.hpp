@@ -43,7 +43,7 @@ public:
         return T(*i);
     }
 
-    bool is_equal(const iterator_any_base<T>& other) const
+    bool is_equal(const iterator_any_base<T>& other) const override final
     {
         auto* const other_downcast =
             dynamic_cast<const iterator_any_impl*>(&other);

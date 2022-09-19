@@ -43,6 +43,49 @@ void help_print(std::ostream& output)
            << "Examples:\n"
            << "\tPPsat-crypt-generate -repeating < input\n";
 }
+
+class parameters_value
+{
+public:
+    bool help;
+    std::size_t base;
+    bool repeating;
+};
+
+class parameters final : public PPsat_base::cli::parameters<parameters_value>
+{
+    PPsat_base::cli::option::simple_named_bool help;
+    PPsat_base::cli::option::simple_named_int base;
+    PPsat_base::cli::option::simple_named_bool repeating;
+
+public:
+    parameters()
+        : help(false, "help", false)
+        , base(false, "base", 10)
+        , repeating(false, "repeating", false)
+    {}
+
+private:
+    void options(
+        std::function<void(PPsat_base::cli::option_&)> f) override final
+    {
+        f(help);
+        f(base);
+        f(repeating);
+    }
+
+    void arguments(
+        std::function<void(PPsat_base::cli::argument_&)> f) override final
+    {}
+
+public:
+    parameters_value parsed() override final
+    {
+        return parameters_value{help.parsed(),
+                                base.parsed(),
+                                repeating.parsed()};
+    }
+};
 }
 
 namespace PPexe
@@ -57,27 +100,19 @@ int main(std::istream& cin,
     const auto logger =
         PPsat_base::logger_subroutine(logger_cerr, "PPsat-crypt-generate");
 
-    PPsat_base::cli::option::simple_named_bool option_help("help", false);
-    PPsat_base::cli::option::simple_named_int option_base("base", 10);
-    PPsat_base::cli::option::simple_named_bool option_repeating("repeating",
-                                                                false);
+    parameters parameters_declaration;
 
-    const auto success_cli =
-        PPsat_base::cli::parser(
-            std::array{
-                std::reference_wrapper<PPsat_base::cli::option_>(option_help),
-                std::reference_wrapper<PPsat_base::cli::option_>(option_base),
-                std::reference_wrapper<PPsat_base::cli::option_>(
-                    option_repeating)},
-            std::views::empty<PPsat_base::cli::argument_>)
-            .parse(argc, argv, logger);
+    const auto success_cli = PPsat_base::cli::parser(parameters_declaration)
+                                 .parse(argc, argv, logger);
 
     if (!success_cli)
     {
         return 1;
     }
 
-    if (option_help.parsed())
+    const auto parameters = parameters_declaration.parsed();
+
+    if (parameters.help)
     {
         help_print(cout);
         return 0;
@@ -100,11 +135,9 @@ int main(std::istream& cin,
         return 2;
     }
 
-    const auto base = option_base.parsed();
+    const auto base = parameters.base;
 
-    PPsat_crypt::visitor_variables visitor(base,
-                                           !option_repeating.parsed(),
-                                           cout);
+    PPsat_crypt::visitor_variables visitor(base, !parameters.repeating, cout);
     visitor.visit(parse_tree);
     PPsat_crypt::visitor_constraints(base, cout).visit(parse_tree);
     visitor.print_get_value();

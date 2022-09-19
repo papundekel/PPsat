@@ -1,36 +1,36 @@
-#include "ANTLRInputStream.h"
-#include "PPsat-base/preprocessor.hpp"
-#include "PPsat-base/preprocessor_basic.hpp"
-#include "PPsat-base/preprocessor_id.hpp"
-#include "PPsat/variable_antecedent_none.hpp"
-#include "PPsat/variable_level_none.hpp"
-#include "PPsat/variable_recency_none.hpp"
-#include "PPsat/variable_score_none.hpp"
-#include "PPsat/variable_score_with.hpp"
+#include "PPsat/formula_impl.hpp"
+#include "PPsat/variable_picker.hpp"
 #include <PPsat/adjacency_none.hpp>
 #include <PPsat/builder_SMTLIB_tseitin.hpp>
 #include <PPsat/clause_simple.hpp>
 #include <PPsat/cli/argument/file.hpp>
-#include <PPsat/cli/options.hpp>
+#include <PPsat/cli/parameters.hpp>
 #include <PPsat/create_builder.hpp>
+#include <PPsat/creator.hpp>
+#include <PPsat/formula.hpp>
 #include <PPsat/formula_format.hpp>
+#include <PPsat/preprocessor.hpp>
+#include <PPsat/preprocessor_basic.hpp>
+#include <PPsat/preprocessor_id.hpp>
 #include <PPsat/subprogram.hpp>
-#include <PPsat/variable_DIMACS.hpp>
-#include <PPsat/variable_SMTLIB.hpp>
+#include <PPsat/variable.hpp>
 #include <PPsat/variable_adjacency.hpp>
+#include <PPsat/variable_antecedent_none.hpp>
 #include <PPsat/variable_assignable_not.hpp>
+#include <PPsat/variable_level_none.hpp>
+#include <PPsat/variable_recency_none.hpp>
+#include <PPsat/variable_representation.hpp>
+#include <PPsat/variable_representation_always.hpp>
+#include <PPsat/variable_representation_maybe.hpp>
+#include <PPsat/variable_score_none.hpp>
+#include <PPsat/variable_score_with.hpp>
 #include <PPsat/variable_unassigning.hpp>
 
 #include <PPsat-base/builder.hpp>
 #include <PPsat-base/discard_iterator.hpp>
 #include <PPsat-base/error_listener.hpp>
 #include <PPsat-base/factory_lexer.hpp>
-#include <PPsat-base/formula.hpp>
 #include <PPsat-base/logger_subroutine.hpp>
-#include <PPsat-base/variable.hpp>
-#include <PPsat-base/variable_representation.hpp>
-#include <PPsat-base/variable_representation_always.hpp>
-#include <PPsat-base/variable_representation_maybe.hpp>
 
 #include <antlr4-runtime.h>
 
@@ -48,21 +48,6 @@
 
 namespace
 {
-template <PPsat::formula_format format>
-struct variable_ final
-    : public PPsat::adjacency_none
-    , public PPsat::variable_adjacency
-    , public PPsat::variable_assignable_not
-    , public PPsat::variable_unassigning<false>
-    , public std::conditional_t<format == PPsat::formula_format::DIMACS,
-                                PPsat::variable_DIMACS,
-                                PPsat::variable_SMTLIB>
-    , public PPsat::variable_level_none
-    , public PPsat::variable_recency_none
-    , public PPsat::variable_antecedent_none
-    , public PPsat::variable_score_none
-{};
-
 constexpr auto greater_power_10(const auto x) noexcept
 {
     auto power = 10;
@@ -75,15 +60,15 @@ constexpr auto greater_power_10(const auto x) noexcept
     return power;
 }
 
-void write_formula(std::ostream& output, PPsat_base::formula& formula)
+void write_formula(std::ostream& output, PPsat::formula& formula)
 {
     const auto count_clause = formula.count_clause();
     const auto count_variable = formula.count_variable();
 
     std::size_t count_variable_native = 0;
 
-    formula.for_each(
-        [&count_variable_native](const PPsat_base::variable& variable)
+    formula.for_each_variable(
+        [&count_variable_native](const PPsat::variable& variable)
         {
             if (variable.representation_has())
             {
@@ -101,13 +86,13 @@ void write_formula(std::ostream& output, PPsat_base::formula& formula)
     output << "c The introduced variables begin at " << new_introduced_begin
            << ".\n";
 
-    std::unordered_map<PPsat_base::variable*, std::size_t> renaming;
+    std::unordered_map<PPsat::variable*, std::size_t> renaming;
 
-    formula.for_each(
+    formula.for_each_variable(
         [&output,
          new_native = new_native_begin,
          new_introduced = new_introduced_begin,
-         &renaming](PPsat_base::variable& variable) mutable
+         &renaming](PPsat::variable& variable) mutable
         {
             const auto is_native = variable.representation_has();
 
@@ -125,7 +110,7 @@ void write_formula(std::ostream& output, PPsat_base::formula& formula)
     formula.write_DIMACS(
         output,
         [&renaming](std::ostream & output,
-                    const PPsat_base::literal literal) -> auto& {
+                    const PPsat::literal literal) -> auto& {
             if (!literal.is_positive())
             {
                 output << "-";
@@ -134,49 +119,26 @@ void write_formula(std::ostream& output, PPsat_base::formula& formula)
             return output;
         });
 }
-
-std::unique_ptr<PPsat_base::formula::factory_variable> create_variables(
-    PPsat::formula_format format)
-{
-    switch (format)
-    {
-        case PPsat::formula_format::DIMACS:
-            return std::make_unique<PPsat_base::formula::factory_variable::impl<
-                std::list,
-                variable_<PPsat::formula_format::DIMACS>>>();
-        case PPsat::formula_format::SMTLIB:
-            return std::make_unique<PPsat_base::formula::factory_variable::impl<
-                std::list,
-                variable_<PPsat::formula_format::SMTLIB>>>();
-        default:
-            return nullptr;
-    }
-}
 }
 
 int PPsat::subprogram::convert(const PPsat_base::logger& logger_outer,
-                               cli::options& options,
-                               cli::argument::file_in& argument_file_in,
-                               cli::argument::file_out& argument_file_out)
+                               const cli::parameters_value& parameters)
 {
     const auto logger_inner =
         PPsat_base::logger_subroutine(logger_outer, "convert");
 
-    const auto format = pick_format(options["format"_cst],
-                                    argument_file_in,
-                                    formula_format::SMTLIB);
+    const auto& creator = creator::pick(parameters);
 
-    const PPsat_base::preprocessor_basic preprocessor;
-    PPsat_base::formula::factory_clause::impl<std::list, clause_simple> clauses;
-    auto variables = create_variables(format);
-    PPsat_base::formula formula(preprocessor, clauses, *variables);
+    const preprocessor_basic preprocessor;
+    const auto clauses_factory = creator.clauses_factory();
+    const auto clauses = clauses_factory->create();
+    const auto variables = creator.variables();
+    const auto formula = creator.formula(preprocessor, clauses, variables);
 
-    antlr4::ANTLRInputStream input_formula(
-        argument_file_in.is_present() ? argument_file_in.parsed_stream()
-                                      : std::cin);
+    antlr4::ANTLRInputStream input_formula(parameters.input.second);
 
     const auto [builder, renaming] =
-        create_builder(formula, format, options["nnf"_cst].parsed());
+        create_builder(formula, parameters.format_input, parameters.nnf);
     const auto result = builder->read(logger_inner, input_formula, true);
 
     if (!result)
@@ -186,10 +148,7 @@ int PPsat::subprogram::convert(const PPsat_base::logger& logger_outer,
         return 1;
     }
 
-    write_formula(argument_file_out.is_present()
-                      ? argument_file_out.parsed_stream()
-                      : std::cout,
-                  formula);
+    write_formula(parameters.output.second, formula);
 
     return 0;
 }

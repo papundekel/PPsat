@@ -1,22 +1,22 @@
-#include "PPsat-base/logger.hpp"
+#include <PPsat/variable.hpp>
 #include <PPsat/visitor_SMTLIB_tseitin.hpp>
 
 #include <PPsat-base/discard.hpp>
-#include <PPsat-base/variable.hpp>
+#include <PPsat-base/logger.hpp>
 
 PPsat::visitor_SMTLIB_tseitin::visitor_SMTLIB_tseitin(
     const PPsat_base::logger& logger_outer,
-    const PPsat_base::tseitin_builder& builder,
+    const tseitin_builder& builder,
     renaming& renaming_from_input) noexcept
     : logger(logger_outer, "visitor-SMTLIB")
     , builder(builder)
     , renaming_from_input(renaming_from_input)
 {}
 
-PPsat_base::literal PPsat::visitor_SMTLIB_tseitin::handle_variable(
+PPsat::literal PPsat::visitor_SMTLIB_tseitin::handle_variable(
     std::string name_input)
 {
-    return {[this, &name_input]() -> PPsat_base::variable&
+    return {[this, &name_input]() -> variable&
             {
                 const auto variable_opt =
                     renaming_from_input.contains(name_input);
@@ -38,10 +38,10 @@ PPsat_base::literal PPsat::visitor_SMTLIB_tseitin::handle_variable(
             true};
 }
 
-PPsat_base::literal PPsat::visitor_SMTLIB_tseitin::visit_typed(
+PPsat::literal PPsat::visitor_SMTLIB_tseitin::visit_typed(
     antlr4::tree::ParseTree* tree)
 {
-    return std::any_cast<PPsat_base::literal>(visit(tree));
+    return std::any_cast<literal>(visit(tree));
 }
 
 std::any PPsat::visitor_SMTLIB_tseitin::visitConjunction(

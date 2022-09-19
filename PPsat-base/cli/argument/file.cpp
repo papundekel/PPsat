@@ -1,4 +1,4 @@
-#include <PPsat/cli/argument/file.hpp>
+#include <PPsat-base/cli/argument/file.hpp>
 
 #include <PPsat-base/logger_subroutine.hpp>
 
@@ -28,7 +28,14 @@ template <typename FStream>
 typename PPsat_base::cli::argument::file<FStream>::stream_type&
 PPsat_base::cli::argument::file<FStream>::parsed_stream()
 {
-    return stream_file;
+    if (is_present())
+    {
+        return stream_file;
+    }
+    else
+    {
+        return default_stream();
+    }
 }
 
 template class PPsat_base::cli::argument::file<std::ifstream>;

@@ -1,28 +1,26 @@
 #pragma once
-#include "PPsat/solver.hpp"
+#include <PPsat/clause.hpp>
 #include <PPsat/decision.hpp>
+#include <PPsat/formula.hpp>
+#include <PPsat/literal.hpp>
 #include <PPsat/restart_strategy.hpp>
+#include <PPsat/solver.hpp>
+#include <PPsat/unit.hpp>
 
-#include <PPsat-base/clause.hpp>
-#include <PPsat-base/formula.hpp>
-#include <PPsat-base/literal.hpp>
 #include <PPsat-base/tuple_named.hpp>
-#include <PPsat-base/unit.hpp>
 
 #include <iostream>
 
 namespace PPsat
 {
-template <typename Decision,
+template <typename Formula,
+          typename Decision,
           typename ConflictAnalysis,
           typename RestartStrategy>
 class solver_impl final : public solver
 {
-    using clause = PPsat_base::clause;
-    using literal = PPsat_base::literal;
-
     // formula
-    PPsat_base::formula& formula;
+    Formula& formula;
 
     // strategies
     Decision& decision;
@@ -30,14 +28,14 @@ class solver_impl final : public solver
     RestartStrategy& restarts;
 
     // internal
-    std::vector<PPsat_base::literal> stack_assignment;
+    std::vector<literal> stack_assignment;
     std::size_t level;
 
     // statistics
     statistics statistic;
 
 public:
-    solver_impl(PPsat_base::formula& formula,
+    solver_impl(Formula& formula,
                 Decision& decision,
                 ConflictAnalysis& analysis,
                 RestartStrategy& restarts)
@@ -56,9 +54,8 @@ public:
 private:
     friend class conflict_analysis_dpll;
 
-    std::pair<PPsat_base::optional<const PPsat_base::clause&>,
-              std::list<PPsat_base::unit>>
-    assign(PPsat_base::literal literal_assigned)
+    std::pair<PPsat_base::optional<const clause&>, std::list<unit>> assign(
+        literal literal_assigned)
     {
         decision.assigned(literal_assigned.get_variable());
         stack_assignment.push_back(literal_assigned);
@@ -69,7 +66,7 @@ private:
         return {std::get<0>(result), std::move(std::get<1>(result))};
     }
 
-    PPsat_base::literal unassign()
+    literal unassign()
     {
         const auto literal_unassigned = stack_assignment.back();
 
@@ -81,8 +78,7 @@ private:
         return literal_unassigned;
     }
 
-    PPsat_base::optional<const PPsat_base::clause&> unit_propagate(
-        std::list<PPsat_base::unit> units)
+    PPsat_base::optional<const clause&> unit_propagate(std::list<unit> units)
     {
         while (!units.empty())
         {
@@ -90,8 +86,7 @@ private:
             const auto& antecedent = units.back().antecedent;
             units.pop_back();
 
-            if (literal.assignment_get() !=
-                PPsat_base::variable_assignment::unknown)
+            if (literal.assignment_get() != variable_assignment::unknown)
             {
                 continue;
             }
@@ -116,9 +111,8 @@ private:
         return {};
     }
 
-    std::pair<PPsat_base::optional<const PPsat_base::clause&>,
-              std::list<PPsat_base::unit>>
-    decide(PPsat_base::literal literal) override final
+    std::pair<PPsat_base::optional<const clause&>, std::list<unit>> decide(
+        literal literal) override final
     {
 #ifndef NDEBUG
         std::cout << "D " << literal << std::endl;
@@ -130,13 +124,13 @@ private:
         return assign(literal);
     }
 
-    PPsat_base::literal backtrack(std::size_t level)
+    literal backtrack(std::size_t level)
     {
 #ifndef NDEBUG
         std::cout << "B " << level << std::endl;
 #endif
 
-        std::optional<PPsat_base::literal> decided_literal_opt;
+        std::optional<literal> decided_literal_opt;
 
         while (!stack_assignment.empty() &&
                stack_assignment.back().level_get() != level)
@@ -156,7 +150,7 @@ private:
             return false;
         }
 
-        PPsat_base::optional<const PPsat_base::clause&> conflict;
+        PPsat_base::optional<const clause&> conflict;
         auto units = formula.find_unary_unit();
 
         while (true)
@@ -216,13 +210,12 @@ public:
         }
 
         auto model = std::move(stack_assignment);
-        std::ranges::sort(
-            model,
-            [](const PPsat_base::literal a, const PPsat_base::literal b)
-            {
-                return a.get_variable().representation_hash() <
-                       b.get_variable().representation_hash();
-            });
+        std::ranges::sort(model,
+                          [](const literal a, const literal b)
+                          {
+                              return a.get_variable().representation_hash() <
+                                     b.get_variable().representation_hash();
+                          });
 
         return {satisfiable, std::move(model), statistic};
     }

@@ -1,10 +1,12 @@
 #pragma once
-#include "PPsat-base/logger.hpp"
-#include "PPsat-base/logger_subroutine.hpp"
-#include "PPsat/assumptions.hpp"
-#include "PPsat/renaming.hpp"
+#include <PPsat/assumptions.hpp>
+#include <PPsat/renaming.hpp>
+
 #include <PPsat-parser_ASSUME/parser_ASSUME.h>
 #include <PPsat-parser_ASSUME/parser_ASSUMEVisitor.h>
+
+#include <PPsat-base/logger.hpp>
+#include <PPsat-base/logger_subroutine.hpp>
 
 #include <antlr4-runtime.h>
 

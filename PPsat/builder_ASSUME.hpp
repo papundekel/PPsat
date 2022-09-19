@@ -1,7 +1,7 @@
 #pragma once
-#include "PPsat-base/formula.hpp"
-#include "PPsat/assumptions.hpp"
-#include "PPsat/renaming.hpp"
+#include <PPsat/assumptions.hpp>
+#include <PPsat/renaming.hpp>
+
 #include <PPsat-base/builder.hpp>
 #include <PPsat-base/factory.hpp>
 

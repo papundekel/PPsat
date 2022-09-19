@@ -1,16 +1,16 @@
-#include "PPsat-base/logger_subroutine.hpp"
+#include <PPsat/formula.hpp>
 #include <PPsat/visitor_DIMACS.hpp>
 
-#include <PPsat-base/formula.hpp>
+#include <PPsat-base/logger_subroutine.hpp>
 
 #include <charconv>
 
 PPsat::visitor_DIMACS::visitor_DIMACS(
     const PPsat_base::logger& logger_outer,
-    PPsat_base::formula& formula,
+    formula& formula,
     renaming_int& renaming_from_input) noexcept
     : logger(logger_outer, "visitor-DIMACS")
-    , formula(formula)
+    , formula_(formula)
     , renaming_from_input(renaming_from_input)
     , name_next(0)
 {}
@@ -32,7 +32,7 @@ std::any PPsat::visitor_DIMACS::visitInput(parser_DIMACS::InputContext* context)
 std::any PPsat::visitor_DIMACS::visitClause(
     parser_DIMACS::ClauseContext* context)
 {
-    std::vector<PPsat_base::literal> clause;
+    std::vector<literal> clause;
 
     for (auto* const literal_context : context->literal())
     {
@@ -43,10 +43,10 @@ std::any PPsat::visitor_DIMACS::visitClause(
             return {};
         }
 
-        clause.push_back(std::any_cast<PPsat_base::literal>(literal_any));
+        clause.push_back(std::any_cast<literal>(literal_any));
     }
 
-    formula.add_clause(PPsat_base::view_any<PPsat_base::literal>(clause));
+    formula_.add_clause(PPsat_base::view_any<literal>(clause));
 
     return nullptr;
 }
@@ -73,7 +73,7 @@ std::any PPsat::visitor_DIMACS::visitLiteral(
             return *variable_opt;
         }
 
-        auto& variable_new = formula.create_new_variable();
+        auto& variable_new = formula_.create_new_variable();
 
         variable_new.representation_set(name_input);
         renaming_from_input.emplace(name_input, variable_new);
@@ -82,5 +82,5 @@ std::any PPsat::visitor_DIMACS::visitLiteral(
     }
     (*name_input_parsed_opt);
 
-    return PPsat_base::literal{variable, context->NEGATED() == nullptr};
+    return literal{variable, context->NEGATED() == nullptr};
 }

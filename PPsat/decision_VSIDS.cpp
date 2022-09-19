@@ -1,45 +1,45 @@
 #include <PPsat/decision_VSIDS.hpp>
 
-#include <PPsat-base/clause.hpp>
-#include <PPsat-base/formula.hpp>
-#include <PPsat-base/literal.hpp>
-#include <PPsat-base/variable.hpp>
-#include <PPsat-base/variable_assignment.hpp>
+#include <PPsat/clause.hpp>
+#include <PPsat/formula.hpp>
+#include <PPsat/literal.hpp>
+#include <PPsat/variable.hpp>
+#include <PPsat/variable_assignment.hpp>
 
 #include <cstddef>
 
-bool PPsat::decision_VSIDS::comparer::operator()(
-    const PPsat_base::variable* a,
-    const PPsat_base::variable* b) const
+bool PPsat::decision_VSIDS::comparer::operator()(const variable* a,
+                                                 const variable* b) const
 {
     return a->score_get() < b->score_get();
 }
 
-PPsat::decision_VSIDS::decision_VSIDS(PPsat_base::formula& formula)
-    : formula(formula)
+PPsat::decision_VSIDS::decision_VSIDS(formula& formula,
+                                      const cli::parameters_value&)
+    : formula_(formula)
     , set()
     , bump(1)
     , decay(0.95)
 {
-    formula.for_each(
-        [this](PPsat_base::variable& variable)
+    formula.for_each_variable(
+        [this](variable& variable)
         {
             set.emplace(&variable);
         });
 }
 
-void PPsat::decision_VSIDS::assigned(PPsat_base::variable& variable)
+void PPsat::decision_VSIDS::assigned(variable& variable)
 {}
 
-void PPsat::decision_VSIDS::unassigned(PPsat_base::variable& variable)
+void PPsat::decision_VSIDS::unassigned(variable& variable)
 {
     const auto handle = set.emplace(&variable);
     handles.try_emplace(&variable, handle);
 }
 
-PPsat_base::optional<PPsat_base::literal> PPsat::decision_VSIDS::get_decision()
+PPsat_base::optional<PPsat::literal> PPsat::decision_VSIDS::get_decision()
 {
-    PPsat_base::variable* variable = nullptr;
+    variable* variable = nullptr;
 
     while (true)
     {
@@ -47,26 +47,25 @@ PPsat_base::optional<PPsat_base::literal> PPsat::decision_VSIDS::get_decision()
         set.pop();
         handles.erase(variable);
 
-        if (variable->assignment_get() ==
-            PPsat_base::variable_assignment::unknown)
+        if (variable->assignment_get() == variable_assignment::unknown)
         {
             break;
         }
     }
 
-    return PPsat_base::literal(*variable, false);
+    return literal(*variable, false);
 }
 
-void PPsat::decision_VSIDS::clause_learnt(const PPsat_base::clause& clause)
+void PPsat::decision_VSIDS::clause_learnt(const clause& clause)
 {
     clause.for_each(
-        [this](const PPsat_base::literal literal)
+        [this](const literal literal)
         {
-            auto& variable = literal.get_variable();
-            const auto score_new = variable.score_get() + bump;
-            variable.score_set(score_new);
+            auto& variable_ = literal.get_variable();
+            const auto score_new = variable_.score_get() + bump;
+            variable_.score_set(score_new);
 
-            const auto i = handles.find(&variable);
+            const auto i = handles.find(&variable_);
             if (i != handles.end())
             {
                 set.increase(i->second);
@@ -74,8 +73,8 @@ void PPsat::decision_VSIDS::clause_learnt(const PPsat_base::clause& clause)
 
             if (score_new > 1e100)
             {
-                formula.for_each(
-                    [this](PPsat_base::variable& variable)
+                formula_.for_each_variable(
+                    [this](variable& variable)
                     {
                         variable.score_set(variable.score_get() * 1e-100);
                         const auto i = handles.find(&variable);

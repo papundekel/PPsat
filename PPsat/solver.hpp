@@ -1,12 +1,12 @@
 #pragma once
+#include <PPsat/clause.hpp>
 #include <PPsat/decision.hpp>
+#include <PPsat/formula.hpp>
+#include <PPsat/literal.hpp>
 #include <PPsat/restart_strategy.hpp>
+#include <PPsat/unit.hpp>
 
-#include <PPsat-base/clause.hpp>
-#include <PPsat-base/formula.hpp>
-#include <PPsat-base/literal.hpp>
 #include <PPsat-base/tuple_named.hpp>
-#include <PPsat-base/unit.hpp>
 
 #include <iostream>
 
@@ -14,9 +14,6 @@ namespace PPsat
 {
 class solver
 {
-    using clause = PPsat_base::clause;
-    using literal = PPsat_base::literal;
-
 public:
     class statistics
     {
@@ -42,9 +39,8 @@ public:
         statistics statistic;
     };
 
-    virtual std::pair<PPsat_base::optional<const PPsat_base::clause&>,
-                      std::list<PPsat_base::unit>>
-    decide(PPsat_base::literal literal) = 0;
+    virtual std::pair<PPsat_base::optional<const clause&>, std::list<unit>>
+    decide(literal literal) = 0;
 
     virtual result solve() = 0;
 

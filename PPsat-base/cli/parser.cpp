@@ -1,7 +1,11 @@
-#include "PPsat-base/logger_subroutine.hpp"
+#include "PPsat-base/cli/option.hpp"
 #include <PPsat-base/cli/parser.hpp>
 
+#include <PPsat-base/logger_subroutine.hpp>
+
+#include <algorithm>
 #include <iostream>
+#include <ranges>
 
 decltype(PPsat_base::cli::parser::options)::const_iterator
 PPsat_base::cli::parser::find(const std::string_view name) const
@@ -103,6 +107,17 @@ bool PPsat_base::cli::parser::parse(const int argc,
             }
 
             argument.set_presence();
+        }
+    }
+
+    for (auto& [_, option_ref] : options)
+    {
+        option_& option = option_ref;
+
+        if (option.is_required() && !option.is_present())
+        {
+            logger << "Option `" << option.name() << "` is required.\n";
+            return false;
         }
     }
 

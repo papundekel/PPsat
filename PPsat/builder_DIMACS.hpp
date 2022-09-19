@@ -1,17 +1,19 @@
 #pragma once
-#include "PPsat-base/formula.hpp"
-#include "PPsat/renaming_int.hpp"
+#include <PPsat/renaming_int.hpp>
+
 #include <PPsat-base/builder.hpp>
 
 namespace PPsat
 {
+class formula;
+
 class builder_DIMACS final : public PPsat_base::builder
 {
-    PPsat_base::formula& formula;
+    formula& formula_;
     renaming_int& renaming_from_input;
 
 public:
-    builder_DIMACS(PPsat_base::formula& formula,
+    builder_DIMACS(formula& formula,
                    renaming_int& renaming_from_input) noexcept;
 
 private:

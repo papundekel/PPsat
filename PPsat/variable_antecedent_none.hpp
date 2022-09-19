@@ -1,13 +1,21 @@
 #pragma once
-#include <PPsat-base/variable.hpp>
-
+#include "PPsat-base/virtual_base.hpp"
+#include <PPsat/variable.hpp>
 namespace PPsat
 {
-class variable_antecedent_none : public virtual PPsat_base::variable
+template <bool virtual_, auto Base>
+class variable_antecedent_none : public PPsat_base::virtual_base<virtual_, Base>
 {
-    void antecedent_set(const PPsat_base::clause& antecedent) override final;
-    void antecedent_reset() override final;
-    PPsat_base::optional<const PPsat_base::clause&> antecedent_get()
-        const override final;
+public:
+    void antecedent_set(const clause&)
+    {}
+
+    void antecedent_reset()
+    {}
+
+    PPsat_base::optional<const PPsat::clause&> antecedent_get() const
+    {
+        return {};
+    }
 };
 }

@@ -1,12 +1,21 @@
 #pragma once
+#include "PPsat/cli/parameters.hpp"
 #include <PPsat/restart_strategy.hpp>
 
 namespace PPsat
 {
-class restart_strategy_never : public restart_strategy
+class restart_strategy_never final : public restart_strategy
 {
 public:
-    void conflict() override final;
-    bool should_restart() const override final;
+    restart_strategy_never(const cli::parameters_value&)
+    {}
+
+    void conflict() override final
+    {}
+
+    bool should_restart() const override final
+    {
+        return false;
+    }
 };
 }

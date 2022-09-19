@@ -4,7 +4,6 @@ add_library("PPsat-base" SHARED
     "antlr_lexer.cpp"
     "antlrer.cpp"
     "builder.cpp"
-    "clause.cpp"
     "cli/argument/file.cpp"
     "cli/argument/number.cpp"
     "cli/parser.cpp"
@@ -14,19 +13,9 @@ add_library("PPsat-base" SHARED
     "cli/option/int.cpp"
     "cli/option/double.cpp"
     "error_listener.cpp"
-    "formula.cpp"
-    "literal.cpp"
     "logger.cpp"
     "logger_ostream.cpp"
     "logger_subroutine.cpp"
-    "tseitin_builder_nnf.cpp"
-    "variable.cpp"
-    "variable_assignment.cpp"
-    "variable_representation.cpp"
-    "variable_representation_always.cpp"
-    "variable_representation_maybe.cpp"
-    "preprocessor_basic.cpp"
-    "preprocessor_id.cpp"
 )
 
 set_target_properties("PPsat-base" PROPERTIES COMPILE_OPTIONS "-std=c++2b")

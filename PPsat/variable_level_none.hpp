@@ -1,11 +1,20 @@
 #pragma once
-#include <PPsat-base/variable.hpp>
+#include <PPsat/variable.hpp>
+
+#include "PPsat-base/virtual_base.hpp"
 
 namespace PPsat
 {
-class variable_level_none : public virtual PPsat_base::variable
+template <bool virtual_, auto Base>
+class variable_level_none : public PPsat_base::virtual_base<virtual_, Base>
 {
-    void level_set(std::size_t level) override final;
-    std::size_t level_get() const override final;
+public:
+    void level_set(std::size_t)
+    {}
+
+    std::size_t level_get() const
+    {
+        return 0;
+    }
 };
 }
