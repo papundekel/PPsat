@@ -1,11 +1,11 @@
 #pragma once
-#include "PPsat/adjacency_list.hpp"
-#include "PPsat/adjacency_none.hpp"
-#include "PPsat/adjacency_set.hpp"
-#include "PPsat/adjacency_set_unordered.hpp"
-#include "PPsat/adjacency_vector.hpp"
-#include "PPsat/cli/parameters.hpp"
 #include <PPsat/adjacency.hpp>
+#include <PPsat/adjacency_list.hpp>
+#include <PPsat/adjacency_none.hpp>
+#include <PPsat/adjacency_set.hpp>
+#include <PPsat/adjacency_set_unordered.hpp>
+#include <PPsat/adjacency_vector.hpp>
+#include <PPsat/cli/parameters.hpp>
 
 #include <PPsat-base/switch_t.hpp>
 #include <PPsat-base/template_t.hpp>

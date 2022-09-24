@@ -1,5 +1,3 @@
-#include "PPsat/formula_impl.hpp"
-#include "PPsat/variable_picker.hpp"
 #include <PPsat/adjacency_none.hpp>
 #include <PPsat/builder_SMTLIB_tseitin.hpp>
 #include <PPsat/clause_simple.hpp>
@@ -9,6 +7,7 @@
 #include <PPsat/creator.hpp>
 #include <PPsat/formula.hpp>
 #include <PPsat/formula_format.hpp>
+#include <PPsat/formula_impl.hpp>
 #include <PPsat/preprocessor.hpp>
 #include <PPsat/preprocessor_basic.hpp>
 #include <PPsat/preprocessor_id.hpp>
@@ -18,6 +17,7 @@
 #include <PPsat/variable_antecedent_none.hpp>
 #include <PPsat/variable_assignable_not.hpp>
 #include <PPsat/variable_level_none.hpp>
+#include <PPsat/variable_picker.hpp>
 #include <PPsat/variable_recency_none.hpp>
 #include <PPsat/variable_representation.hpp>
 #include <PPsat/variable_representation_always.hpp>

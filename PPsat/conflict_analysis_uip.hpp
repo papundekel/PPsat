@@ -1,5 +1,5 @@
 #pragma once
-#include "PPsat-base/factory.hpp"
+#include <PPsat-base/factory.hpp>
 #include <PPsat/clause.hpp>
 #include <PPsat/conflict_analysis.hpp>
 #include <PPsat/decision.hpp>
@@ -28,6 +28,8 @@ public:
     conflict_analysis_uip(const PPsat_base::factory<formula::factory_clause>&
                               clause_factory_factory,
                           decision& decision) noexcept;
+
+    void reset() override final;
 
     PPsat_base::optional<std::size_t> analyse(
         std::size_t level,

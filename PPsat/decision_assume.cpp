@@ -1,12 +1,13 @@
 #include <PPsat/decision_assume.hpp>
+#include <PPsat/formula.hpp>
 
 #include <PPsat/assumptions.hpp>
 #include <PPsat/literal.hpp>
 #include <PPsat/variable.hpp>
 
-PPsat::decision_assume::decision_assume(assumptions& assumption)
+PPsat::decision_assume::decision_assume(PPsat::formula& formula,
+                                        assumptions& assumption)
     : all()
-    , available()
 {
     assumption.for_each(
         [this](literal literal)
@@ -14,6 +15,11 @@ PPsat::decision_assume::decision_assume(assumptions& assumption)
             all.try_emplace(&literal.get_variable(), literal.is_positive());
         });
 
+    reset(formula);
+}
+
+void PPsat::decision_assume::reset(PPsat::formula&)
+{
     available = all;
 }
 

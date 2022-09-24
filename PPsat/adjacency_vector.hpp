@@ -56,5 +56,10 @@ public:
     {
         return adjacency.size();
     }
+
+    void adjacent_reset() override final
+    {
+        adjacency.clear();
+    }
 };
 }

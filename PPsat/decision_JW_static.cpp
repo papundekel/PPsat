@@ -1,3 +1,4 @@
+#include <PPsat/cli/parameters.hpp>
 #include <PPsat/decision_JW_static.hpp>
 
 #include <PPsat/clause.hpp>
@@ -16,8 +17,15 @@ bool PPsat::decision_JW_static::comparer::operator()(variable* a,
 
 PPsat::decision_JW_static::decision_JW_static(formula& formula,
                                               const cli::parameters_value&)
-    : set()
 {
+    reset(formula);
+
+    formula.for_each_variable(
+        [this](variable& variable)
+        {
+            variable.score_set(0);
+        });
+
     formula.for_each_clause(
         [this](const clause& clause)
         {
@@ -31,6 +39,11 @@ PPsat::decision_JW_static::decision_JW_static(formula& formula,
                 });
             return true;
         });
+}
+
+void PPsat::decision_JW_static::reset(formula& formula)
+{
+    set = {};
 
     formula.for_each_variable(
         [this](variable& variable)

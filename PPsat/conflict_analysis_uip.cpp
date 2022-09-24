@@ -51,9 +51,16 @@ PPsat::conflict_analysis_uip::conflict_analysis_uip(
     decision& decision) noexcept
     : decision_(decision)
     , learnt(clause_factory_factory.create())
-    , unit_()
-    , count(0)
-{}
+{
+    reset();
+}
+
+void PPsat::conflict_analysis_uip::reset()
+{
+    learnt->clear();
+    unit_.reset();
+    count = 0;
+}
 
 std::list<PPsat::unit> PPsat::conflict_analysis_uip::find_unary_unit() const
 {
@@ -62,7 +69,7 @@ std::list<PPsat::unit> PPsat::conflict_analysis_uip::find_unary_unit() const
     learnt->for_each(
         [&units](clause& clause)
         {
-            for (auto literal : clause.is_unary_unit())
+            for (const auto literal : clause.is_unary_unit())
             {
                 units.emplace_back(literal, clause);
             }

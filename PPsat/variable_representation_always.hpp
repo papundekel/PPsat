@@ -1,7 +1,7 @@
 #pragma once
 #include <PPsat/variable.hpp>
 
-#include "PPsat-base/virtual_base.hpp"
+#include <PPsat-base/virtual_base.hpp>
 
 namespace PPsat
 {

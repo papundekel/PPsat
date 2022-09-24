@@ -6,5 +6,6 @@ enum class output_format
 {
     human_readable,
     csv,
+    none,
 };
 }

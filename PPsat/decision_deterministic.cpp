@@ -13,8 +13,14 @@ bool PPsat::decision_deterministic::comparer::operator()(
 PPsat::decision_deterministic::decision_deterministic(
     formula& formula,
     const cli::parameters_value&)
-    : set()
 {
+    reset(formula);
+}
+
+void PPsat::decision_deterministic::reset(formula& formula)
+{
+    set.clear();
+
     formula.for_each_variable(
         [this](variable& variable)
         {

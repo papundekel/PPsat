@@ -1,5 +1,5 @@
 #pragma once
-#include "PPsat-base/virtual_base.hpp"
+#include <PPsat-base/virtual_base.hpp>
 #include <PPsat/adjacency.hpp>
 #include <PPsat/clause.hpp>
 #include <PPsat/variable_adjacency.hpp>

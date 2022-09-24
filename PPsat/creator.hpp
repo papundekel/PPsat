@@ -1,6 +1,6 @@
 #pragma once
-#include "PPsat/assumptions.hpp"
-#include "PPsat/cli/parameters.hpp"
+#include <PPsat/assumptions.hpp>
+#include <PPsat/cli/parameters.hpp>
 #include <PPsat/conflict_analysis.hpp>
 #include <PPsat/formula.hpp>
 #include <PPsat/restart_strategy.hpp>

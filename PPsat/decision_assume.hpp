@@ -14,7 +14,9 @@ class decision_assume final : public decision
     std::map<variable*, bool> available;
 
 public:
-    decision_assume(assumptions& assumption);
+    decision_assume(formula& formula, assumptions& assumption);
+
+    void reset(formula& formula) override final;
 
     void assigned(variable& variable) override final;
     void unassigned(variable& variable) override final;

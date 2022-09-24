@@ -1,14 +1,14 @@
 #pragma once
-#include "PPsat/cli/parameters.hpp"
-#include "PPsat/decision.hpp"
-#include "PPsat/decision_JW_static.hpp"
-#include "PPsat/decision_VSIDS.hpp"
-#include "PPsat/decision_deterministic.hpp"
-#include "PPsat/decision_random.hpp"
-#include "PPsat/decision_trivial.hpp"
+#include <PPsat/cli/parameters.hpp>
+#include <PPsat/decision.hpp>
+#include <PPsat/decision_JW_static.hpp>
+#include <PPsat/decision_VSIDS.hpp>
+#include <PPsat/decision_deterministic.hpp>
+#include <PPsat/decision_random.hpp>
+#include <PPsat/decision_trivial.hpp>
 #include <PPsat/literal.hpp>
 
-#include "PPsat-base/switch_t.hpp"
+#include <PPsat-base/switch_t.hpp>
 
 #include <utility>
 

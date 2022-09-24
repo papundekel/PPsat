@@ -1,5 +1,5 @@
 #pragma once
-#include "PPsat/cli/parameters.hpp"
+#include <PPsat/cli/parameters.hpp>
 #include <PPsat/decision.hpp>
 
 #include <set>
@@ -22,6 +22,8 @@ class decision_deterministic final : public decision
 public:
     decision_deterministic(formula& formula,
                            const cli::parameters_value& parameters);
+
+    void reset(formula& formula) override final;
 
     void assigned(variable& variable) override final;
     void unassigned(variable& variable) override final;

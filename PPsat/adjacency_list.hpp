@@ -49,6 +49,11 @@ public:
         adjacency.erase(i);
     }
 
+    void adjacent_reset() override final
+    {
+        adjacency.clear();
+    }
+
     std::size_t size() const override final
     {
         return adjacency.size();

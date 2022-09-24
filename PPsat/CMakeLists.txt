@@ -39,7 +39,11 @@ target_sources("PPsat" PUBLIC
     "visitor_SMTLIB_tseitin.cpp"
 )
 
-target_compile_options("PPsat" PUBLIC "-std=c++2b")
+target_compile_options("PPsat"
+    PUBLIC "-std=c++2b"
+    PUBLIC "-ftemplate-depth=1500"
+    PUBLIC "-fconstexpr-depth=10000"
+    PUBLIC "-fconstexpr-ops-limit=1000000000")
 target_include_directories("PPsat" PRIVATE "${CMAKE_CURRENT_LIST_DIR}/../")
 target_link_libraries("PPsat" INTERFACE "PPsat-base")
 
@@ -134,6 +138,7 @@ set(option_adjacency_list )
 set(option_clause_list )
 set(option_decision_list )
 
+foreach(option_virtual "true" "false")
 foreach(option_cdcl "true" "false")
 foreach(option_adjacency "vector" "list" "set" "set_unordered")
 foreach(option_clause "basic" "counting" "watched_literals")
@@ -154,16 +159,18 @@ foreach(file_path ${inputs})
         set(regex_pass "${regex_sat}")
     endif()
 
-    set(test_name "PPsat-solve-${option_adjacency}-${option_clause}-${option_decision}-${file_name}-${option_cdcl}")
+    set(test_name "PPsat-solve-${option_adjacency}-${option_clause}-${option_decision}-${file_name}-${option_cdcl}-${option_virtual}")
 
     add_test(
     NAME "${test_name}"
     COMMAND "PPsat"
+        "-subprogram" "solve"
+        "-iterations" "2"
         "-adjacency" "${option_adjacency}"
         "-clause" "${option_clause}"
         "-decision" "${option_decision}"
         "-cdcl" "${option_cdcl}"
-        "-virtual" "false"
+        "-virtual" "${option_virtual}"
         "${file_path}"
     CONFIGURATIONS Release)
 
@@ -173,6 +180,7 @@ foreach(file_path ${inputs})
         FAIL_REGULAR_EXPRESSION "${regex_fail}"
         PASS_REGULAR_EXPRESSION "${regex_pass}"
     )
+endforeach()
 endforeach()
 endforeach()
 endforeach()

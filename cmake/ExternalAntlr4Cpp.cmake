@@ -22,7 +22,7 @@ if(${CMAKE_GENERATOR} MATCHES "Visual Studio.*")
 elseif(${CMAKE_GENERATOR} MATCHES "Xcode.*")
   set(ANTLR4_OUTPUT_DIR ${ANTLR4_ROOT}/runtime/Cpp/dist/$(CONFIGURATION))
 elseif(${CMAKE_GENERATOR} MATCHES "Ninja Multi-Config")
-  set(ANTLR4_OUTPUT_DIR ${ANTLR4_ROOT}/runtime/Cpp/runtime/$\{CONFIGURATION\})
+  set(ANTLR4_OUTPUT_DIR ${ANTLR4_ROOT}/runtime/Cpp/runtime/Release)
 else()
   set(ANTLR4_OUTPUT_DIR ${ANTLR4_ROOT}/runtime/Cpp/dist)
 endif()
@@ -76,7 +76,7 @@ elseif(${CMAKE_GENERATOR} MATCHES "Ninja Multi-Config")
   set(ANTLR4_BUILD_COMMAND
       ${CMAKE_COMMAND}
           --build .
-          --config $<CONFIG>
+          --config Release
           --target)
 else()
   set(ANTLR4_BUILD_COMMAND

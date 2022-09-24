@@ -1,7 +1,7 @@
 #pragma once
-#include "PPsat/cli/parameters.hpp"
-#include "PPsat/variable.hpp"
+#include <PPsat/cli/parameters.hpp>
 #include <PPsat/formula.hpp>
+#include <PPsat/variable.hpp>
 
 #include <functional>
 #include <ranges>

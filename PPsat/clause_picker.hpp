@@ -1,15 +1,15 @@
 #pragma once
-#include "PPsat-base/template_t.hpp"
-#include "PPsat/clause.hpp"
-#include "PPsat/clause_basic.hpp"
-#include "PPsat/clause_counting.hpp"
-#include "PPsat/clause_simple.hpp"
-#include "PPsat/clause_watched_literals.hpp"
-#include "PPsat/cli/parameters.hpp"
+#include <PPsat-base/template_t.hpp>
+#include <PPsat/clause.hpp>
+#include <PPsat/clause_basic.hpp>
+#include <PPsat/clause_counting.hpp>
+#include <PPsat/clause_simple.hpp>
+#include <PPsat/clause_watched_literals.hpp>
+#include <PPsat/cli/parameters.hpp>
 
-#include "PPsat-base/switch_t.hpp"
-#include "PPsat-base/virtual_base.hpp"
-#include "PPsat/subprogram.hpp"
+#include <PPsat-base/switch_t.hpp>
+#include <PPsat-base/virtual_base.hpp>
+#include <PPsat/subprogram.hpp>
 
 namespace PPsat
 {

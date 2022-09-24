@@ -10,7 +10,23 @@
 #include <utility>
 
 PPsat::cli::parameters::parameters()
-    : parameters_base_options{{true,
+    : parameters_base_options{{false, "iterations", 1},
+                              {false, "random", std::random_device()()},
+                              {false, "restart", 2.5},
+                              {false, "help", false},
+                              {false, "nnf", false},
+                              {false, "assume", false},
+                              {false,
+                               "output",
+                               output_format::human_readable,
+                               std::array{
+                                   std::make_pair(
+                                       "human_readable",
+                                       output_format::human_readable),
+                                   std::make_pair("csv", output_format::csv),
+                                   std::make_pair("none",
+                                                  output_format::none)}},
+                              {true,
                                "subprogram",
                                subprogram::selection::solve,
                                std::array{std::make_pair(
@@ -54,7 +70,7 @@ PPsat::cli::parameters::parameters()
                                        clause::type::watched_literals)}},
                               {false,
                                "adjacency",
-                               adjacency::type::set_unordered,
+                               adjacency::type::vector,
                                std::array{
                                    std::make_pair("vector",
                                                   adjacency::type::vector),
@@ -64,20 +80,7 @@ PPsat::cli::parameters::parameters()
                                    std::make_pair(
                                        "set_unordered",
                                        adjacency::type::set_unordered)}},
-                              {false,
-                               "output",
-                               output_format::human_readable,
-                               std::array{
-                                   std::make_pair(
-                                       "human_readable",
-                                       output_format::human_readable),
-                                   std::make_pair("csv", output_format::csv)}},
-                              {false, "random", std::random_device()()},
-                              {false, "restart", 2.5},
                               {false, "virtual", false},
-                              {false, "cdcl", false},
-                              {false, "help", false},
-                              {false, "nnf", false},
-                              {false, "assume", false}}
+                              {false, "cdcl", true}}
     , parameters_base_arguments()
 {}

@@ -1,6 +1,3 @@
-#include "PPsat/creator.hpp"
-#include "PPsat/formula_impl.hpp"
-#include "PPsat/preprocessor.hpp"
 #include <PPsat/adjacency.hpp>
 #include <PPsat/adjacency_list.hpp>
 #include <PPsat/adjacency_set.hpp>
@@ -32,8 +29,10 @@
 #include <PPsat/decision_trivial.hpp>
 #include <PPsat/formula.hpp>
 #include <PPsat/formula_format.hpp>
+#include <PPsat/formula_impl.hpp>
 #include <PPsat/literal.hpp>
 #include <PPsat/output_format.hpp>
+#include <PPsat/preprocessor.hpp>
 #include <PPsat/preprocessor_basic.hpp>
 #include <PPsat/preprocessor_id.hpp>
 #include <PPsat/restart_strategy.hpp>
@@ -88,16 +87,17 @@
 namespace
 {
 void output(std::ostream& out,
+            std::size_t iteration,
             const PPsat::output_format type,
             const auto time_parsing,
-            const auto time_solving,
             const PPsat::solver::statistics& statistic)
 {
     switch (type)
     {
         case PPsat::output_format::human_readable:
-            std::cout << "c Parsing time: " << time_parsing << "ms.\n"
-                      << "c Solving time: " << time_solving << "ms.\n"
+            std::cout << "c Iteration: " << iteration << ".\n"
+                      << "c Parsing time: " << time_parsing << "ms.\n"
+                      << "c Solving time: " << statistic.duration << "ms.\n"
                       << "c Decisions: " << statistic.count_decision << ".\n"
                       << "c Unit propagations: "
                       << statistic.count_unit_propagation << ".\n"
@@ -106,11 +106,13 @@ void output(std::ostream& out,
                       << "c Restarts: " << statistic.count_restart << ".\n";
             break;
         case PPsat::output_format::csv:
-            std::cout << "c " << time_parsing << "," << time_solving << ","
-                      << statistic.count_decision << ","
-                      << statistic.count_unit_propagation << ","
+            std::cout << "c " << iteration << "," << time_parsing << ","
+                      << statistic.duration << "," << statistic.count_decision
+                      << "," << statistic.count_unit_propagation << ","
                       << statistic.count_visited_clauses << ","
                       << statistic.count_restart << "\n";
+            break;
+        case PPsat::output_format::none:
             break;
     }
 }
@@ -165,36 +167,43 @@ int PPsat::subprogram::solve(const PPsat_base::logger& logger_outer,
     const auto restarts = creator.restarts(parameters);
     const auto solver = creator.solver(formula, decision, analysis, restarts);
 
-    const auto time_solving_start = std::chrono::steady_clock::now();
-    const auto result = solver->solve();
-    const auto time_solving_end = std::chrono::steady_clock::now();
+    solver::result result;
 
-    if (result.satisfiable)
+    for (std::size_t iteration = 0; iteration != parameters.iterations;
+         ++iteration)
     {
-        std::cout << "s SATISFIABLE\n";
-        std::cout << "v ";
+        result = solver->solve();
 
-        for (const auto literal : result.model)
+        if (parameters.format_output == output_format::none)
         {
-            std::cout << literal << " ";
+            continue;
         }
 
-        std::cout << "0\n";
-    }
-    else
-    {
-        std::cout << "s UNSATISFIABLE\n";
-    }
+        if (result.satisfiable)
+        {
+            std::cout << "s SATISFIABLE\n";
+            std::cout << "v ";
 
-    output(std::cout,
-           parameters.format_output,
-           std::chrono::duration_cast<std::chrono::milliseconds>(
-               time_parsing_end - time_parsing_start)
-               .count(),
-           std::chrono::duration_cast<std::chrono::milliseconds>(
-               time_solving_end - time_solving_start)
-               .count(),
-           result.statistic);
+            for (const auto literal : result.model)
+            {
+                std::cout << literal << " ";
+            }
+
+            std::cout << "0\n";
+        }
+        else
+        {
+            std::cout << "s UNSATISFIABLE\n";
+        }
+
+        output(std::cout,
+               iteration,
+               parameters.format_output,
+               std::chrono::duration_cast<std::chrono::milliseconds>(
+                   time_parsing_end - time_parsing_start)
+                   .count(),
+               result.statistic);
+    }
 
     return 0;
 }

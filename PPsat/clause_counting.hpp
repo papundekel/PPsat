@@ -21,10 +21,16 @@ class clause_counting final : public clause
 public:
     clause_counting(PPsat_base::view_any<literal> literals)
         : literals(literals.begin(), literals.end())
-        , unassigned(this->literals.size())
-        , assigned_false(0)
-        , assigned_true(0)
-    {}
+    {
+        reset();
+    }
+
+    void reset() override final
+    {
+        unassigned = this->literals.size();
+        assigned_false = 0;
+        assigned_true = 0;
+    }
 
     void for_each(std::function<void(literal)> f) const override final
     {

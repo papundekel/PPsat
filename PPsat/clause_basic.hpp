@@ -20,6 +20,11 @@ class clause_basic final : public clause
 public:
     clause_basic(PPsat_base::view_any<literal> literals)
         : literals(literals.begin(), literals.end())
+    {
+        reset();
+    }
+
+    void reset() override final
     {}
 
     void for_each(std::function<void(literal)> f) const override final

@@ -23,6 +23,7 @@ public:
     virtual bool for_each(std::function<bool(T&)> f) = 0;
     virtual bool for_each(std::function<bool(const T&)> f) const = 0;
     virtual void erase(std::function<bool(T&)> f) = 0;
+    virtual void clear() = 0;
 
     virtual ~factory_container() = default;
 };
@@ -78,6 +79,11 @@ public:
     void erase(std::function<bool(T&)> f) override final
     {
         std::erase_if(container, f);
+    }
+
+    void clear() override final
+    {
+        container.clear();
     }
 };
 }

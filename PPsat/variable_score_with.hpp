@@ -10,7 +10,6 @@ class variable_score_with : public PPsat_base::virtual_base<virtual_, Base>
 
 public:
     variable_score_with() noexcept
-        : score(0)
     {}
 
     void score_set(double score)

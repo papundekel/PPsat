@@ -1,8 +1,8 @@
 #pragma once
-#include "PPsat/cli/parameters.hpp"
-#include "PPsat/conflict_analysis_dpll.hpp"
-#include "PPsat/conflict_analysis_uip.hpp"
 #include <PPsat/clause.hpp>
+#include <PPsat/cli/parameters.hpp>
+#include <PPsat/conflict_analysis_dpll.hpp>
+#include <PPsat/conflict_analysis_uip.hpp>
 #include <PPsat/literal.hpp>
 #include <PPsat/unit.hpp>
 

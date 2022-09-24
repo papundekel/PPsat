@@ -61,6 +61,13 @@ public:
         }
     }
 
+    void reset() override final
+    {
+        watched1 = literals.front();
+        watched2 = this->literals.size() != 1 ? *(literals.begin() + 1)
+                                              : literals.front();
+    }
+
     void for_each(std::function<void(literal)> f) const override final
     {
         std::ranges::for_each(literals, f);

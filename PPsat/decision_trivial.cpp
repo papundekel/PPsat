@@ -1,3 +1,4 @@
+#include <PPsat/cli/parameters.hpp>
 #include <PPsat/decision_trivial.hpp>
 
 #include <PPsat/formula.hpp>
@@ -5,8 +6,14 @@
 
 PPsat::decision_trivial::decision_trivial(formula& formula,
                                           const cli::parameters_value&)
-    : set()
 {
+    reset(formula);
+}
+
+void PPsat::decision_trivial::reset(formula& formula)
+{
+    set.clear();
+
     formula.for_each_variable(
         [this](variable& variable)
         {

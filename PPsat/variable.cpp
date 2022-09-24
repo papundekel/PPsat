@@ -60,11 +60,23 @@ PPsat::variable::assign(bool positive, std::size_t level, std::size_t recency)
 
 void PPsat::variable::unassign(bool positive)
 {
-    assignment_set(assignment::unknown);
-    antecedent_reset();
+    reset_soft();
+
     for_each_clause_relevant_unassign(
         [this, positive](clause& clause, bool positive_in_clause)
         {
             clause.unassign({*this, positive}, positive_in_clause);
         });
+}
+
+void PPsat::variable::reset_soft()
+{
+    assignment_set(assignment::unknown);
+    antecedent_reset();
+}
+
+void PPsat::variable::reset()
+{
+    reset_soft();
+    adjacency_reset();
 }

@@ -41,6 +41,9 @@ private:
 
     virtual void assignment_set(assignment assignment) = 0;
     virtual void level_set(std::size_t level) = 0;
+    virtual void adjacency_reset() = 0;
+
+    void reset_soft();
 
 public:
     virtual void antecedent_set(const clause& antecedent) = 0;
@@ -66,6 +69,8 @@ public:
                std::size_t>
     assign(bool positive, std::size_t level, std::size_t recency);
     void unassign(bool positive);
+
+    void reset();
 };
 
 std::ostream& operator<<(std::ostream& output, const variable& variable);

@@ -1,5 +1,5 @@
 #pragma once
-#include "PPsat/clause.hpp"
+#include <PPsat/clause.hpp>
 #include <PPsat/literal.hpp>
 
 namespace PPsat

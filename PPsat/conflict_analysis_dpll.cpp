@@ -7,8 +7,13 @@
 PPsat::conflict_analysis_dpll::conflict_analysis_dpll(
     const PPsat_base::factory<formula::factory_clause>&,
     decision&) noexcept
-    : consecutive_second_decisions()
 {
+    reset();
+}
+
+void PPsat::conflict_analysis_dpll::reset()
+{
+    consecutive_second_decisions.clear();
     consecutive_second_decisions.emplace_back(0, 0);
 }
 

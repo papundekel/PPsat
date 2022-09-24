@@ -11,6 +11,7 @@ public:
         never,
     };
 
+    virtual void reset() = 0;
     virtual void conflict() = 0;
     virtual bool should_restart() const = 0;
 

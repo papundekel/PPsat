@@ -1,5 +1,5 @@
 #pragma once
-#include "PPsat-base/virtual_base.hpp"
+#include <PPsat-base/virtual_base.hpp>
 #include <PPsat/adjacency.hpp>
 
 #include <PPsat-base/virtual_base.hpp>
@@ -55,6 +55,11 @@ public:
     std::size_t size() const override final
     {
         return adjacency.size();
+    }
+
+    void adjacent_reset() override final
+    {
+        adjacency.clear();
     }
 };
 }

@@ -1,10 +1,17 @@
 #include <PPsat/decision_priority.hpp>
+#include <PPsat/formula.hpp>
 
 PPsat::decision_priority::decision_priority(std::unique_ptr<decision> priority,
                                             std::unique_ptr<decision> fallback)
     : priority(std::move(priority))
     , fallback(std::move(fallback))
 {}
+
+void PPsat::decision_priority::reset(formula& formula)
+{
+    priority->reset(formula);
+    fallback->reset(formula);
+}
 
 void PPsat::decision_priority::assigned(variable& variable)
 {

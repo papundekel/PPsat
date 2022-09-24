@@ -18,13 +18,15 @@ public:
     class statistics
     {
     public:
+        std::size_t duration;
         std::size_t count_decision;
         std::size_t count_unit_propagation;
         std::size_t count_visited_clauses;
         std::size_t count_restart;
 
         statistics()
-            : count_decision(0)
+            : duration(0)
+            , count_decision(0)
             , count_unit_propagation(0)
             , count_visited_clauses(0)
             , count_restart(0)

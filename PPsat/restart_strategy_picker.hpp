@@ -1,7 +1,7 @@
 #pragma once
-#include "PPsat/cli/parameters.hpp"
-#include "PPsat/restart_strategy_geometric.hpp"
-#include "PPsat/restart_strategy_never.hpp"
+#include <PPsat/cli/parameters.hpp>
+#include <PPsat/restart_strategy_geometric.hpp>
+#include <PPsat/restart_strategy_never.hpp>
 
 #include <type_traits>
 

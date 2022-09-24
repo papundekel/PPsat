@@ -22,5 +22,8 @@ public:
     {
         return 0;
     }
+
+    void adjacent_reset() override final
+    {}
 };
 }

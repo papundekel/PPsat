@@ -1,6 +1,7 @@
 #pragma once
 #include <PPsat/cli/argument/file.hpp>
 
+#include <compare>
 #include <iosfwd>
 #include <optional>
 
@@ -27,4 +28,13 @@ using type = int(const PPsat_base::logger&, const cli::parameters_value&);
 type convert;
 type solve;
 type invalid;
+}
+
+namespace PPsat
+{
+constexpr std::strong_ordering operator<=>(const subprogram::selection& a,
+                                           const subprogram::selection& b)
+{
+    return (int)a <=> (int)b;
+}
 }

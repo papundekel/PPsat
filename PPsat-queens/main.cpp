@@ -1,4 +1,4 @@
-#include "PPsat-base/cli/parameters.hpp"
+#include <PPsat-base/cli/parameters.hpp>
 #include <PPsat-queens/generate.hpp>
 
 #include <PPsat-base/cli/argument/number.hpp>

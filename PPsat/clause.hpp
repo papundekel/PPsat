@@ -4,6 +4,7 @@
 
 #include <PPsat-base/optional.hpp>
 
+#include <compare>
 #include <functional>
 #include <optional>
 
@@ -20,6 +21,8 @@ public:
     };
 
     using category = clause_category;
+
+    virtual void reset() = 0;
 
     virtual void for_each(std::function<void(literal)> f) const = 0;
 
@@ -39,6 +42,12 @@ public:
 
     virtual ~clause() = default;
 };
+
+constexpr std::strong_ordering operator<=>(const clause::type& a,
+                                           const clause::type& b)
+{
+    return (int)a <=> (int)b;
+}
 
 struct decisive_t
 {};

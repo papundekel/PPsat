@@ -1,3 +1,4 @@
+#include <PPsat/cli/parameters.hpp>
 #include <PPsat/decision_VSIDS.hpp>
 
 #include <PPsat/clause.hpp>
@@ -17,14 +18,28 @@ bool PPsat::decision_VSIDS::comparer::operator()(const variable* a,
 PPsat::decision_VSIDS::decision_VSIDS(formula& formula,
                                       const cli::parameters_value&)
     : formula_(formula)
-    , set()
-    , bump(1)
-    , decay(0.95)
 {
-    formula.for_each_variable(
+    reset(formula);
+}
+
+void PPsat::decision_VSIDS::emplace_variable(variable& variable)
+{
+    const auto handle = set.emplace(&variable);
+    handles.try_emplace(&variable, handle);
+}
+
+void PPsat::decision_VSIDS::reset(formula&)
+{
+    set.clear();
+    handles.clear();
+    bump = 1;
+    decay = 0.95;
+
+    formula_.for_each_variable(
         [this](variable& variable)
         {
-            set.emplace(&variable);
+            emplace_variable(variable);
+            variable.score_set(0);
         });
 }
 
@@ -33,8 +48,7 @@ void PPsat::decision_VSIDS::assigned(variable& variable)
 
 void PPsat::decision_VSIDS::unassigned(variable& variable)
 {
-    const auto handle = set.emplace(&variable);
-    handles.try_emplace(&variable, handle);
+    emplace_variable(variable);
 }
 
 PPsat_base::optional<PPsat::literal> PPsat::decision_VSIDS::get_decision()

@@ -1,5 +1,5 @@
 #pragma once
-#include "PPsat/cli/parameters.hpp"
+#include <PPsat/cli/parameters.hpp>
 #include <PPsat/restart_strategy.hpp>
 
 #include <cstddef>
@@ -8,16 +8,22 @@ namespace PPsat
 {
 class restart_strategy_geometric final : public restart_strategy
 {
-    mutable std::size_t ceil;
     double mult;
+    mutable std::size_t ceil;
     std::size_t count;
 
 public:
     restart_strategy_geometric(const cli::parameters_value& parameters)
-        : ceil(100)
-        , mult(parameters.restart)
-        , count(0)
-    {}
+        : mult(parameters.restart)
+    {
+        reset();
+    }
+
+    void reset() override final
+    {
+        ceil = 100;
+        count = 0;
+    }
 
     void conflict() override final
     {

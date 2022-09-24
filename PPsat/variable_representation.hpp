@@ -1,5 +1,5 @@
 #pragma once
-#include "PPsat/decision_assume.hpp"
+#include <PPsat/decision_assume.hpp>
 #include <PPsat/variable.hpp>
 
 #include <PPsat-base/virtual_base.hpp>
@@ -82,14 +82,14 @@ public:
 
     bool representation_less(const PPsat::variable& other_) const override final
     {
-        auto other = dynamic_cast<const variable_representation*>(&other_);
+        // auto other = dynamic_cast<const variable_representation*>(&other_);
 
-        if (!other)
-        {
-            return false;
-        }
+        // if (!other)
+        // {
+        //     return false;
+        // }
 
-        return representation < other->representation;
+        return representation_hash() < other_.representation_hash();
     }
 };
 }

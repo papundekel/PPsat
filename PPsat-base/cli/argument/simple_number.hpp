@@ -1,6 +1,6 @@
 #pragma once
-#include "PPsat-base/cli/parameter.hpp"
 #include <PPsat-base/cli/argument/number.hpp>
+#include <PPsat-base/cli/parameter.hpp>
 #include <PPsat-base/cli/parameter/simple.hpp>
 
 namespace PPsat_base::cli::argument

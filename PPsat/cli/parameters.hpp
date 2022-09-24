@@ -1,5 +1,4 @@
 #pragma once
-#include "PPsat-base/cli/argument.hpp"
 #include <PPsat/adjacency.hpp>
 #include <PPsat/clause.hpp>
 #include <PPsat/decision.hpp>
@@ -7,6 +6,7 @@
 #include <PPsat/output_format.hpp>
 #include <PPsat/subprogram.hpp>
 
+#include <PPsat-base/cli/argument.hpp>
 #include <PPsat-base/cli/option.hpp>
 #include <PPsat-base/cli/option/bool.hpp>
 #include <PPsat-base/cli/option/enum.hpp>
@@ -34,27 +34,29 @@ public:
     std::pair<formula_format, std::ostream&> output;
     bool input_present;
 
+    std::size_t iterations;
+    std::size_t random_seed;
+    double restart;
+    bool help;
+    bool nnf;
+    bool assume;
+    output_format format_output;
+
     subprogram::selection subprogram;
     decision::type decision_;
     formula_format format_input;
     clause::type clause_;
     adjacency::type adjancency;
-    output_format format_output;
-    std::size_t random_seed;
-    double restart;
     bool virtual_;
     bool cdcl;
-    bool help;
-    bool nnf;
-    bool assume;
 
     auto as_comparable() const noexcept
     {
-        return std::forward_as_tuple((int)subprogram,
-                                     (int)decision_,
-                                     (int)format_input,
-                                     (int)clause_,
-                                     (int)adjancency,
+        return std::forward_as_tuple(subprogram,
+                                     decision_,
+                                     format_input,
+                                     clause_,
+                                     adjancency,
                                      virtual_,
                                      cdcl);
     }
@@ -66,17 +68,18 @@ public:
 };
 
 using parameters_base_options = std::tuple<
-    PPsat_base::cli::option::simple_named_enum_typed<subprogram::selection>,
-    PPsat_base::cli::option::simple_named_enum_typed<decision::type>,
-    PPsat_base::cli::option::simple_named_enum_typed<formula_format>,
-    PPsat_base::cli::option::simple_named_enum_typed<clause::type>,
-    PPsat_base::cli::option::simple_named_enum_typed<adjacency::type>,
-    PPsat_base::cli::option::simple_named_enum_typed<output_format>,
+    PPsat_base::cli::option::simple_named_int,
     PPsat_base::cli::option::simple_named_int,
     PPsat_base::cli::option::simple_named_double,
     PPsat_base::cli::option::simple_named_bool,
     PPsat_base::cli::option::simple_named_bool,
     PPsat_base::cli::option::simple_named_bool,
+    PPsat_base::cli::option::simple_named_enum_typed<output_format>,
+    PPsat_base::cli::option::simple_named_enum_typed<subprogram::selection>,
+    PPsat_base::cli::option::simple_named_enum_typed<decision::type>,
+    PPsat_base::cli::option::simple_named_enum_typed<formula_format>,
+    PPsat_base::cli::option::simple_named_enum_typed<clause::type>,
+    PPsat_base::cli::option::simple_named_enum_typed<adjacency::type>,
     PPsat_base::cli::option::simple_named_bool,
     PPsat_base::cli::option::simple_named_bool>;
 

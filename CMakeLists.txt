@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.20)
 
 project("PPsat" VERSION "1.0.0")
 
+list(APPEND CMAKE_CONFIGURATION_TYPES "Profiling")
+set(CMAKE_CXX_FLAGS_PROFILING "${CMAKE_CXX_FLAGS_PROFILING} -O0 -ggdb3 -fno-omit-frame-pointer -DNDEBUG")
+
 include(CTest)
 include(GNUInstallDirs)
 

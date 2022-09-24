@@ -5,9 +5,16 @@
 
 PPsat::decision_random::decision_random(formula& formula,
                                         const cli::parameters_value& parameters)
-    : generator(parameters.random_seed)
-    , set()
+    : seed(parameters.random_seed)
 {
+    reset(formula);
+}
+
+void PPsat::decision_random::reset(formula& formula)
+{
+    generator.seed(seed);
+    set.clear();
+
     formula.for_each_variable(
         [this](variable& variable)
         {

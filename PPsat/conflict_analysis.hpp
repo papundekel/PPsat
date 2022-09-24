@@ -21,6 +21,8 @@ public:
         uip,
     };
 
+    virtual void reset() = 0;
+
     virtual PPsat_base::optional<std::size_t> analyse(
         std::size_t level,
         const clause& antecedent) = 0;

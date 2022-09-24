@@ -29,8 +29,12 @@ class decision_VSIDS final : public decision
     double bump;
     double decay;
 
+    void emplace_variable(variable& variable);
+
 public:
     decision_VSIDS(formula& formula, const cli::parameters_value& parameters);
+
+    void reset(formula& formula) override final;
 
     void assigned(variable& variable) override final;
     void unassigned(variable& variable) override final;

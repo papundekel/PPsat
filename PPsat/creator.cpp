@@ -1,36 +1,37 @@
-#include "PPsat/adjacency.hpp"
-#include "PPsat/assumptions.hpp"
-#include "PPsat/clause.hpp"
-#include "PPsat/clause_picker.hpp"
-#include "PPsat/cli/parameters.hpp"
-#include "PPsat/conflict_analysis.hpp"
-#include "PPsat/conflict_analysis_dpll.hpp"
-#include "PPsat/conflict_analysis_picker.hpp"
-#include "PPsat/conflict_analysis_uip.hpp"
-#include "PPsat/decision.hpp"
-#include "PPsat/decision_JW_static.hpp"
-#include "PPsat/decision_VSIDS.hpp"
-#include "PPsat/decision_assume.hpp"
-#include "PPsat/decision_deterministic.hpp"
-#include "PPsat/decision_picker.hpp"
-#include "PPsat/decision_priority.hpp"
-#include "PPsat/decision_random.hpp"
-#include "PPsat/decision_trivial.hpp"
-#include "PPsat/formula.hpp"
-#include "PPsat/formula_format.hpp"
-#include "PPsat/formula_picker.hpp"
-#include "PPsat/output_format.hpp"
-#include "PPsat/restart_strategy.hpp"
-#include "PPsat/restart_strategy_geometric.hpp"
-#include "PPsat/restart_strategy_never.hpp"
-#include "PPsat/restart_strategy_picker.hpp"
-#include "PPsat/solver_impl.hpp"
-#include "PPsat/subprogram.hpp"
+#include <PPsat/adjacency.hpp>
+#include <PPsat/assumptions.hpp>
+#include <PPsat/clause.hpp>
+#include <PPsat/clause_picker.hpp>
+#include <PPsat/cli/parameters.hpp>
+#include <PPsat/conflict_analysis.hpp>
+#include <PPsat/conflict_analysis_dpll.hpp>
+#include <PPsat/conflict_analysis_picker.hpp>
+#include <PPsat/conflict_analysis_uip.hpp>
 #include <PPsat/creator.hpp>
+#include <PPsat/decision.hpp>
+#include <PPsat/decision_JW_static.hpp>
+#include <PPsat/decision_VSIDS.hpp>
+#include <PPsat/decision_assume.hpp>
+#include <PPsat/decision_deterministic.hpp>
+#include <PPsat/decision_picker.hpp>
+#include <PPsat/decision_priority.hpp>
+#include <PPsat/decision_random.hpp>
+#include <PPsat/decision_trivial.hpp>
+#include <PPsat/formula.hpp>
+#include <PPsat/formula_format.hpp>
+#include <PPsat/formula_picker.hpp>
+#include <PPsat/output_format.hpp>
+#include <PPsat/restart_strategy.hpp>
+#include <PPsat/restart_strategy_geometric.hpp>
+#include <PPsat/restart_strategy_never.hpp>
+#include <PPsat/restart_strategy_picker.hpp>
+#include <PPsat/solver_impl.hpp>
+#include <PPsat/solver_picker.hpp>
+#include <PPsat/subprogram.hpp>
 #include <PPsat/variable_adjacency_picker.hpp>
 
-#include "PPsat-base/tuple_cart.hpp"
-#include "PPsat-base/value_t.hpp"
+#include <PPsat-base/tuple_cart.hpp>
+#include <PPsat-base/value_t.hpp>
 
 #include <memory>
 #include <tuple>
@@ -66,7 +67,7 @@ public:
         PPsat::formula::factory_clause& clauses,
         PPsat::formula::factory_variable& variables) const override final
     {
-        return std::make_unique<PPsat::formula_picker<parameters>>(
+        return std::make_unique<formula_t>(
             preprocessor,
             static_cast<clauses_t&>(clauses),
             static_cast<variables_t&>(variables));
@@ -88,7 +89,7 @@ public:
         else
         {
             return std::make_unique<PPsat::decision_priority>(
-                std::make_unique<PPsat::decision_assume>(*assumption),
+                std::make_unique<PPsat::decision_assume>(formula, *assumption),
                 std::move(main));
         }
     }
@@ -116,10 +117,7 @@ public:
         PPsat::conflict_analysis& analysis,
         PPsat::restart_strategy& restarts) const override final
     {
-        return std::make_unique<PPsat::solver_impl<formula_t,
-                                                   decision_t,
-                                                   conflict_analysis_t,
-                                                   restart_strategy_t>>(
+        return std::make_unique<PPsat::solver_picker<parameters>>(
             static_cast<formula_t&>(formula),
             static_cast<decision_t&>(decision),
             static_cast<conflict_analysis_t&>(analysis),
@@ -127,6 +125,9 @@ public:
     }
 };
 }
+
+constexpr inline auto bool_ =
+    std::make_tuple(PPsat_base::value_v<false>, PPsat_base::value_v<true>);
 
 constexpr inline auto combos1 = PPsat_base::tuple_cart(
     std::make_tuple(PPsat_base::value_v<PPsat::subprogram::selection::convert>,
@@ -149,9 +150,7 @@ constexpr inline auto combos2 = PPsat_base::tuple_cart(
         PPsat_base::value_v<PPsat::adjacency::type::set>,
         PPsat_base::value_v<PPsat::adjacency::type::set_unordered>));
 
-constexpr inline auto combos3 = PPsat_base::tuple_cart(
-    std::make_tuple(PPsat_base::value_v<false>, PPsat_base::value_v<true>),
-    std::make_tuple(PPsat_base::value_v<false>, PPsat_base::value_v<true>));
+constexpr inline auto combos3 = PPsat_base::tuple_cart(bool_, bool_);
 
 static std::map<PPsat::cli::parameters_value, std::unique_ptr<PPsat::creator>>
     map = []()
@@ -187,20 +186,20 @@ static std::map<PPsat::cli::parameters_value, std::unique_ptr<PPsat::creator>>
                                                                         DIMACS,
                                                                 std::cout},
                                                                false,
+                                                               0,
+                                                               0,
+                                                               0,
+                                                               false,
+                                                               false,
+                                                               false,
+                                                               PPsat::output_format::
+                                                                   human_readable,
                                                                decltype(values1)::
                                                                    value...,
                                                                decltype(values2)::
                                                                    value...,
-                                                               PPsat::
-                                                                   output_format::
-                                                                       csv,
-                                                               0,
-                                                               0,
                                                                decltype(values3)::
-                                                                   value...,
-                                                               false,
-                                                               false,
-                                                               false};
+                                                                   value...};
 
                                                        map.try_emplace(
                                                            val,

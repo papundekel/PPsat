@@ -1,5 +1,5 @@
 #pragma once
-#include "PPsat/cli/parameters.hpp"
+#include <PPsat/cli/parameters.hpp>
 #include <PPsat/decision.hpp>
 
 #include <queue>
@@ -24,6 +24,8 @@ class decision_JW_static final : public decision
 public:
     decision_JW_static(formula& formula,
                        const cli::parameters_value& parameters);
+
+    void reset(formula& formula) override final;
 
     void assigned(variable& variable) override final;
     void unassigned(variable& variable) override final;

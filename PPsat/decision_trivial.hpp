@@ -1,5 +1,5 @@
 #pragma once
-#include "PPsat/cli/parameters.hpp"
+#include <PPsat/cli/parameters.hpp>
 #include <PPsat/decision.hpp>
 
 #include <unordered_set>
@@ -15,6 +15,8 @@ class decision_trivial final : public decision
 
 public:
     decision_trivial(formula& formula, const cli::parameters_value& parameters);
+
+    void reset(formula& formula) override final;
 
     void assigned(variable& variable) override final;
     void unassigned(variable& variable) override final;

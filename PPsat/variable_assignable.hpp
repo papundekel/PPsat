@@ -1,5 +1,5 @@
 #pragma once
-#include "PPsat-base/virtual_base.hpp"
+#include <PPsat-base/virtual_base.hpp>
 #include <PPsat/variable.hpp>
 #include <functional>
 #include <utility>

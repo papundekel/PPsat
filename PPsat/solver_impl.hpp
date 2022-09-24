@@ -203,13 +203,21 @@ private:
 public:
     result solve() override final
     {
+        const auto time_solving_start = std::chrono::steady_clock::now();
         const auto satisfiable = solve_impl();
-        if (!satisfiable)
+        const auto time_solving_end = std::chrono::steady_clock::now();
+
+        statistic.duration =
+            std::chrono::duration_cast<std::chrono::milliseconds>(
+                time_solving_end - time_solving_start)
+                .count();
+
+        decltype(stack_assignment) model;
+        if (satisfiable)
         {
-            stack_assignment.clear();
+            model = stack_assignment;
         }
 
-        auto model = std::move(stack_assignment);
         std::ranges::sort(model,
                           [](const literal a, const literal b)
                           {
@@ -217,7 +225,50 @@ public:
                                      b.get_variable().representation_hash();
                           });
 
-        return {satisfiable, std::move(model), statistic};
+        const auto statistic = this->statistic;
+
+        reset();
+
+        return {
+            satisfiable,
+            std::move(model),
+            statistic,
+        };
+    }
+
+    void reset()
+    {
+        formula.for_each_variable(
+            [](variable& variable)
+            {
+                variable.reset();
+            });
+
+        formula.for_each_clause(
+            [](clause& clause)
+            {
+                clause.reset();
+
+                clause.for_each(
+                    [&clause](const literal literal)
+                    {
+                        if (clause.is_relevant(literal))
+                        {
+                            literal.register_(clause);
+                        }
+                    });
+
+                return true;
+            });
+
+        decision.reset(formula);
+        analysis.reset();
+        restarts.reset();
+
+        stack_assignment.clear();
+        level = 0;
+
+        statistic = {};
     }
 };
 }

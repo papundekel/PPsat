@@ -1,9 +1,9 @@
 #pragma once
-#include "PPsat/formula.hpp"
 #include <PPsat/clause.hpp>
 #include <PPsat/conflict_analysis.hpp>
+#include <PPsat/formula.hpp>
 
-#include "PPsat-base/factory.hpp"
+#include <PPsat-base/factory.hpp>
 
 #include <vector>
 
@@ -20,6 +20,8 @@ public:
     conflict_analysis_dpll(const PPsat_base::factory<formula::factory_clause>&
                                clause_factory_factory,
                            decision& decision) noexcept;
+
+    void reset() override final;
 
     PPsat_base::optional<std::size_t> analyse(
         std::size_t level,
