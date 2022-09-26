@@ -11,17 +11,12 @@ library("tidyverse")
 
 Cool stuff.
 
-![Alt text](../build/report/call-graph.svg)
-<img src="../build/report/call-graph.svg">
-
 ```{r}
 results_warmup <- read_csv("results-warmup.csv", col_types = "i-n----fl")
 
 results_warmup <- results_warmup %>%
     group_by(iteration, virtual, adjacency) %>%
     summarize(solve = mean(solve), .groups = "keep")
-
-
 
 results_warmup %>%
     filter(!virtual) %>%

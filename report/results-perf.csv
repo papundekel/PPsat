@@ -1,281 +1,241 @@
-value,?1,counter,?2,?3,ratio,?5,adjacency,virtual
-22916326355,,cycles:u,5504899781,100.00,,,vector,true
-75751637454,,instructions:u,5504899781,100.00,3.31,insn per cycle,vector,true
-1865,,page-faults:u,5504968165,100.00,,,vector,true
-25391987835,,L1-dcache-loads:u,5602088795,100.00,,,vector,true
-66282800,,L1-dcache-load-misses:u,5602088795,100.00,0.26,of all L1-dcache accesses,vector,true
-12274430194,,branches:u,5602088795,100.00,,,vector,true
-63273521,,branch-misses:u,5602088795,100.00,0.52,of all branches,vector,true
-277710904273,,cycles:u,66513092196,100.00,,,vector,true
-931486858930,,instructions:u,66513092196,100.00,3.35,insn per cycle,vector,true
-1867,,page-faults:u,66514304104,100.00,,,vector,true
-312390779407,,L1-dcache-loads:u,66813633813,100.00,,,vector,true
-765979696,,L1-dcache-load-misses:u,66813633813,100.00,0.25,of all L1-dcache accesses,vector,true
-150907242123,,branches:u,66813633813,100.00,,,vector,true
-749936960,,branch-misses:u,66813633813,100.00,0.50,of all branches,vector,true
-178706609073,,cycles:u,42726677891,100.00,,,vector,true
-589897938794,,instructions:u,42726677891,100.00,3.30,insn per cycle,vector,true
-1869,,page-faults:u,42726618889,100.00,,,vector,true
-197832094058,,L1-dcache-loads:u,42294912410,100.00,,,vector,true
-493209747,,L1-dcache-load-misses:u,42294912410,100.00,0.25,of all L1-dcache accesses,vector,true
-95571852225,,branches:u,42294912410,100.00,,,vector,true
-482292972,,branch-misses:u,42294912410,100.00,0.50,of all branches,vector,true
-137960859413,,cycles:u,32985603732,100.00,,,vector,true
-457440308800,,instructions:u,32985603732,100.00,3.32,insn per cycle,vector,true
-1868,,page-faults:u,32985546460,100.00,,,vector,true
-153429948134,,L1-dcache-loads:u,32846070001,100.00,,,vector,true
-389872686,,L1-dcache-load-misses:u,32846070001,100.00,0.25,of all L1-dcache accesses,vector,true
-74146717021,,branches:u,32846070001,100.00,,,vector,true
-385002233,,branch-misses:u,32846070001,100.00,0.52,of all branches,vector,true
-220813625390,,cycles:u,52794300380,100.00,,,vector,true
-726040465227,,instructions:u,52794300380,100.00,3.29,insn per cycle,vector,true
-1870,,page-faults:u,52794221681,100.00,,,vector,true
-243525605213,,L1-dcache-loads:u,52593672900,100.00,,,vector,true
-607733981,,L1-dcache-load-misses:u,52593672900,100.00,0.25,of all L1-dcache accesses,vector,true
-117669604942,,branches:u,52593672900,100.00,,,vector,true
-626176010,,branch-misses:u,52593672900,100.00,0.53,of all branches,vector,true
-21430076300,,cycles:u,5139204562,100.00,,,vector,false
-66244699269,,instructions:u,5139204562,100.00,3.09,insn per cycle,vector,false
-1867,,page-faults:u,5139223998,100.00,,,vector,false
-20703016501,,L1-dcache-loads:u,4793480143,100.00,,,vector,false
-49176595,,L1-dcache-load-misses:u,4793480143,100.00,0.24,of all L1-dcache accesses,vector,false
-9711615487,,branches:u,4793480143,100.00,,,vector,false
-62518414,,branch-misses:u,4793480143,100.00,0.64,of all branches,vector,false
-247204145045,,cycles:u,59122174697,100.00,,,vector,false
-814239803728,,instructions:u,59122174697,100.00,3.29,insn per cycle,vector,false
-1866,,page-faults:u,59121988098,100.00,,,vector,false
-254619738713,,L1-dcache-loads:u,59384914928,100.00,,,vector,false
-597488081,,L1-dcache-load-misses:u,59384914928,100.00,0.23,of all L1-dcache accesses,vector,false
-119332488631,,branches:u,59384914928,100.00,,,vector,false
-726082406,,branch-misses:u,59384914928,100.00,0.61,of all branches,vector,false
-166866319059,,cycles:u,39902195931,100.00,,,vector,false
-515829890010,,instructions:u,39902195931,100.00,3.09,insn per cycle,vector,false
-1873,,page-faults:u,39902131316,100.00,,,vector,false
-161303273430,,L1-dcache-loads:u,36826605043,100.00,,,vector,false
-366210712,,L1-dcache-load-misses:u,36826605043,100.00,0.23,of all L1-dcache accesses,vector,false
-75603145474,,branches:u,36826605043,100.00,,,vector,false
-433505755,,branch-misses:u,36826605043,100.00,0.57,of all branches,vector,false
-121108390244,,cycles:u,29193752854,100.00,,,vector,false
-400062453277,,instructions:u,29193752854,100.00,3.30,insn per cycle,vector,false
-1876,,page-faults:u,29193689108,100.00,,,vector,false
-125122939574,,L1-dcache-loads:u,29364668731,100.00,,,vector,false
-320975124,,L1-dcache-load-misses:u,29364668731,100.00,0.26,of all L1-dcache accesses,vector,false
-58678694136,,branches:u,29364668731,100.00,,,vector,false
-378027160,,branch-misses:u,29364668731,100.00,0.64,of all branches,vector,false
-189679324827,,cycles:u,45656467177,100.00,,,vector,false
-634925553638,,instructions:u,45656467177,100.00,3.35,insn per cycle,vector,false
-1870,,page-faults:u,45656357510,100.00,,,vector,false
-198578583952,,L1-dcache-loads:u,45714128254,100.00,,,vector,false
-483481872,,L1-dcache-load-misses:u,45714128254,100.00,0.24,of all L1-dcache accesses,vector,false
-93108043453,,branches:u,45714128254,100.00,,,vector,false
-392244776,,branch-misses:u,45714128254,100.00,0.42,of all branches,vector,false
-23229151922,,cycles:u,5591584451,100.00,,,list,true
-76008621121,,instructions:u,5591584451,100.00,3.27,insn per cycle,list,true
-1872,,page-faults:u,5591573200,100.00,,,list,true
-25460189394,,L1-dcache-loads:u,5514598035,100.00,,,list,true
-80137804,,L1-dcache-load-misses:u,5514598035,100.00,0.31,of all L1-dcache accesses,list,true
-12350903177,,branches:u,5514598035,100.00,,,list,true
-62791652,,branch-misses:u,5514598035,100.00,0.51,of all branches,list,true
-281051407275,,cycles:u,67679018059,100.00,,,list,true
-932405352151,,instructions:u,67679018059,100.00,3.32,insn per cycle,list,true
-1875,,page-faults:u,67693287360,100.00,,,list,true
-312496168189,,L1-dcache-loads:u,71146426339,100.00,,,list,true
-991006553,,L1-dcache-load-misses:u,71146426339,100.00,0.32,of all L1-dcache accesses,list,true
-151443527754,,branches:u,71146426339,100.00,,,list,true
-741614524,,branch-misses:u,71146426339,100.00,0.49,of all branches,list,true
-194877760939,,cycles:u,46952149538,100.00,,,list,true
-592634252212,,instructions:u,46952149538,100.00,3.04,insn per cycle,list,true
-1871,,page-faults:u,46952092533,100.00,,,list,true
-198619288912,,L1-dcache-loads:u,50597040635,100.00,,,list,true
-630535401,,L1-dcache-load-misses:u,50597040635,100.00,0.32,of all L1-dcache accesses,list,true
-96268959131,,branches:u,50597040635,100.00,,,list,true
-476224757,,branch-misses:u,50597040635,100.00,0.49,of all branches,list,true
-139651535002,,cycles:u,33623671093,100.00,,,list,true
-458890055283,,instructions:u,33623671093,100.00,3.29,insn per cycle,list,true
-1877,,page-faults:u,33623616287,100.00,,,list,true
-153810131387,,L1-dcache-loads:u,33677243516,100.00,,,list,true
-500963059,,L1-dcache-load-misses:u,33677243516,100.00,0.33,of all L1-dcache accesses,list,true
-74591589576,,branches:u,33677243516,100.00,,,list,true
-383533513,,branch-misses:u,33677243516,100.00,0.51,of all branches,list,true
-218814282291,,cycles:u,52688595663,100.00,,,list,true
-728728769046,,instructions:u,52688595663,100.00,3.33,insn per cycle,list,true
-1876,,page-faults:u,52688497947,100.00,,,list,true
-244260886017,,L1-dcache-loads:u,52799835537,100.00,,,list,true
-798277493,,L1-dcache-load-misses:u,52799835537,100.00,0.33,of all L1-dcache accesses,list,true
-118431202783,,branches:u,52799835537,100.00,,,list,true
-602259056,,branch-misses:u,52799835537,100.00,0.51,of all branches,list,true
-19770583726,,cycles:u,4770202493,100.00,,,list,false
-66456902441,,instructions:u,4770202493,100.00,3.36,insn per cycle,list,false
-1873,,page-faults:u,4770192375,100.00,,,list,false
-20772279011,,L1-dcache-loads:u,4762283549,100.00,,,list,false
-67295635,,L1-dcache-load-misses:u,4762283549,100.00,0.32,of all L1-dcache accesses,list,false
-9765584928,,branches:u,4762283549,100.00,,,list,false
-40783159,,branch-misses:u,4762283549,100.00,0.42,of all branches,list,false
-238416195984,,cycles:u,57409057238,100.00,,,list,false
-815103289117,,instructions:u,57409057238,100.00,3.42,insn per cycle,list,false
-1874,,page-faults:u,57415086433,100.00,,,list,false
-254929548528,,L1-dcache-loads:u,57447752290,100.00,,,list,false
-814684019,,L1-dcache-load-misses:u,57447752290,100.00,0.32,of all L1-dcache accesses,list,false
-119686763128,,branches:u,57447752290,100.00,,,list,false
-468128802,,branch-misses:u,57447752290,100.00,0.39,of all branches,list,false
-152851884632,,cycles:u,36841886097,100.00,,,list,false
-518096915386,,instructions:u,36841886097,100.00,3.39,insn per cycle,list,false
-1878,,page-faults:u,36841820837,100.00,,,list,false
-162038303597,,L1-dcache-loads:u,36471717669,100.00,,,list,false
-515073445,,L1-dcache-load-misses:u,36471717669,100.00,0.32,of all L1-dcache accesses,list,false
-76089763004,,branches:u,36471717669,100.00,,,list,false
-301983422,,branch-misses:u,36471717669,100.00,0.40,of all branches,list,false
-122225486740,,cycles:u,29401296334,100.00,,,list,false
-401252797100,,instructions:u,29401296334,100.00,3.28,insn per cycle,list,false
-1875,,page-faults:u,29401267483,100.00,,,list,false
-125514294291,,L1-dcache-loads:u,28400516385,100.00,,,list,false
-414507045,,L1-dcache-load-misses:u,28400516385,100.00,0.33,of all L1-dcache accesses,list,false
-58990228232,,branches:u,28400516385,100.00,,,list,false
-251814524,,branch-misses:u,28400516385,100.00,0.43,of all branches,list,false
-188858180805,,cycles:u,45457261562,100.00,,,list,false
-637147877346,,instructions:u,45457261562,100.00,3.37,insn per cycle,list,false
-1875,,page-faults:u,45457187863,100.00,,,list,false
-199304082341,,L1-dcache-loads:u,45411704406,100.00,,,list,false
-649425127,,L1-dcache-load-misses:u,45411704406,100.00,0.33,of all L1-dcache accesses,list,false
-93641791771,,branches:u,45411704406,100.00,,,list,false
-417302951,,branch-misses:u,45411704406,100.00,0.45,of all branches,list,false
-23646227387,,cycles:u,5693151650,100.00,,,set,true
-76297602191,,instructions:u,5693151650,100.00,3.23,insn per cycle,set,true
-1876,,page-faults:u,5693141558,100.00,,,set,true
-25554360956,,L1-dcache-loads:u,5745029035,100.00,,,set,true
-94632743,,L1-dcache-load-misses:u,5745029035,100.00,0.37,of all L1-dcache accesses,set,true
-12438380151,,branches:u,5745029035,100.00,,,set,true
-79085688,,branch-misses:u,5745029035,100.00,0.64,of all branches,set,true
-290134316628,,cycles:u,69882689961,100.00,,,set,true
-935290969738,,instructions:u,69882689961,100.00,3.22,insn per cycle,set,true
-1874,,page-faults:u,69884114421,100.00,,,set,true
-313450887209,,L1-dcache-loads:u,70530456704,100.00,,,set,true
-1082305609,,L1-dcache-load-misses:u,70530456704,100.00,0.35,of all L1-dcache accesses,set,true
-152379082680,,branches:u,70530456704,100.00,,,set,true
-922230699,,branch-misses:u,70530456704,100.00,0.61,of all branches,set,true
-183065110378,,cycles:u,44059128647,100.00,,,set,true
-593574375101,,instructions:u,44059128647,100.00,3.24,insn per cycle,set,true
-1880,,page-faults:u,44079505290,100.00,,,set,true
-198923015355,,L1-dcache-loads:u,43929428785,100.00,,,set,true
-664380196,,L1-dcache-load-misses:u,43929428785,100.00,0.33,of all L1-dcache accesses,set,true
-96724748825,,branches:u,43929428785,100.00,,,set,true
-590440849,,branch-misses:u,43929428785,100.00,0.61,of all branches,set,true
-144740387028,,cycles:u,34826456894,100.00,,,set,true
-460693485839,,instructions:u,34826456894,100.00,3.18,insn per cycle,set,true
-1884,,page-faults:u,34826338050,100.00,,,set,true
-154396254185,,L1-dcache-loads:u,34278209348,100.00,,,set,true
-549007999,,L1-dcache-load-misses:u,34278209348,100.00,0.36,of all L1-dcache accesses,set,true
-75144919334,,branches:u,34278209348,100.00,,,set,true
-482081054,,branch-misses:u,34278209348,100.00,0.64,of all branches,set,true
-229380913423,,cycles:u,55215229548,100.00,,,set,true
-732380287606,,instructions:u,55215229548,100.00,3.19,insn per cycle,set,true
-1878,,page-faults:u,55215149625,100.00,,,set,true
-245462710503,,L1-dcache-loads:u,59416768943,100.00,,,set,true
-864937901,,L1-dcache-load-misses:u,59416768943,100.00,0.35,of all L1-dcache accesses,set,true
-119428612538,,branches:u,59416768943,100.00,,,set,true
-760297630,,branch-misses:u,59416768943,100.00,0.64,of all branches,set,true
-20609906345,,cycles:u,4979908774,100.00,,,set,false
-66801396073,,instructions:u,4979908774,100.00,3.24,insn per cycle,set,false
-1877,,page-faults:u,4979893836,100.00,,,set,false
-20883960401,,L1-dcache-loads:u,6208261077,100.00,,,set,false
-77162128,,L1-dcache-load-misses:u,6208261077,100.00,0.37,of all L1-dcache accesses,set,false
-9876709880,,branches:u,6208261077,100.00,,,set,false
-56663516,,branch-misses:u,6208261077,100.00,0.57,of all branches,set,false
-246372319147,,cycles:u,59301145643,100.00,,,set,false
-818692007333,,instructions:u,59301145643,100.00,3.32,insn per cycle,set,false
-1876,,page-faults:u,59301056265,100.00,,,set,false
-256114662001,,L1-dcache-loads:u,66572119812,100.00,,,set,false
-901881655,,L1-dcache-load-misses:u,66572119812,100.00,0.35,of all L1-dcache accesses,set,false
-120921083684,,branches:u,66572119812,100.00,,,set,false
-636916295,,branch-misses:u,66572119812,100.00,0.53,of all branches,set,false
-159249765913,,cycles:u,38330847324,100.00,,,set,false
-519608544913,,instructions:u,38330847324,100.00,3.26,insn per cycle,set,false
-1885,,page-faults:u,38330772258,100.00,,,set,false
-162549980638,,L1-dcache-loads:u,37476987774,100.00,,,set,false
-572937218,,L1-dcache-load-misses:u,37476987774,100.00,0.35,of all L1-dcache accesses,set,false
-76768936053,,branches:u,37476987774,100.00,,,set,false
-409988681,,branch-misses:u,37476987774,100.00,0.53,of all branches,set,false
-121773163443,,cycles:u,29299205454,100.00,,,set,false
-403397353724,,instructions:u,29299205454,100.00,3.31,insn per cycle,set,false
-1879,,page-faults:u,29299153474,100.00,,,set,false
-126213019200,,L1-dcache-loads:u,29648501887,100.00,,,set,false
-472253232,,L1-dcache-load-misses:u,29648501887,100.00,0.37,of all L1-dcache accesses,set,false
-59688618265,,branches:u,29648501887,100.00,,,set,false
-346199689,,branch-misses:u,29648501887,100.00,0.58,of all branches,set,false
-195815737315,,cycles:u,46869930231,100.00,,,set,false
-641226022387,,instructions:u,46869930231,100.00,3.27,insn per cycle,set,false
-1884,,page-faults:u,46869589863,100.00,,,set,false
-200626911330,,L1-dcache-loads:u,47782226722,100.00,,,set,false
-733598625,,L1-dcache-load-misses:u,47782226722,100.00,0.37,of all L1-dcache accesses,set,false
-94838495259,,branches:u,47782226722,100.00,,,set,false
-538115949,,branch-misses:u,47782226722,100.00,0.57,of all branches,set,false
-23394490111,,cycles:u,5608787996,100.00,,,set_unordered,true
-76342930069,,instructions:u,5608787996,100.00,3.26,insn per cycle,set_unordered,true
-1873,,page-faults:u,5608786977,100.00,,,set_unordered,true
-25552681801,,L1-dcache-loads:u,5603230380,100.00,,,set_unordered,true
-92063385,,L1-dcache-load-misses:u,5603230380,100.00,0.36,of all L1-dcache accesses,set_unordered,true
-12419619699,,branches:u,5603230380,100.00,,,set_unordered,true
-65082467,,branch-misses:u,5603230380,100.00,0.52,of all branches,set_unordered,true
-282282433643,,cycles:u,67499380135,100.00,,,set_unordered,true
-935010978051,,instructions:u,67499380135,100.00,3.31,insn per cycle,set_unordered,true
-1870,,page-faults:u,67499241339,100.00,,,set_unordered,true
-313143867602,,L1-dcache-loads:u,68260117201,100.00,,,set_unordered,true
-1140768485,,L1-dcache-load-misses:u,68260117201,100.00,0.36,of all L1-dcache accesses,set_unordered,true
-152042804416,,branches:u,68260117201,100.00,,,set_unordered,true
-759628000,,branch-misses:u,68260117201,100.00,0.50,of all branches,set_unordered,true
-184732230912,,cycles:u,44171703116,100.00,,,set_unordered,true
-593865212404,,instructions:u,44171703116,100.00,3.21,insn per cycle,set_unordered,true
-1873,,page-faults:u,44171642397,100.00,,,set_unordered,true
-198883378211,,L1-dcache-loads:u,43059906345,100.00,,,set_unordered,true
-712173723,,L1-dcache-load-misses:u,43059906345,100.00,0.36,of all L1-dcache accesses,set_unordered,true
-96578436840,,branches:u,43059906345,100.00,,,set_unordered,true
-487884621,,branch-misses:u,43059906345,100.00,0.51,of all branches,set_unordered,true
-140866855396,,cycles:u,33686872116,100.00,,,set_unordered,true
-460786531751,,instructions:u,33686872116,100.00,3.27,insn per cycle,set_unordered,true
-1873,,page-faults:u,33686734733,100.00,,,set_unordered,true
-154326561116,,L1-dcache-loads:u,33724252758,100.00,,,set_unordered,true
-563033616,,L1-dcache-load-misses:u,33724252758,100.00,0.36,of all L1-dcache accesses,set_unordered,true
-74984985278,,branches:u,33724252758,100.00,,,set_unordered,true
-396331390,,branch-misses:u,33724252758,100.00,0.53,of all branches,set_unordered,true
-222310296015,,cycles:u,53156068889,100.00,,,set_unordered,true
-726038269748,,instructions:u,53156068889,100.00,3.27,insn per cycle,set_unordered,true
-1873,,page-faults:u,53155937417,100.00,,,set_unordered,true
-243176319281,,L1-dcache-loads:u,53091940204,100.00,,,set_unordered,true
-881136916,,L1-dcache-load-misses:u,53091940204,100.00,0.36,of all L1-dcache accesses,set_unordered,true
-118129196621,,branches:u,53091940204,100.00,,,set_unordered,true
-615580423,,branch-misses:u,53091940204,100.00,0.52,of all branches,set_unordered,true
-20348142015,,cycles:u,4869347852,100.00,,,set_unordered,false
-66747388221,,instructions:u,4869347852,100.00,3.28,insn per cycle,set_unordered,false
-1874,,page-faults:u,4869341038,100.00,,,set_unordered,false
-20861967163,,L1-dcache-loads:u,4813334690,100.00,,,set_unordered,false
-76116567,,L1-dcache-load-misses:u,4813334690,100.00,0.36,of all L1-dcache accesses,set_unordered,false
-9809917729,,branches:u,4813334690,100.00,,,set_unordered,false
-42878016,,branch-misses:u,4813334690,100.00,0.44,of all branches,set_unordered,false
-254095666124,,cycles:u,60767622334,100.00,,,set_unordered,false
-815395114047,,instructions:u,60767622334,100.00,3.21,insn per cycle,set_unordered,false
-1873,,page-faults:u,60767507276,100.00,,,set_unordered,false
-255006095809,,L1-dcache-loads:u,58447394429,100.00,,,set_unordered,false
-934726887,,L1-dcache-load-misses:u,58447394429,100.00,0.37,of all L1-dcache accesses,set_unordered,false
-119742621672,,branches:u,58447394429,100.00,,,set_unordered,false
-491171219,,branch-misses:u,58447394429,100.00,0.41,of all branches,set_unordered,false
-156255885616,,cycles:u,37563948987,100.00,,,set_unordered,false
-519176711255,,instructions:u,37563948987,100.00,3.32,insn per cycle,set_unordered,false
-1875,,page-faults:u,37563844447,100.00,,,set_unordered,false
-162365369334,,L1-dcache-loads:u,38447791134,100.00,,,set_unordered,false
-594026902,,L1-dcache-load-misses:u,38447791134,100.00,0.37,of all L1-dcache accesses,set_unordered,false
-76254657799,,branches:u,38447791134,100.00,,,set_unordered,false
-439694551,,branch-misses:u,38447791134,100.00,0.58,of all branches,set_unordered,false
-122603355107,,cycles:u,29518996368,100.00,,,set_unordered,false
-402485346548,,instructions:u,29518996368,100.00,3.28,insn per cycle,set_unordered,false
-1876,,page-faults:u,29518895397,100.00,,,set_unordered,false
-125889957673,,L1-dcache-loads:u,29228545362,100.00,,,set_unordered,false
-474325616,,L1-dcache-load-misses:u,29228545362,100.00,0.38,of all L1-dcache accesses,set_unordered,false
-59178803452,,branches:u,29228545362,100.00,,,set_unordered,false
-348275177,,branch-misses:u,29228545362,100.00,0.59,of all branches,set_unordered,false
-193467798226,,cycles:u,46601129201,100.00,,,set_unordered,false
-637708966719,,instructions:u,46601129201,100.00,3.30,insn per cycle,set_unordered,false
-1877,,page-faults:u,46600932398,100.00,,,set_unordered,false
-199467305671,,L1-dcache-loads:u,46228018137,100.00,,,set_unordered,false
-738550049,,L1-dcache-load-misses:u,46228018137,100.00,0.37,of all L1-dcache accesses,set_unordered,false
-93735603926,,branches:u,46228018137,100.00,,,set_unordered,false
-562010277,,branch-misses:u,46228018137,100.00,0.60,of all branches,set_unordered,false
+value        ,?1 ,counter                 ,?2          ,?3     ,ratio ,?5                        ,adjacency     ,virtual
+ 22916326355 ,   ,cycles:u                , 5504899781 ,100.00 ,      ,                          ,vector        ,true
+        1865 ,   ,page-faults:u           , 5504968165 ,100.00 ,      ,                          ,vector        ,true
+ 25391987835 ,   ,L1-dcache-loads:u       , 5602088795 ,100.00 ,      ,                          ,vector        ,true
+    66282800 ,   ,L1-dcache-load-misses:u , 5602088795 ,100.00 , 0.26 ,of all L1-dcache accesses ,vector        ,true
+ 12274430194 ,   ,branches:u              , 5602088795 ,100.00 ,      ,                          ,vector        ,true
+    63273521 ,   ,branch-misses:u         , 5602088795 ,100.00 , 0.52 ,of all branches           ,vector        ,true
+277710904273 ,   ,cycles:u                ,66513092196 ,100.00 ,      ,                          ,vector        ,true
+        1867 ,   ,page-faults:u           ,66514304104 ,100.00 ,      ,                          ,vector        ,true
+312390779407 ,   ,L1-dcache-loads:u       ,66813633813 ,100.00 ,      ,                          ,vector        ,true
+   765979696 ,   ,L1-dcache-load-misses:u ,66813633813 ,100.00 , 0.25 ,of all L1-dcache accesses ,vector        ,true
+150907242123 ,   ,branches:u              ,66813633813 ,100.00 ,      ,                          ,vector        ,true
+   749936960 ,   ,branch-misses:u         ,66813633813 ,100.00 , 0.50 ,of all branches           ,vector        ,true
+178706609073 ,   ,cycles:u                ,42726677891 ,100.00 ,      ,                          ,vector        ,true
+        1869 ,   ,page-faults:u           ,42726618889 ,100.00 ,      ,                          ,vector        ,true
+197832094058 ,   ,L1-dcache-loads:u       ,42294912410 ,100.00 ,      ,                          ,vector        ,true
+   493209747 ,   ,L1-dcache-load-misses:u ,42294912410 ,100.00 , 0.25 ,of all L1-dcache accesses ,vector        ,true
+ 95571852225 ,   ,branches:u              ,42294912410 ,100.00 ,      ,                          ,vector        ,true
+   482292972 ,   ,branch-misses:u         ,42294912410 ,100.00 , 0.50 ,of all branches           ,vector        ,true
+137960859413 ,   ,cycles:u                ,32985603732 ,100.00 ,      ,                          ,vector        ,true
+        1868 ,   ,page-faults:u           ,32985546460 ,100.00 ,      ,                          ,vector        ,true
+153429948134 ,   ,L1-dcache-loads:u       ,32846070001 ,100.00 ,      ,                          ,vector        ,true
+   389872686 ,   ,L1-dcache-load-misses:u ,32846070001 ,100.00 , 0.25 ,of all L1-dcache accesses ,vector        ,true
+ 74146717021 ,   ,branches:u              ,32846070001 ,100.00 ,      ,                          ,vector        ,true
+   385002233 ,   ,branch-misses:u         ,32846070001 ,100.00 , 0.52 ,of all branches           ,vector        ,true
+220813625390 ,   ,cycles:u                ,52794300380 ,100.00 ,      ,                          ,vector        ,true
+        1870 ,   ,page-faults:u           ,52794221681 ,100.00 ,      ,                          ,vector        ,true
+243525605213 ,   ,L1-dcache-loads:u       ,52593672900 ,100.00 ,      ,                          ,vector        ,true
+   607733981 ,   ,L1-dcache-load-misses:u ,52593672900 ,100.00 , 0.25 ,of all L1-dcache accesses ,vector        ,true
+117669604942 ,   ,branches:u              ,52593672900 ,100.00 ,      ,                          ,vector        ,true
+   626176010 ,   ,branch-misses:u         ,52593672900 ,100.00 , 0.53 ,of all branches           ,vector        ,true
+ 21430076300 ,   ,cycles:u                , 5139204562 ,100.00 ,      ,                          ,vector        ,false
+        1867 ,   ,page-faults:u           , 5139223998 ,100.00 ,      ,                          ,vector        ,false
+ 20703016501 ,   ,L1-dcache-loads:u       , 4793480143 ,100.00 ,      ,                          ,vector        ,false
+    49176595 ,   ,L1-dcache-load-misses:u , 4793480143 ,100.00 , 0.24 ,of all L1-dcache accesses ,vector        ,false
+  9711615487 ,   ,branches:u              , 4793480143 ,100.00 ,      ,                          ,vector        ,false
+    62518414 ,   ,branch-misses:u         , 4793480143 ,100.00 , 0.64 ,of all branches           ,vector        ,false
+247204145045 ,   ,cycles:u                ,59122174697 ,100.00 ,      ,                          ,vector        ,false
+        1866 ,   ,page-faults:u           ,59121988098 ,100.00 ,      ,                          ,vector        ,false
+254619738713 ,   ,L1-dcache-loads:u       ,59384914928 ,100.00 ,      ,                          ,vector        ,false
+   597488081 ,   ,L1-dcache-load-misses:u ,59384914928 ,100.00 , 0.23 ,of all L1-dcache accesses ,vector        ,false
+119332488631 ,   ,branches:u              ,59384914928 ,100.00 ,      ,                          ,vector        ,false
+   726082406 ,   ,branch-misses:u         ,59384914928 ,100.00 , 0.61 ,of all branches           ,vector        ,false
+166866319059 ,   ,cycles:u                ,39902195931 ,100.00 ,      ,                          ,vector        ,false
+        1873 ,   ,page-faults:u           ,39902131316 ,100.00 ,      ,                          ,vector        ,false
+161303273430 ,   ,L1-dcache-loads:u       ,36826605043 ,100.00 ,      ,                          ,vector        ,false
+   366210712 ,   ,L1-dcache-load-misses:u ,36826605043 ,100.00 , 0.23 ,of all L1-dcache accesses ,vector        ,false
+ 75603145474 ,   ,branches:u              ,36826605043 ,100.00 ,      ,                          ,vector        ,false
+   433505755 ,   ,branch-misses:u         ,36826605043 ,100.00 , 0.57 ,of all branches           ,vector        ,false
+121108390244 ,   ,cycles:u                ,29193752854 ,100.00 ,      ,                          ,vector        ,false
+        1876 ,   ,page-faults:u           ,29193689108 ,100.00 ,      ,                          ,vector        ,false
+125122939574 ,   ,L1-dcache-loads:u       ,29364668731 ,100.00 ,      ,                          ,vector        ,false
+   320975124 ,   ,L1-dcache-load-misses:u ,29364668731 ,100.00 , 0.26 ,of all L1-dcache accesses ,vector        ,false
+ 58678694136 ,   ,branches:u              ,29364668731 ,100.00 ,      ,                          ,vector        ,false
+   378027160 ,   ,branch-misses:u         ,29364668731 ,100.00 , 0.64 ,of all branches           ,vector        ,false
+189679324827 ,   ,cycles:u                ,45656467177 ,100.00 ,      ,                          ,vector        ,false
+        1870 ,   ,page-faults:u           ,45656357510 ,100.00 ,      ,                          ,vector        ,false
+198578583952 ,   ,L1-dcache-loads:u       ,45714128254 ,100.00 ,      ,                          ,vector        ,false
+   483481872 ,   ,L1-dcache-load-misses:u ,45714128254 ,100.00 , 0.24 ,of all L1-dcache accesses ,vector        ,false
+ 93108043453 ,   ,branches:u              ,45714128254 ,100.00 ,      ,                          ,vector        ,false
+   392244776 ,   ,branch-misses:u         ,45714128254 ,100.00 , 0.42 ,of all branches           ,vector        ,false
+ 23229151922 ,   ,cycles:u                , 5591584451 ,100.00 ,      ,                          ,list          ,true
+        1872 ,   ,page-faults:u           , 5591573200 ,100.00 ,      ,                          ,list          ,true
+ 25460189394 ,   ,L1-dcache-loads:u       , 5514598035 ,100.00 ,      ,                          ,list          ,true
+    80137804 ,   ,L1-dcache-load-misses:u , 5514598035 ,100.00 , 0.31 ,of all L1-dcache accesses ,list          ,true
+ 12350903177 ,   ,branches:u              , 5514598035 ,100.00 ,      ,                          ,list          ,true
+    62791652 ,   ,branch-misses:u         , 5514598035 ,100.00 , 0.51 ,of all branches           ,list          ,true
+281051407275 ,   ,cycles:u                ,67679018059 ,100.00 ,      ,                          ,list          ,true
+        1875 ,   ,page-faults:u           ,67693287360 ,100.00 ,      ,                          ,list          ,true
+312496168189 ,   ,L1-dcache-loads:u       ,71146426339 ,100.00 ,      ,                          ,list          ,true
+   991006553 ,   ,L1-dcache-load-misses:u ,71146426339 ,100.00 , 0.32 ,of all L1-dcache accesses ,list          ,true
+151443527754 ,   ,branches:u              ,71146426339 ,100.00 ,      ,                          ,list          ,true
+   741614524 ,   ,branch-misses:u         ,71146426339 ,100.00 , 0.49 ,of all branches           ,list          ,true
+194877760939 ,   ,cycles:u                ,46952149538 ,100.00 ,      ,                          ,list          ,true
+        1871 ,   ,page-faults:u           ,46952092533 ,100.00 ,      ,                          ,list          ,true
+198619288912 ,   ,L1-dcache-loads:u       ,50597040635 ,100.00 ,      ,                          ,list          ,true
+   630535401 ,   ,L1-dcache-load-misses:u ,50597040635 ,100.00 , 0.32 ,of all L1-dcache accesses ,list          ,true
+ 96268959131 ,   ,branches:u              ,50597040635 ,100.00 ,      ,                          ,list          ,true
+   476224757 ,   ,branch-misses:u         ,50597040635 ,100.00 , 0.49 ,of all branches           ,list          ,true
+139651535002 ,   ,cycles:u                ,33623671093 ,100.00 ,      ,                          ,list          ,true
+        1877 ,   ,page-faults:u           ,33623616287 ,100.00 ,      ,                          ,list          ,true
+153810131387 ,   ,L1-dcache-loads:u       ,33677243516 ,100.00 ,      ,                          ,list          ,true
+   500963059 ,   ,L1-dcache-load-misses:u ,33677243516 ,100.00 , 0.33 ,of all L1-dcache accesses ,list          ,true
+ 74591589576 ,   ,branches:u              ,33677243516 ,100.00 ,      ,                          ,list          ,true
+   383533513 ,   ,branch-misses:u         ,33677243516 ,100.00 , 0.51 ,of all branches           ,list          ,true
+218814282291 ,   ,cycles:u                ,52688595663 ,100.00 ,      ,                          ,list          ,true
+        1876 ,   ,page-faults:u           ,52688497947 ,100.00 ,      ,                          ,list          ,true
+244260886017 ,   ,L1-dcache-loads:u       ,52799835537 ,100.00 ,      ,                          ,list          ,true
+   798277493 ,   ,L1-dcache-load-misses:u ,52799835537 ,100.00 , 0.33 ,of all L1-dcache accesses ,list          ,true
+118431202783 ,   ,branches:u              ,52799835537 ,100.00 ,      ,                          ,list          ,true
+   602259056 ,   ,branch-misses:u         ,52799835537 ,100.00 , 0.51 ,of all branches           ,list          ,true
+ 19770583726 ,   ,cycles:u                , 4770202493 ,100.00 ,      ,                          ,list          ,false
+        1873 ,   ,page-faults:u           , 4770192375 ,100.00 ,      ,                          ,list          ,false
+ 20772279011 ,   ,L1-dcache-loads:u       , 4762283549 ,100.00 ,      ,                          ,list          ,false
+    67295635 ,   ,L1-dcache-load-misses:u , 4762283549 ,100.00 , 0.32 ,of all L1-dcache accesses ,list          ,false
+  9765584928 ,   ,branches:u              , 4762283549 ,100.00 ,      ,                          ,list          ,false
+    40783159 ,   ,branch-misses:u         , 4762283549 ,100.00 , 0.42 ,of all branches           ,list          ,false
+238416195984 ,   ,cycles:u                ,57409057238 ,100.00 ,      ,                          ,list          ,false
+        1874 ,   ,page-faults:u           ,57415086433 ,100.00 ,      ,                          ,list          ,false
+254929548528 ,   ,L1-dcache-loads:u       ,57447752290 ,100.00 ,      ,                          ,list          ,false
+   814684019 ,   ,L1-dcache-load-misses:u ,57447752290 ,100.00 , 0.32 ,of all L1-dcache accesses ,list          ,false
+119686763128 ,   ,branches:u              ,57447752290 ,100.00 ,      ,                          ,list          ,false
+   468128802 ,   ,branch-misses:u         ,57447752290 ,100.00 , 0.39 ,of all branches           ,list          ,false
+152851884632 ,   ,cycles:u                ,36841886097 ,100.00 ,      ,                          ,list          ,false
+        1878 ,   ,page-faults:u           ,36841820837 ,100.00 ,      ,                          ,list          ,false
+162038303597 ,   ,L1-dcache-loads:u       ,36471717669 ,100.00 ,      ,                          ,list          ,false
+   515073445 ,   ,L1-dcache-load-misses:u ,36471717669 ,100.00 , 0.32 ,of all L1-dcache accesses ,list          ,false
+ 76089763004 ,   ,branches:u              ,36471717669 ,100.00 ,      ,                          ,list          ,false
+   301983422 ,   ,branch-misses:u         ,36471717669 ,100.00 , 0.40 ,of all branches           ,list          ,false
+122225486740 ,   ,cycles:u                ,29401296334 ,100.00 ,      ,                          ,list          ,false
+        1875 ,   ,page-faults:u           ,29401267483 ,100.00 ,      ,                          ,list          ,false
+125514294291 ,   ,L1-dcache-loads:u       ,28400516385 ,100.00 ,      ,                          ,list          ,false
+   414507045 ,   ,L1-dcache-load-misses:u ,28400516385 ,100.00 , 0.33 ,of all L1-dcache accesses ,list          ,false
+ 58990228232 ,   ,branches:u              ,28400516385 ,100.00 ,      ,                          ,list          ,false
+   251814524 ,   ,branch-misses:u         ,28400516385 ,100.00 , 0.43 ,of all branches           ,list          ,false
+188858180805 ,   ,cycles:u                ,45457261562 ,100.00 ,      ,                          ,list          ,false
+        1875 ,   ,page-faults:u           ,45457187863 ,100.00 ,      ,                          ,list          ,false
+199304082341 ,   ,L1-dcache-loads:u       ,45411704406 ,100.00 ,      ,                          ,list          ,false
+   649425127 ,   ,L1-dcache-load-misses:u ,45411704406 ,100.00 , 0.33 ,of all L1-dcache accesses ,list          ,false
+ 93641791771 ,   ,branches:u              ,45411704406 ,100.00 ,      ,                          ,list          ,false
+   417302951 ,   ,branch-misses:u         ,45411704406 ,100.00 , 0.45 ,of all branches           ,list          ,false
+ 23646227387 ,   ,cycles:u                , 5693151650 ,100.00 ,      ,                          ,set           ,true
+        1876 ,   ,page-faults:u           , 5693141558 ,100.00 ,      ,                          ,set           ,true
+ 25554360956 ,   ,L1-dcache-loads:u       , 5745029035 ,100.00 ,      ,                          ,set           ,true
+    94632743 ,   ,L1-dcache-load-misses:u , 5745029035 ,100.00 , 0.37 ,of all L1-dcache accesses ,set           ,true
+ 12438380151 ,   ,branches:u              , 5745029035 ,100.00 ,      ,                          ,set           ,true
+    79085688 ,   ,branch-misses:u         , 5745029035 ,100.00 , 0.64 ,of all branches           ,set           ,true
+290134316628 ,   ,cycles:u                ,69882689961 ,100.00 ,      ,                          ,set           ,true
+        1874 ,   ,page-faults:u           ,69884114421 ,100.00 ,      ,                          ,set           ,true
+313450887209 ,   ,L1-dcache-loads:u       ,70530456704 ,100.00 ,      ,                          ,set           ,true
+  1082305609 ,   ,L1-dcache-load-misses:u ,70530456704 ,100.00 , 0.35 ,of all L1-dcache accesses ,set           ,true
+152379082680 ,   ,branches:u              ,70530456704 ,100.00 ,      ,                          ,set           ,true
+   922230699 ,   ,branch-misses:u         ,70530456704 ,100.00 , 0.61 ,of all branches           ,set           ,true
+183065110378 ,   ,cycles:u                ,44059128647 ,100.00 ,      ,                          ,set           ,true
+        1880 ,   ,page-faults:u           ,44079505290 ,100.00 ,      ,                          ,set           ,true
+198923015355 ,   ,L1-dcache-loads:u       ,43929428785 ,100.00 ,      ,                          ,set           ,true
+   664380196 ,   ,L1-dcache-load-misses:u ,43929428785 ,100.00 , 0.33 ,of all L1-dcache accesses ,set           ,true
+ 96724748825 ,   ,branches:u              ,43929428785 ,100.00 ,      ,                          ,set           ,true
+   590440849 ,   ,branch-misses:u         ,43929428785 ,100.00 , 0.61 ,of all branches           ,set           ,true
+144740387028 ,   ,cycles:u                ,34826456894 ,100.00 ,      ,                          ,set           ,true
+        1884 ,   ,page-faults:u           ,34826338050 ,100.00 ,      ,                          ,set           ,true
+154396254185 ,   ,L1-dcache-loads:u       ,34278209348 ,100.00 ,      ,                          ,set           ,true
+   549007999 ,   ,L1-dcache-load-misses:u ,34278209348 ,100.00 , 0.36 ,of all L1-dcache accesses ,set           ,true
+ 75144919334 ,   ,branches:u              ,34278209348 ,100.00 ,      ,                          ,set           ,true
+   482081054 ,   ,branch-misses:u         ,34278209348 ,100.00 , 0.64 ,of all branches           ,set           ,true
+229380913423 ,   ,cycles:u                ,55215229548 ,100.00 ,      ,                          ,set           ,true
+        1878 ,   ,page-faults:u           ,55215149625 ,100.00 ,      ,                          ,set           ,true
+245462710503 ,   ,L1-dcache-loads:u       ,59416768943 ,100.00 ,      ,                          ,set           ,true
+   864937901 ,   ,L1-dcache-load-misses:u ,59416768943 ,100.00 , 0.35 ,of all L1-dcache accesses ,set           ,true
+119428612538 ,   ,branches:u              ,59416768943 ,100.00 ,      ,                          ,set           ,true
+   760297630 ,   ,branch-misses:u         ,59416768943 ,100.00 , 0.64 ,of all branches           ,set           ,true
+ 20609906345 ,   ,cycles:u                , 4979908774 ,100.00 ,      ,                          ,set           ,false
+        1877 ,   ,page-faults:u           , 4979893836 ,100.00 ,      ,                          ,set           ,false
+ 20883960401 ,   ,L1-dcache-loads:u       , 6208261077 ,100.00 ,      ,                          ,set           ,false
+    77162128 ,   ,L1-dcache-load-misses:u , 6208261077 ,100.00 , 0.37 ,of all L1-dcache accesses ,set           ,false
+  9876709880 ,   ,branches:u              , 6208261077 ,100.00 ,      ,                          ,set           ,false
+    56663516 ,   ,branch-misses:u         , 6208261077 ,100.00 , 0.57 ,of all branches           ,set           ,false
+246372319147 ,   ,cycles:u                ,59301145643 ,100.00 ,      ,                          ,set           ,false
+        1876 ,   ,page-faults:u           ,59301056265 ,100.00 ,      ,                          ,set           ,false
+256114662001 ,   ,L1-dcache-loads:u       ,66572119812 ,100.00 ,      ,                          ,set           ,false
+   901881655 ,   ,L1-dcache-load-misses:u ,66572119812 ,100.00 , 0.35 ,of all L1-dcache accesses ,set           ,false
+120921083684 ,   ,branches:u              ,66572119812 ,100.00 ,      ,                          ,set           ,false
+   636916295 ,   ,branch-misses:u         ,66572119812 ,100.00 , 0.53 ,of all branches           ,set           ,false
+159249765913 ,   ,cycles:u                ,38330847324 ,100.00 ,      ,                          ,set           ,false
+        1885 ,   ,page-faults:u           ,38330772258 ,100.00 ,      ,                          ,set           ,false
+162549980638 ,   ,L1-dcache-loads:u       ,37476987774 ,100.00 ,      ,                          ,set           ,false
+   572937218 ,   ,L1-dcache-load-misses:u ,37476987774 ,100.00 , 0.35 ,of all L1-dcache accesses ,set           ,false
+ 76768936053 ,   ,branches:u              ,37476987774 ,100.00 ,      ,                          ,set           ,false
+   409988681 ,   ,branch-misses:u         ,37476987774 ,100.00 , 0.53 ,of all branches           ,set           ,false
+121773163443 ,   ,cycles:u                ,29299205454 ,100.00 ,      ,                          ,set           ,false
+        1879 ,   ,page-faults:u           ,29299153474 ,100.00 ,      ,                          ,set           ,false
+126213019200 ,   ,L1-dcache-loads:u       ,29648501887 ,100.00 ,      ,                          ,set           ,false
+   472253232 ,   ,L1-dcache-load-misses:u ,29648501887 ,100.00 , 0.37 ,of all L1-dcache accesses ,set           ,false
+ 59688618265 ,   ,branches:u              ,29648501887 ,100.00 ,      ,                          ,set           ,false
+   346199689 ,   ,branch-misses:u         ,29648501887 ,100.00 , 0.58 ,of all branches           ,set           ,false
+195815737315 ,   ,cycles:u                ,46869930231 ,100.00 ,      ,                          ,set           ,false
+        1884 ,   ,page-faults:u           ,46869589863 ,100.00 ,      ,                          ,set           ,false
+200626911330 ,   ,L1-dcache-loads:u       ,47782226722 ,100.00 ,      ,                          ,set           ,false
+   733598625 ,   ,L1-dcache-load-misses:u ,47782226722 ,100.00 , 0.37 ,of all L1-dcache accesses ,set           ,false
+ 94838495259 ,   ,branches:u              ,47782226722 ,100.00 ,      ,                          ,set           ,false
+   538115949 ,   ,branch-misses:u         ,47782226722 ,100.00 , 0.57 ,of all branches           ,set           ,false
+ 23394490111 ,   ,cycles:u                , 5608787996 ,100.00 ,      ,                          ,set_unordered ,true
+        1873 ,   ,page-faults:u           , 5608786977 ,100.00 ,      ,                          ,set_unordered ,true
+ 25552681801 ,   ,L1-dcache-loads:u       , 5603230380 ,100.00 ,      ,                          ,set_unordered ,true
+    92063385 ,   ,L1-dcache-load-misses:u , 5603230380 ,100.00 , 0.36 ,of all L1-dcache accesses ,set_unordered ,true
+ 12419619699 ,   ,branches:u              , 5603230380 ,100.00 ,      ,                          ,set_unordered ,true
+    65082467 ,   ,branch-misses:u         , 5603230380 ,100.00 , 0.52 ,of all branches           ,set_unordered ,true
+282282433643 ,   ,cycles:u                ,67499380135 ,100.00 ,      ,                          ,set_unordered ,true
+        1870 ,   ,page-faults:u           ,67499241339 ,100.00 ,      ,                          ,set_unordered ,true
+313143867602 ,   ,L1-dcache-loads:u       ,68260117201 ,100.00 ,      ,                          ,set_unordered ,true
+  1140768485 ,   ,L1-dcache-load-misses:u ,68260117201 ,100.00 , 0.36 ,of all L1-dcache accesses ,set_unordered ,true
+152042804416 ,   ,branches:u              ,68260117201 ,100.00 ,      ,                          ,set_unordered ,true
+   759628000 ,   ,branch-misses:u         ,68260117201 ,100.00 , 0.50 ,of all branches           ,set_unordered ,true
+184732230912 ,   ,cycles:u                ,44171703116 ,100.00 ,      ,                          ,set_unordered ,true
+        1873 ,   ,page-faults:u           ,44171642397 ,100.00 ,      ,                          ,set_unordered ,true
+198883378211 ,   ,L1-dcache-loads:u       ,43059906345 ,100.00 ,      ,                          ,set_unordered ,true
+   712173723 ,   ,L1-dcache-load-misses:u ,43059906345 ,100.00 , 0.36 ,of all L1-dcache accesses ,set_unordered ,true
+ 96578436840 ,   ,branches:u              ,43059906345 ,100.00 ,      ,                          ,set_unordered ,true
+   487884621 ,   ,branch-misses:u         ,43059906345 ,100.00 , 0.51 ,of all branches           ,set_unordered ,true
+140866855396 ,   ,cycles:u                ,33686872116 ,100.00 ,      ,                          ,set_unordered ,true
+        1873 ,   ,page-faults:u           ,33686734733 ,100.00 ,      ,                          ,set_unordered ,true
+154326561116 ,   ,L1-dcache-loads:u       ,33724252758 ,100.00 ,      ,                          ,set_unordered ,true
+   563033616 ,   ,L1-dcache-load-misses:u ,33724252758 ,100.00 , 0.36 ,of all L1-dcache accesses ,set_unordered ,true
+ 74984985278 ,   ,branches:u              ,33724252758 ,100.00 ,      ,                          ,set_unordered ,true
+   396331390 ,   ,branch-misses:u         ,33724252758 ,100.00 , 0.53 ,of all branches           ,set_unordered ,true
+222310296015 ,   ,cycles:u                ,53156068889 ,100.00 ,      ,                          ,set_unordered ,true
+        1873 ,   ,page-faults:u           ,53155937417 ,100.00 ,      ,                          ,set_unordered ,true
+243176319281 ,   ,L1-dcache-loads:u       ,53091940204 ,100.00 ,      ,                          ,set_unordered ,true
+   881136916 ,   ,L1-dcache-load-misses:u ,53091940204 ,100.00 , 0.36 ,of all L1-dcache accesses ,set_unordered ,true
+118129196621 ,   ,branches:u              ,53091940204 ,100.00 ,      ,                          ,set_unordered ,true
+   615580423 ,   ,branch-misses:u         ,53091940204 ,100.00 , 0.52 ,of all branches           ,set_unordered ,true
+ 20348142015 ,   ,cycles:u                , 4869347852 ,100.00 ,      ,                          ,set_unordered ,false
+        1874 ,   ,page-faults:u           , 4869341038 ,100.00 ,      ,                          ,set_unordered ,false
+ 20861967163 ,   ,L1-dcache-loads:u       , 4813334690 ,100.00 ,      ,                          ,set_unordered ,false
+    76116567 ,   ,L1-dcache-load-misses:u , 4813334690 ,100.00 , 0.36 ,of all L1-dcache accesses ,set_unordered ,false
+  9809917729 ,   ,branches:u              , 4813334690 ,100.00 ,      ,                          ,set_unordered ,false
+    42878016 ,   ,branch-misses:u         , 4813334690 ,100.00 , 0.44 ,of all branches           ,set_unordered ,false
+254095666124 ,   ,cycles:u                ,60767622334 ,100.00 ,      ,                          ,set_unordered ,false
+        1873 ,   ,page-faults:u           ,60767507276 ,100.00 ,      ,                          ,set_unordered ,false
+255006095809 ,   ,L1-dcache-loads:u       ,58447394429 ,100.00 ,      ,                          ,set_unordered ,false
+   934726887 ,   ,L1-dcache-load-misses:u ,58447394429 ,100.00 , 0.37 ,of all L1-dcache accesses ,set_unordered ,false
+119742621672 ,   ,branches:u              ,58447394429 ,100.00 ,      ,                          ,set_unordered ,false
+   491171219 ,   ,branch-misses:u         ,58447394429 ,100.00 , 0.41 ,of all branches           ,set_unordered ,false
+156255885616 ,   ,cycles:u                ,37563948987 ,100.00 ,      ,                          ,set_unordered ,false
+        1875 ,   ,page-faults:u           ,37563844447 ,100.00 ,      ,                          ,set_unordered ,false
+162365369334 ,   ,L1-dcache-loads:u       ,38447791134 ,100.00 ,      ,                          ,set_unordered ,false
+   594026902 ,   ,L1-dcache-load-misses:u ,38447791134 ,100.00 , 0.37 ,of all L1-dcache accesses ,set_unordered ,false
+ 76254657799 ,   ,branches:u              ,38447791134 ,100.00 ,      ,                          ,set_unordered ,false
+   439694551 ,   ,branch-misses:u         ,38447791134 ,100.00 , 0.58 ,of all branches           ,set_unordered ,false
+122603355107 ,   ,cycles:u                ,29518996368 ,100.00 ,      ,                          ,set_unordered ,false
+        1876 ,   ,page-faults:u           ,29518895397 ,100.00 ,      ,                          ,set_unordered ,false
+125889957673 ,   ,L1-dcache-loads:u       ,29228545362 ,100.00 ,      ,                          ,set_unordered ,false
+   474325616 ,   ,L1-dcache-load-misses:u ,29228545362 ,100.00 , 0.38 ,of all L1-dcache accesses ,set_unordered ,false
+ 59178803452 ,   ,branches:u              ,29228545362 ,100.00 ,      ,                          ,set_unordered ,false
+   348275177 ,   ,branch-misses:u         ,29228545362 ,100.00 , 0.59 ,of all branches           ,set_unordered ,false
+193467798226 ,   ,cycles:u                ,46601129201 ,100.00 ,      ,                          ,set_unordered ,false
+        1877 ,   ,page-faults:u           ,46600932398 ,100.00 ,      ,                          ,set_unordered ,false
+199467305671 ,   ,L1-dcache-loads:u       ,46228018137 ,100.00 ,      ,                          ,set_unordered ,false
+   738550049 ,   ,L1-dcache-load-misses:u ,46228018137 ,100.00 , 0.37 ,of all L1-dcache accesses ,set_unordered ,false
+ 93735603926 ,   ,branches:u              ,46228018137 ,100.00 ,      ,                          ,set_unordered ,false
+   562010277 ,   ,branch-misses:u         ,46228018137 ,100.00 , 0.60 ,of all branches           ,set_unordered ,false

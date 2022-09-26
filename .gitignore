@@ -6,3 +6,5 @@ build/
 install/
 temp/
 report/*.html
+*.o
+*.so

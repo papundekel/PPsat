@@ -25,7 +25,7 @@ do
 
     for i in "10" "11" "12" "13" "14"
     do
-        perf stat -x, -e cycles,instructions,page-faults \
+        perf stat -x, -e cycles,page-faults \
         "$solver" $options "$inputs_dir/uuf100-0$i.cnf" 2>&1 >/dev/null | parse_output
 
         perf stat -x, -e L1-dcache-loads,L1-dcache-load-misses,branches,branch-misses \

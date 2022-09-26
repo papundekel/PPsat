@@ -6,30 +6,26 @@ add_custom_command(OUTPUT "call-graph.svg"
     VERBATIM
 )
 
-add_custom_command(OUTPUT "report.nb.html"
-    COMMAND "Rscript" "-e" "rmarkdown::render('${CMAKE_CURRENT_LIST_DIR}/report.Rmd', output_dir = '${CMAKE_CURRENT_BINARY_DIR}')"
-    MAIN_DEPENDENCY "report.Rmd"
+add_custom_command(OUTPUT "report-performance.html"
+    COMMAND "jupyter" "nbconvert" "--to" "html" "--no-input" "--output-dir" "${CMAKE_CURRENT_BINARY_DIR}" "${CMAKE_CURRENT_LIST_DIR}/report-performance.ipynb"
+    MAIN_DEPENDENCY "report-performance.ipynb"
     DEPENDS "call-graph.svg"
     VERBATIM
 )
 
-add_custom_command(OUTPUT "report-performance.nb.html"
-    COMMAND "Rscript" "-e" "rmarkdown::render('${CMAKE_CURRENT_LIST_DIR}/report-performance.Rmd', output_dir = '${CMAKE_CURRENT_BINARY_DIR}')"
-    MAIN_DEPENDENCY "report-performance.Rmd"
-    VERBATIM
-)
-
 add_custom_target(report ALL
-    DEPENDS "report.nb.html" "report-performance.nb.html")
+    DEPENDS "report-performance.html")
 
 # Install
 
 install(FILES
-    "${CMAKE_CURRENT_BINARY_DIR}/report.nb.html"
-    "${CMAKE_CURRENT_BINARY_DIR}/report-performance.nb.html"
+    "${CMAKE_CURRENT_BINARY_DIR}/report-performance.html"
+    "${CMAKE_CURRENT_BINARY_DIR}/call-graph.svg"
         TYPE DATA)
 
 install(PROGRAMS
     "perf-perf.sh"
     "perf-warmup.sh"
+    "perf-profiling.sh"
+    "perf-instr.sh"
         TYPE BIN)
