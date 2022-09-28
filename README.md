@@ -7,25 +7,41 @@ Also contains programs `PPsat-queens-generate`, `PPsat-queens.sh`, `PPsat-crypt-
 ## Prerequisites
 
 * C++2b capable compiler
-* CMake >=3.20
-* Ninja
-* ANTLR4, ANTLR C++ runtime, ANTLR C++ CMake packages
-* Boost >=1.74
 * Bash
 * grep, sed, gawk
-* R
-    * `rmarkdown`
-    * `tidyverse`
+* CMake >=3.20
+* Ninja
+
+### Solver
+
+* ANTLR4, ANTLR C++ runtime, ANTLR C++ CMake packages
+* Boost >=1.74
+
+`-DGEN_SOLVER:BOOL=ON`
+
+### Report
+
+* Jupyter notebook
+* Pin
+* perf
+
+`-DGEN_REPORT:BOOL=ON`
 
 ## Configuration, build, install and run
 
-`cmake -S ./ -B build/ -G "Ninja Multi-Config"`
+`cmake -S ./ -B build/ -G "Ninja Multi-Config" [-DGEN_SOLVER:BOOL=ON] [-DGEN_REPORT:BOOL=ON]`
 
 `cmake --build build/ --config Release --target all`
 
-`mkdir install && cmake --install build/ --prefix install --config Release`
+`mkdir -p install && cmake --install build/ --prefix install --config Release`
 
 `install/bin/PPsat*`
+
+### Report only
+
+`make all`
+
+Expects `PIN_ROOT` set to the root directory of Pin.
 
 ## Documentation
 
