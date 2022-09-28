@@ -22,10 +22,13 @@ Also contains programs `PPsat-queens-generate`, `PPsat-queens.sh`, `PPsat-crypt-
 ### Report
 
 * Jupyter notebook
-* Pin
-* perf
 
 `-DGEN_REPORT:BOOL=ON`
+
+#### Running the measurements
+
+* Pin
+* perf
 
 ## Configuration, build, install and run
 
